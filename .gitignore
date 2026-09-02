@@ -1,0 +1,25 @@
+# Rust build artifacts
+target/
+engine/target/
+**/*.rs.bk
+Cargo.lock
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
+
+# Temporary image outputs in tools (keep source assets, ignore scratch)
+/tmp/
+packs/**/art_assets/*.pgm
