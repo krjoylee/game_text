@@ -92,7 +92,11 @@ python3 tools/ascii_studio/ascii_studio.py <image_path> --format braille
 * [spec.md](spec.md): 게임 런타임 엔진 기술 규격서 (78×40 프레임 레이아웃)
 * [spec_image_engine.md](spec_image_engine.md): AsciiArt Studio 이미지 저작 엔진 규격서
 * [tech_concepts.md](tech_concepts.md): 비개발자를 위한 5대 핵심 기술 개념 가이드
-* [todo.md](todo.md): 단계별 마일스톤 및 완료 이력 (D-01 ~ D-19)
+* [todo.md](todo.md): 단계별 마일스톤 및 완료 이력 (D-01 ~ D-20)
+
+### 📌 버전 관리 원칙 (Git Commit Convention)
+* 모든 커밋 메시지는 **한글로 작성**합니다.
+* 단순 작업 나열이 아닌 **"무엇이 안 되거나 부족하여 ➔ 어떤 목적을 위해 무엇을 해결했는가"**의 목적 중심 인과관계를 명시합니다.
 
 ---
 
