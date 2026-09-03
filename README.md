@@ -50,29 +50,29 @@
 
 ## 🚀 빠른 시작 (Quick Start)
 
-### 1. Linux / WSL 환경
+### 1. Linux / WSL 환경 (Phase 1 아카이브 실행)
 
 ```bash
 # 리포지토리 클론
 git clone https://github.com/krjoylee/game_text.git
 cd game_text
 
-# WSL 원클릭 런처 실행
-./run_game.sh
+# Phase 1 원클릭 런처 실행
+./phase1/run_game.sh
 ```
 
 직접 특정 팩을 실행하려면:
 ```bash
-./engine/target/x86_64-unknown-linux-musl/release/divina-ludus --pack packs/heungbu_nolbu/4_game_scene.yaml
+./phase1/engine/target/x86_64-unknown-linux-musl/release/divina-ludus --pack phase1/packs/heungbu_nolbu/4_game_scene.yaml
 ```
 
-### 2. Windows 11 환경
+### 2. Windows 11 환경 (Phase 1 아카이브 실행)
 
-* WSL에서 빌드된 정적 바이너리와 배포 팩은 `D:\game` 경로에서 배치 파일(`run_game.bat`)을 통해 바로 구동할 수 있습니다.
+* Phase 1 빌드 바이너리와 배포 팩은 `D:\game\phase1` 경로에서 배치 파일(`run_game.bat`)을 통해 바로 구동할 수 있습니다.
 
 ---
 
-## 🛠️ 자체 제작 도구: AsciiArt Studio (`tools/ascii_studio/`)
+## 🛠️ 자체 제작 도구: AsciiArt Studio (`phase1/tools/ascii_studio/`)
 
 텍스트 게임의 해상도 한계를 극복하기 위해 프로젝트 내부에 탑재된 단독 이미지 변환 툴체인입니다:
 * **Zero-Dependency**: 외부 라이브러리 없이 순수 Python 표준 라이브러리로 작동하는 BMP/PNM 디코더.
@@ -81,18 +81,18 @@ cd game_text
 
 ```bash
 # 이미지 파일 ➔ 8배 초고해상도 Braille 도트 변환
-python3 tools/ascii_studio/ascii_studio.py <image_path> --format braille
+python3 phase1/tools/ascii_studio/ascii_studio.py <image_path> --format braille
 ```
 
 ---
 
 ## 🏛️ 프로젝트 아키텍처 및 철학
 
-* [philosophy.md](philosophy.md): 프로젝트 개발 철학 및 엔진-팩 분리 원칙
-* [spec.md](spec.md): 게임 런타임 엔진 기술 규격서 (78×40 프레임 레이아웃)
-* [spec_image_engine.md](spec_image_engine.md): AsciiArt Studio 이미지 저작 엔진 규격서
-* [tech_concepts.md](tech_concepts.md): 비개발자를 위한 5대 핵심 기술 개념 가이드
-* [todo.md](todo.md): 단계별 마일스톤 및 완료 이력 (D-01 ~ D-20)
+* [phase2_plan.md](phase2_plan.md): **Phase 2 리팩터링 및 이미지 가독성 혁신 계획서 (현재 진행 중)**
+* [phase1/philosophy.md](phase1/philosophy.md): Phase 1 개발 철학 및 엔진-팩 분리 원칙
+* [phase1/spec.md](phase1/spec.md): Phase 1 게임 런타임 엔진 기술 규격서 (78×40 프레임 레이아웃)
+* [phase1/spec_image_engine.md](phase1/spec_image_engine.md): Phase 1 이미지 저작 엔진 규격서
+* [phase1/todo.md](phase1/todo.md): Phase 1 마일스톤 및 완료 이력 (D-01 ~ D-20)
 
 ### 📌 버전 관리 원칙 (Git Commit Convention)
 * 모든 커밋 메시지는 **한글로 작성**합니다.
