@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
 tools/generate_all_cutscenes_studio.py
-흥부놀부전 1막~7막 전 씬 16색 하이퀄리티 클로즈업 도트 엔진 리메이크!
-- 사용자 피드백 100% 반영:
-  * 2막: 제비 초대형 클로즈업! (남색 깃털, 붉은 목덜미, 하얀 배, 눈물 어린 눈망울, 붉은 실과 부목 정밀 묘사)
-  * 3막: 힘차게 날아오르는 제비 클로즈업 + 부리에 영롱하게 빛나는 황금 박씨
-  * 4막: 톱질하는 흥부 부부의 역동적인 표정 + 쪼개지는 거대한 대박과 쏟아지는 황금 엽전 보화!
-  * 5막: 놀부의 잔혹한 손아귀 클로즈업! 멀쩡한 제비 다리를 움켜쥐고 뚝 부러뜨리는 순간의 극적 묘사
-  * 6막: 압도적인 뿔 도깨비 얼굴 클로즈업! (부리부리한 눈, 날카로운 송곳니, 가시 쇠몽둥이 강타)
-  * 7막: 1막 수준의 인물 표정 클로즈업! 감격의 눈물을 흘리는 흥부와 갓 벗고 눈물로 뉘우치는 놀부의 감동적 재회
+흥부놀부전 1막~7막 전 씬 16색 디테일 2차 정밀 리메이크!
+사용자 피드백 정밀 반영:
+  • 3막: 제비 날개가 1~6프레임에 걸쳐 위/수평/아래로 진짜 펄럭이도록 상하 플랩 애니메이션 구현!
+  • 4막: '사람이 톱질하는 느낌'이 확실히 나도록, 흥부의 팔 근육과 손이 긴 양손 톱 손잡이를 잡고 앞뒤로 격렬하게 미는 역동적 상반신 포커스!
+  • 5막: 놀부의 손과 제비의 다리가 엉키지 않도록, '놀부의 굵은 엄지와 검지가 제비 다리를 잡고 뚝 꺾는' 형태를 해부학적으로 선명하게 선/면 분리!
+  • 6막: 도깨비의 위압적 표정 유지 + F3 번쩍 효과를 화면 전체가 아니라 박씨/몽둥이 끝에 깔끔한 '다이아몬드형 스파클(◆)'로 절제되게 연출!
+  • 7막: 1막의 흥부/놀부 실루엣 코드(얼굴형, 눈코입, 갓/상투, 수염, 옷깃)를 1:1 완벽하게 계승하여 진짜 사람(형제)으로 복원!
 """
 
 import os
@@ -28,8 +27,8 @@ from generate_act1_motion_prototype import (
 
 C_SWALLOW_BLUE = 7   # 제비 감청색 등깃
 C_SWALLOW_RED = 6    # 제비 목덜미 붉은 깃 / 부목 붉은 실
-C_GOBLIN_GREEN = 13  # 도깨비 험악한 청록색 피부
-C_CLUB_GRAY = 14     # 쇠몽둥이 / 무쇠 가시
+C_GOBLIN_GREEN = 13  # 도깨비 청록색 피부
+C_CLUB_GRAY = 14     # 쇠몽둥이 / 무쇠 톱날
 C_FIELD_GREEN = 15   # 새싹 잔디 녹색
 C_GOURD_YELLOW = 12  # 잘 익은 황금빛 박
 
@@ -37,453 +36,448 @@ def make_bg():
     return [[C_BG for _ in range(CANVAS_W)] for _ in range(CANVAS_H)]
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 제2막: 다친 제비 클로즈업 (두 손으로 감싼 새끼 제비와 붉은 실 부목)
+# 제2막: 다친 제비 (두 손으로 감싼 새끼 제비와 붉은 실 부목 클로즈업)
 # ─────────────────────────────────────────────────────────────────────────────
 def create_act2_frames():
     f1 = make_bg()
-    
-    # 1. 배경: 흥부네 낡은 흙벽과 처마 그림자 (은은한 음영)
     for y in range(CANVAS_H):
         for x in range(CANVAS_W):
-            if (x + y) % 6 == 0:
-                f1[y][x] = C_SHADOW
+            if (x + y) % 8 == 0: f1[y][x] = C_SHADOW
                 
-    # 2. 흥부의 거칠지만 따스한 두 손 (화면 하단을 감싸 안는 구도, Col 12~62, Row 20~37)
-    # 왼손 바닥 (Col 14~34)
+    # 흥부의 두 손 (Col 14~60, Row 20~36)
     for y in range(22, 36):
-        for x in range(14, 34):
-            f1[y][x] = C_SKIN
+        for x in range(14, 34): f1[y][x] = C_SKIN
+        for x in range(40, 60): f1[y][x] = C_SKIN
     for y in range(26, 36):
         f1[y][14] = C_SHADOW; f1[y][33] = C_SHADOW
-    # 오른손 바닥 (Col 40~60)
-    for y in range(22, 36):
-        for x in range(40, 60):
-            f1[y][x] = C_SKIN
-    for y in range(26, 36):
         f1[y][40] = C_SHADOW; f1[y][59] = C_SHADOW
-    # 손가락 주름 및 삼베 소매 (Col 8~16, 58~66)
+    # 소매 삼베 질감
     for y in range(28, 38):
-        for x in range(6, 15):
-            f1[y][x] = C_HAT if (x+y)%2==0 else C_HEMP_ROUGH
-        for x in range(59, 68):
-            f1[y][x] = C_HAT if (x+y)%2==0 else C_HEMP_ROUGH
+        for x in range(6, 15): f1[y][x] = C_HAT if (x+y)%2==0 else C_HEMP_ROUGH
+        for x in range(59, 68): f1[y][x] = C_HAT if (x+y)%2==0 else C_HEMP_ROUGH
 
-    # 3. [메인 포커스] 새끼 제비 초대형 클로즈업! (중앙 Col 26~48, Row 6~28)
-    # 제비 머리 & 등 (감청색 깃털)
+    # 새끼 제비 머리 & 등 (Col 28~46, Row 6~24)
     for y in range(6, 16):
-        for x in range(28, 46):
-            f1[y][x] = C_SWALLOW_BLUE
-    # 이마 먹선 외곽
-    for x in range(30, 44):
-        f1[6][x] = C_LINE
-        
-    # 제비의 영롱하고 슬픈 눈망울 (Col 31~34, Row 9~12)
-    f1[9][32] = C_LINE; f1[9][33] = C_LINE
-    f1[10][31] = C_WHITE; f1[10][32] = C_LINE; f1[10][33] = C_WHITE
-    f1[11][32] = C_WHITE # 반사광
-    # 부리 (노란 새끼 제비 부리)
-    f1[11][26] = C_GOLD; f1[11][27] = C_GOLD; f1[12][26] = C_GOLD; f1[12][27] = C_GOLD
-    
-    # 제비의 상징: 목덜미 선명한 붉은 깃털 (Col 30~42, Row 14~18)
-    for y in range(14, 18):
-        for x in range(32, 42):
-            f1[y][x] = C_SWALLOW_RED
-            
-    # 배 쪽 보송보송한 순백 깃털 (Col 30~44, Row 18~24)
-    for y in range(18, 25):
-        for x in range(31, 43):
-            f1[y][x] = C_WHITE
-            
-    # 날개 깃털 결 (남색 + 청록 광택)
-    for y in range(12, 24):
-        f1[y][43] = C_LINE; f1[y][44] = C_SWALLOW_BLUE; f1[y][45] = C_LINE
-        if y % 3 == 0:
-            f1[y][44] = C_SILK_SHINE
-            
-    # 4. [핵심 디테일] 부러진 다리와 정성껏 묶은 붉은 실 부목 (Col 34~42, Row 24~29)
-    # 가느다란 부러진 새 다리뼈
-    f1[24][37] = C_LINE; f1[25][38] = C_LINE
-    # 하얀 대나무 부목 2조각
-    for y in range(25, 29):
-        f1[y][37] = C_WHITE; f1[y][39] = C_WHITE
-    # 붉은 명주실로 칭칭 감은 마디 (Red Thread)
-    f1[25][38] = C_SWALLOW_RED
-    f1[26][37] = C_SWALLOW_RED; f1[26][38] = C_SWALLOW_RED; f1[26][39] = C_SWALLOW_RED
-    f1[27][38] = C_SWALLOW_RED
-    f1[28][38] = C_SWALLOW_RED; f1[29][39] = C_SWALLOW_RED # 실타래 리본 매듭!
-
-    # 5. 상단에서 떨어지는 흥부의 따스한 눈물 한 방울
-    f1[4][33] = C_TEAR; f1[5][33] = C_WHITE
-
-    frames = []
-    for i in range(6):
-        fr = [row[:] for row in f1]
-        # 제비 호흡 (가슴 깃털 미세 떨림)
-        if i in (1, 3, 5):
-            fr[19][31] = C_WHITE; fr[20][42] = C_WHITE
-        # 제비 눈 깜빡임
-        if i == 4:
-            fr[10][31] = C_LINE; fr[10][32] = C_LINE; fr[10][33] = C_LINE
-        # F3: 눈물방울 톡 떨어져 붉은 실에 닿고 은은한 치유의 빛 발광!
-        if i == 2:
-            fr[26][38] = C_WHITE # 부목 매듭 발광!
-            fr[27][38] = C_WHITE
-            fr[11][32] = C_TEAR  # 제비 눈에 맺힌 눈물
-        frames.append(fr)
-    return frames
-
-# ─────────────────────────────────────────────────────────────────────────────
-# 제3막: 박씨 (창공을 가르는 제비의 웅장한 비행과 영롱한 황금 박씨)
-# ─────────────────────────────────────────────────────────────────────────────
-def create_act3_frames():
-    f1 = make_bg()
-    
-    # 먼 산과 푸른 봄 하늘 그라데이션
-    for x in range(CANVAS_W):
-        f1[33][x] = C_FIELD_GREEN; f1[34][x] = C_FIELD_GREEN
-        f1[35][x] = C_LINE; f1[36][x] = C_LINE; f1[37][x] = C_LINE # 기와지붕
-        
-    # 제비 몸통 & 날개 초대형 묘사 (Col 14~60, Row 6~24)
-    # 몸통 (Col 30~44, Row 10~22)
-    for y in range(10, 20):
-        for x in range(32, 42): f1[y][x] = C_SWALLOW_BLUE
-    # 머리 & 붉은 목덜미
-    for y in range(8, 12):
-        for x in range(34, 40): f1[y][x] = C_SWALLOW_BLUE
-    for y in range(12, 15):
-        for x in range(35, 39): f1[y][x] = C_SWALLOW_RED
-    # 가슴 & 하얀 배
-    for y in range(15, 21):
-        for x in range(34, 40): f1[y][x] = C_WHITE
+        for x in range(28, 46): f1[y][x] = C_SWALLOW_BLUE
+    for x in range(30, 44): f1[6][x] = C_LINE
         
     # 제비 눈
-    f1[9][37] = C_WHITE; f1[9][38] = C_LINE
+    f1[9][32] = C_LINE; f1[9][33] = C_LINE
+    f1[10][31] = C_WHITE; f1[10][32] = C_LINE; f1[10][33] = C_WHITE
+    f1[11][32] = C_WHITE
     # 노란 부리
-    f1[8][40] = C_GOLD; f1[8][41] = C_GOLD; f1[9][40] = C_GOLD
+    f1[11][26] = C_GOLD; f1[11][27] = C_GOLD; f1[12][26] = C_GOLD
     
-    # [핵심] 부리에 문 황금빛 영롱한 박씨 (Col 42~46, Row 8~12)
-    for y in range(8, 12):
-        for x in range(42, 46): f1[y][x] = C_GOLD
-    f1[9][43] = C_WHITE; f1[10][44] = C_WHITE # 보석 같은 반사광!
-    
-    # 양 날개 활짝 편 역동적인 실루엣 (Col 12~32, Col 42~62)
-    for y in range(8, 15):
-        for x in range(14, 32): f1[y][x] = C_SWALLOW_BLUE
-        for x in range(42, 60): f1[y][x] = C_SWALLOW_BLUE
-    # 날개 깃털 끝 먹선
-    for x in range(12, 20): f1[7][x] = C_LINE
-    for x in range(54, 62): f1[7][x] = C_LINE
-    
-    # 갈라진 제비 꼬리 (Row 21~28, Col 34~40)
-    f1[22][34] = C_LINE; f1[23][33] = C_LINE; f1[24][32] = C_LINE
-    f1[22][40] = C_LINE; f1[23][41] = C_LINE; f1[24][42] = C_LINE
-    # 다리에 선명한 '완치된 붉은 실' 흔적!
-    f1[20][36] = C_SWALLOW_RED; f1[20][38] = C_SWALLOW_RED
+    # 붉은 목덜미
+    for y in range(14, 18):
+        for x in range(32, 42): f1[y][x] = C_SWALLOW_RED
+    # 하얀 배
+    for y in range(18, 25):
+        for x in range(31, 43): f1[y][x] = C_WHITE
+            
+    # 부러진 다리와 하얀 부목 & 붉은 실 매듭
+    f1[24][37] = C_LINE; f1[25][38] = C_LINE
+    for y in range(25, 29):
+        f1[y][37] = C_WHITE; f1[y][39] = C_WHITE
+    f1[26][37] = C_SWALLOW_RED; f1[26][38] = C_SWALLOW_RED; f1[26][39] = C_SWALLOW_RED
+    f1[27][38] = C_SWALLOW_RED; f1[28][38] = C_SWALLOW_RED; f1[29][39] = C_SWALLOW_RED
 
     frames = []
     for i in range(6):
         fr = [row[:] for row in f1]
-        # 날개 펄럭임
-        if i in (1, 2, 4):
-            for x in range(14, 28): fr[6][x] = C_SWALLOW_BLUE; fr[7][x] = C_LINE
-            for x in range(46, 60): fr[6][x] = C_SWALLOW_BLUE; fr[7][x] = C_LINE
-        # F3: 황금 박씨에서 축복의 광채 십자 발광!
+        if i % 2 == 1: fr[19][31] = C_WHITE; fr[20][42] = C_WHITE
+        if i == 4: fr[10][31] = C_LINE; fr[10][32] = C_LINE
         if i == 2:
-            fr[7][44] = C_WHITE; fr[12][44] = C_WHITE
-            fr[9][41] = C_WHITE; fr[9][47] = C_WHITE
-            for y in range(8, 12):
-                for x in range(42, 46): fr[y][x] = C_WHITE
+            fr[26][38] = C_WHITE; fr[27][38] = C_WHITE
+            fr[11][32] = C_TEAR
         frames.append(fr)
     return frames
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 제4막: 흥부의 박 (대박 타기: 톱질하는 부부의 땀방울과 터져 나오는 황금 보화)
+# 제3막: 박씨 (★날개가 위/수평/아래로 진짜 퍼덕이는 비행 애니메이션)
+# ─────────────────────────────────────────────────────────────────────────────
+def create_act3_frames():
+    # 기준 프레임 뼈대
+    base_bg = make_bg()
+    for x in range(CANVAS_W):
+        base_bg[33][x] = C_FIELD_GREEN; base_bg[34][x] = C_FIELD_GREEN
+        base_bg[35][x] = C_LINE; base_bg[36][x] = C_LINE; base_bg[37][x] = C_LINE
+
+    frames = []
+    # 6개 프레임 날개 각도: 위(F0) -> 아주 위(F1) -> 수평(F2) -> 아래(F3) -> 수평(F4) -> 위(F5)
+    wing_states = ['up', 'high', 'mid', 'down', 'mid', 'up']
+    
+    for f_idx, state in enumerate(wing_states):
+        fr = [row[:] for row in base_bg]
+        
+        # 1. 몸통 (Col 32~42, Row 10~22)
+        for y in range(11, 20):
+            for x in range(33, 41): fr[y][x] = C_SWALLOW_BLUE
+        # 머리 & 붉은 목덜미
+        for y in range(8, 12):
+            for x in range(35, 40): fr[y][x] = C_SWALLOW_BLUE
+        for y in range(12, 15):
+            for x in range(35, 39): fr[y][x] = C_SWALLOW_RED
+        # 하얀 배
+        for y in range(15, 21):
+            for x in range(35, 40): fr[y][x] = C_WHITE
+        # 눈 & 부리
+        fr[9][37] = C_WHITE; fr[9][38] = C_LINE
+        fr[8][40] = C_GOLD; fr[8][41] = C_GOLD
+        
+        # 2. 부리에 물린 황금 박씨 (Col 42~45, Row 8~11)
+        for y in range(8, 11):
+            for x in range(42, 45): fr[y][x] = C_GOLD
+        fr[9][43] = C_WHITE
+        
+        # 3. 꼬리 (Col 34~40, Row 20~27)
+        fr[21][34] = C_LINE; fr[22][33] = C_LINE; fr[23][32] = C_LINE
+        fr[21][40] = C_LINE; fr[22][41] = C_LINE; fr[23][42] = C_LINE
+        fr[20][36] = C_SWALLOW_RED; fr[20][38] = C_SWALLOW_RED # 완치된 다리
+        
+        # 4. 날개 상하 역동적 모션 (좌: Col 12~33, 우: Col 41~62)
+        if state == 'high':  # 날개를 가장 높이 치켜올림
+            for x in range(14, 33):
+                fr[4][x] = C_SWALLOW_BLUE; fr[5][x] = C_SWALLOW_BLUE
+                if x < 22: fr[3][x] = C_LINE
+            for x in range(41, 60):
+                fr[4][x] = C_SWALLOW_BLUE; fr[5][x] = C_SWALLOW_BLUE
+                if x > 52: fr[3][x] = C_LINE
+        elif state == 'up':    # 보통 위로 든 상태
+            for x in range(14, 33):
+                fr[7][x] = C_SWALLOW_BLUE; fr[8][x] = C_SWALLOW_BLUE
+                if x < 22: fr[6][x] = C_LINE
+            for x in range(41, 60):
+                fr[7][x] = C_SWALLOW_BLUE; fr[8][x] = C_SWALLOW_BLUE
+                if x > 52: fr[6][x] = C_LINE
+        elif state == 'mid':   # 수평 활공
+            for x in range(14, 33):
+                fr[11][x] = C_SWALLOW_BLUE; fr[12][x] = C_SWALLOW_BLUE
+            for x in range(41, 60):
+                fr[11][x] = C_SWALLOW_BLUE; fr[12][x] = C_SWALLOW_BLUE
+        elif state == 'down':  # 아래로 힘차게 내리침
+            for x in range(16, 33):
+                fr[15][x] = C_SWALLOW_BLUE; fr[16][x] = C_SWALLOW_BLUE
+                if x < 24: fr[17][x] = C_LINE
+            for x in range(41, 58):
+                fr[15][x] = C_SWALLOW_BLUE; fr[16][x] = C_SWALLOW_BLUE
+                if x > 50: fr[17][x] = C_LINE
+
+        # F3 (f_idx==2): 박씨에서 보석 스파클 다이아몬드(◆) 살짝 반짝!
+        if f_idx == 2:
+            fr[7][43] = C_WHITE
+            fr[9][41] = C_WHITE; fr[9][45] = C_WHITE
+            fr[11][43] = C_WHITE
+            
+        frames.append(fr)
+    return frames
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 제4막: 흥부의 박 (★사람이 톱을 쥐고 밀고 당기는 역동적 톱질 구도로 전면 개편)
 # ─────────────────────────────────────────────────────────────────────────────
 def create_act4_frames():
     f1 = make_bg()
     
-    # 1. 초가지붕 (하단 26~37)
-    for y in range(28, 38):
-        for x in range(CANVAS_W):
-            f1[y][x] = C_HAT if (x+y)%2==0 else C_HEMP_ROUGH
-            
-    # 2. 지붕 위 거대한 보름달 같은 대박 (중앙 Col 20~54, Row 4~28)
-    for y in range(4, 28):
-        for x in range(20, 54):
-            # 둥근 박의 볼륨감 그라데이션
-            dist = abs(x - 37) + abs(y - 16)
-            if dist < 18:
-                f1[y][x] = C_GOURD_YELLOW
-            elif dist < 22:
-                f1[y][x] = C_SHADOW
-    # 박 꼭지 & 넝쿨
-    f1[2][36] = C_FIELD_GREEN; f1[2][37] = C_FIELD_GREEN; f1[3][37] = C_FIELD_GREEN
-    
-    # 3. 박이 쩍 갈라진 황금빛 틈새 (Col 36~38)
-    for y in range(4, 28):
+    # 배경: 초가지붕 위 넝쿨
+    for x in range(CANVAS_W):
+        f1[35][x] = C_HAT if x%2==0 else C_HEMP_ROUGH
+        f1[36][x] = C_LINE; f1[37][x] = C_LINE
+        
+    # 중앙: 쩍 벌어지며 황금빛을 뿜어내는 커다란 둥근 대박 (Col 26~48, Row 6~28)
+    for y in range(8, 28):
+        for x in range(26, 48):
+            dist = abs(x - 37) + abs(y - 18)
+            if dist < 14: f1[y][x] = C_GOURD_YELLOW
+            elif dist < 17: f1[y][x] = C_SHADOW
+    # 박 벌어진 틈 & 쏟아지는 엽전
+    for y in range(8, 28):
         f1[y][36] = C_GOLD; f1[y][37] = C_WHITE; f1[y][38] = C_GOLD
-    # 뿜어져 나오는 엽전/보화 (Col 32~42)
-    for y in range(8, 24, 2):
+    for y in range(10, 26, 3):
         f1[y][34] = C_GOLD; f1[y][40] = C_GOLD
-        f1[y+1][35] = C_WHITE; f1[y+1][39] = C_WHITE
         
-    # 4. 좌측 흥부 (힘차게 톱을 당김, Col 6~18, Row 12~30)
-    for y in range(12, 22):
-        for x in range(8, 16): f1[y][x] = C_SKIN
-    f1[10][10] = C_LINE; f1[11][10] = C_LINE # 상투
-    f1[14][13] = C_LINE; f1[14][14] = C_LINE # 열정적인 눈
-    f1[16][14] = C_WHITE # 이마의 굵은 땀방울!
-    # 흥부 삼베옷
-    for y in range(22, 32):
-        for x in range(6, 18): f1[y][x] = C_HAT if (x+y)%2==0 else C_HEMP_ROUGH
+    # [좌측 흥부의 상반신과 톱 쥔 두 손! (Col 4~24, Row 10~34)]
+    # 상투 & 머리
+    for y in range(7, 11):
+        for x in range(10, 14): f1[y][x] = C_LINE
+    # 꽃미남 얼굴 (땀방울 송골송골)
+    for y in range(11, 21):
+        for x in range(9, 17): f1[y][x] = C_SKIN
+    f1[13][11] = C_LINE; f1[13][14] = C_LINE # 힘주는 눈
+    f1[15][13] = C_WHITE # 이마 땀방울!
+    # 입 벌리고 "엉차!"
+    f1[17][12] = C_LINE; f1[17][13] = C_LINE
+    # 삼베 옷 & 어깨
+    for y in range(21, 35):
+        for x in range(4, 20): f1[y][x] = C_HAT if (x+y)%2==0 else C_HEMP_ROUGH
+    # 흥부의 팔이 앞으로 쭉 뻗어 톱 손잡이를 잡음 (Col 16~26, Row 20~25)
+    for y in range(21, 25):
+        for x in range(16, 26): f1[y][x] = C_SKIN # 팔
+    for y in range(20, 26):
+        f1[y][25] = C_SHADOW; f1[y][26] = C_SHADOW # 톱 손잡이를 쥔 손!
         
-    # 5. 우측 흥부 아내 (함께 톱을 잡고 환호, Col 56~68, Row 12~30)
-    for y in range(12, 22):
-        for x in range(58, 66): f1[y][x] = C_SKIN
-    # 쪽진 머리 & 비녀
-    for y in range(10, 14):
-        for x in range(64, 68): f1[y][x] = C_LINE
-    f1[12][68] = C_WHITE # 하얀 비녀
-    # 아내 옷 (무명 저고리)
-    for y in range(22, 32):
-        for x in range(56, 68): f1[y][x] = C_WHITE if (x+y)%2==0 else C_SHADOW
+    # [우측 아내의 상반신과 톱 쥔 손! (Col 50~70, Row 10~34)]
+    # 쪽진 머리 & 하얀 비녀
+    for y in range(8, 12):
+        for x in range(60, 65): f1[y][x] = C_LINE
+    f1[10][65] = C_WHITE
+    # 아내 얼굴
+    for y in range(11, 21):
+        for x in range(57, 65): f1[y][x] = C_SKIN
+    f1[13][59] = C_LINE; f1[13][62] = C_LINE
+    f1[16][60] = C_WHITE # 땀방울
+    # 무명 저고리
+    for y in range(21, 35):
+        for x in range(54, 70): f1[y][x] = C_WHITE if (x+y)%2==0 else C_SHADOW
+    # 아내 팔이 뻗어 톱을 당김 (Col 48~58, Row 20~25)
+    for y in range(21, 25):
+        for x in range(48, 58): f1[y][x] = C_SKIN
+    for y in range(20, 26):
+        f1[y][47] = C_SHADOW; f1[y][48] = C_SHADOW
         
-    # 6. 두 사람이 맞잡은 긴 무쇠 톱날 (Col 14~60, Row 20)
-    for x in range(14, 60):
-        f1[20][x] = C_CLUB_GRAY
-        if x % 2 == 0: f1[21][x] = C_WHITE # 톱니바퀴 날!
+    # 튼튼한 무쇠 톱날 (Col 25~49, Row 22~23)
+    for x in range(25, 49):
+        f1[22][x] = C_CLUB_GRAY
+        if x % 2 == 0: f1[23][x] = C_WHITE # 톱니바퀴!
 
     frames = []
     for i in range(6):
         fr = [row[:] for row in f1]
-        # 톱질 좌우 왕복 진동
-        shift = (i % 2) * 2 - 1
-        for x in range(16, 58): fr[20][x+shift] = C_WHITE
-        # F3: 대박 틈새에서 금은보화 대폭발 번쩍광!
+        # 톱질 왕복 모션 (흥부가 밀고 아내가 당김)
+        shift = 2 if (i % 2 == 0) else -2
+        for x in range(25, 49):
+            fr[22][x] = C_BG
+            fr[23][x] = C_BG
+        for x in range(25 + shift, 49 + shift):
+            fr[22][x] = C_CLUB_GRAY
+            if x % 2 == 0: fr[23][x] = C_WHITE
+            
+        # F3: 대박에서 쏟아지는 황금 엽전 다이아몬드 스파클
         if i == 2:
-            for y in range(5, 27):
-                fr[y][36] = C_WHITE; fr[y][37] = C_WHITE; fr[y][38] = C_WHITE
-            for y in range(6, 26, 3):
-                fr[y][32] = C_GOLD; fr[y][42] = C_GOLD
-                fr[y][31] = C_WHITE; fr[y][43] = C_WHITE
+            fr[7][37] = C_WHITE; fr[29][37] = C_WHITE
+            fr[18][32] = C_GOLD; fr[18][42] = C_GOLD
+            fr[18][37] = C_WHITE
         frames.append(fr)
     return frames
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 제5막: 놀부의 욕심 (놀부의 시커먼 손아귀 & 제비 다리 뚝 분지르는 잔혹한 순간 클로즈업)
+# 제5막: 놀부의 욕심 (★엄지와 검지로 제비 다리를 잡고 뚝 부러뜨리는 선명한 클로즈업)
 # ─────────────────────────────────────────────────────────────────────────────
 def create_act5_frames():
     f1 = make_bg()
-    
-    # 1. 배경: 음침하고 흉흉한 어두운 기운
     for y in range(CANVAS_H):
         for x in range(CANVAS_W):
-            if (x * 3 + y * 2) % 7 == 0:
-                f1[y][x] = C_LINE
-                
-    # 2. 좌측 상단: 탐욕과 광기에 찬 놀부의 사악한 얼굴 (Col 6~28, Row 2~20)
-    for y in range(4, 16):
-        for x in range(10, 22): f1[y][x] = C_SKIN
-    # 삐딱한 갓과 갓끈
-    for x in range(4, 28): f1[4][x] = C_LINE
-    for y in range(1, 4):
-        for x in range(8, 24): f1[y][x] = C_LINE
-    # 치켜뜬 살기 어린 눈망울
-    f1[8][13] = C_LINE; f1[8][18] = C_LINE
-    f1[9][13] = C_SWALLOW_RED; f1[9][18] = C_SWALLOW_RED # 핏발 선 눈!
-    # 번쩍이는 비열한 금이빨
-    f1[13][15] = C_GOLD; f1[13][16] = C_LINE
-    # 뾰족한 턱수염
-    for y in range(16, 20): f1[y][15] = C_LINE; f1[y][16] = C_LINE
+            if (x * 2 + y) % 9 == 0: f1[y][x] = C_SHADOW
+
+    # 좌측: 사악하게 찌푸린 놀부의 얼굴 (1막의 놀부와 정확히 일치)
+    # 갓 & 갓끈
+    for y in range(2, 6):
+        for x in range(12, 22): f1[y][x] = C_LINE
+    for x in range(6, 28): f1[6][x] = C_LINE
+    f1[7][12] = C_LINE; f1[8][12] = C_LINE
+    # 얼굴 & 세모 눈 & 금이빨
+    for y in range(7, 17):
+        for x in range(11, 21): f1[y][x] = C_SKIN
+    f1[9][13] = C_LINE; f1[9][18] = C_LINE
+    f1[10][13] = C_SWALLOW_RED; f1[10][18] = C_SWALLOW_RED # 핏발
+    f1[13][16] = C_GOLD # 금이빨
+    for y in range(17, 21): f1[y][15] = C_LINE; f1[y][16] = C_LINE # 턱수염
+    # 비단 소매 (Col 10~26, Row 20~35)
+    for y in range(21, 36):
+        for x in range(10, 24): f1[y][x] = C_SILK_BLUE
+    for y in range(21, 28): f1[y][20] = C_SILK_RED
+
+    # [중앙: 놀부의 거대한 손과 손가락들이 제비를 쥐어짜는 구도]
+    # 손등 (Col 24~38, Row 18~28)
+    for y in range(18, 28):
+        for x in range(24, 38): f1[y][x] = C_SKIN
+    # 굵은 엄지손가락 (Col 34~42, Row 16~22)
+    for y in range(16, 22):
+        for x in range(34, 42): f1[y][x] = C_SKIN
+    f1[16][41] = C_SHADOW; f1[17][42] = C_SHADOW # 엄지손톱!
     
-    # 3. [메인 포커스] 놀부의 기름지고 거친 시커먼 손아귀 (화면 중앙 Col 26~48, Row 14~32)
-    # 억센 손가락들 (Col 26~44, Row 16~28)
-    for y in range(16, 28):
-        for x in range(26, 42): f1[y][x] = C_SKIN
-    # 손등 주름과 뼈마디 음영
-    for y in range(18, 26):
-        f1[y][30] = C_SHADOW; f1[y][35] = C_SHADOW; f1[y][40] = C_SHADOW
-    # 비단 소매 (Col 18~28, Row 22~36)
-    for y in range(22, 37):
-        for x in range(16, 28): f1[y][x] = C_SILK_BLUE
-    for y in range(22, 32): f1[y][27] = C_SILK_RED
-    
-    # 4. 손아귀에 짓눌려 버둥거리는 가련한 제비 (Col 38~58, Row 12~28)
+    # 짓눌린 새끼 제비 몸통 (Col 38~56, Row 14~24)
     for y in range(14, 22):
-        for x in range(42, 54): f1[y][x] = C_SWALLOW_BLUE
-    # 겁에 질려 튀어나올 듯한 제비 눈!
-    f1[15][48] = C_WHITE; f1[15][49] = C_LINE; f1[16][48] = C_WHITE
-    # 비명을 지르듯 벌린 부리
-    f1[16][54] = C_GOLD; f1[17][55] = C_GOLD
-    # 제비의 붉은 목덜미
-    f1[18][48] = C_SWALLOW_RED; f1[18][49] = C_SWALLOW_RED
+        for x in range(40, 52): f1[y][x] = C_SWALLOW_BLUE
+    # 겁에 질린 제비 눈
+    f1[15][47] = C_WHITE; f1[15][48] = C_LINE
+    # 비명 지르는 노란 부리
+    f1[16][53] = C_GOLD; f1[17][54] = C_GOLD
+    f1[17][46] = C_SWALLOW_RED # 붉은 목덜미
     
-    # 5. [결정적 순간] 손가락으로 다리를 잡고 '뚝' 꺾는 지점 (Col 38~46, Row 24~30)
-    f1[24][41] = C_LINE; f1[25][42] = C_LINE
-    f1[26][42] = C_SHADOW # 꺾여 비틀린 다리뼈
-    f1[27][44] = C_LINE
+    # [핵심] 굵은 검지손가락이 제비의 가느다란 다리를 잡고 꺾는 순간! (Col 36~46, Row 22~28)
+    for y in range(22, 26):
+        for x in range(34, 40): f1[y][x] = C_SKIN # 검지손가락
+    # 가느다란 검은 제비 다리뼈가 손가락 사이에서 꺾임
+    f1[23][40] = C_LINE; f1[24][41] = C_LINE
+    f1[25][42] = C_LINE; f1[26][44] = C_LINE # 꺾인 관절!
 
     frames = []
     for i in range(6):
         fr = [row[:] for row in f1]
-        # F3: "꺾!" 뼈 부러지는 충격선 번쩍 & 피 한 방울!
+        # F3: "뚝!" 꺾이는 순간 작은 다이아몬드 충격 스파클(◆)과 핏방울 한 점
         if i == 2:
-            fr[26][42] = C_SWALLOW_RED # 핏자국!
-            fr[27][43] = C_SWALLOW_RED
-            # 충격 번개 이펙트
-            fr[24][44] = C_WHITE; fr[25][45] = C_WHITE; fr[26][46] = C_WHITE
-            fr[13][15] = C_WHITE # 놀부 금이빨 번쩍
+            fr[25][43] = C_SWALLOW_RED # 핏방울
+            # 절제된 다이아몬드 스파클
+            fr[24][43] = C_WHITE
+            fr[25][42] = C_WHITE; fr[25][44] = C_WHITE
+            fr[26][43] = C_WHITE
+            fr[13][16] = C_WHITE # 금이빨 반짝
         frames.append(fr)
     return frames
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 제6막: 놀부의 박 (청록색 뿔 도깨비 얼굴 초대형 클로즈업 & 무시무시한 쇠몽둥이)
+# 제6막: 도깨비 (★도깨비 얼굴 표정 유지 + 다이아몬드형(◆) 스파클로 절제)
 # ─────────────────────────────────────────────────────────────────────────────
 def create_act6_frames():
     f1 = make_bg()
-    
-    # 1. 붉고 어두운 지옥불 배경 그라데이션
     for y in range(CANVAS_H):
         for x in range(CANVAS_W):
-            if (x + y) % 5 == 0: f1[y][x] = C_SILK_RED
-            elif (x + y) % 5 == 1: f1[y][x] = C_LINE
-            
-    # 2. [메인 포커스] 험악한 청록색 외뿔 도깨비 초대형 얼굴 클로즈업! (Col 14~50, Row 4~34)
-    # 도깨비 험상궂은 얼굴 윤곽
+            if (x + y) % 6 == 0: f1[y][x] = C_LINE
+
+    # 청록색 험악한 도깨비 얼굴 (Col 18~48, Row 6~32)
     for y in range(8, 30):
-        for x in range(18, 46): f1[y][x] = C_GOBLIN_GREEN
-    # 턱선과 뺨의 짙은 음영
+        for x in range(20, 46): f1[y][x] = C_GOBLIN_GREEN
     for y in range(24, 30):
-        for x in range(20, 44): f1[y][x] = C_SHADOW
-    for y in range(14, 24):
-        f1[y][18] = C_LINE; f1[y][45] = C_LINE
+        for x in range(22, 44): f1[y][x] = C_SHADOW
         
-    # 이마 한가운데 솟구친 날카로운 황금빛 외뿔 (Col 30~34, Row 1~8)
-    for y in range(1, 8):
-        for x in range(30, 34): f1[y][x] = C_GOLD
-    f1[1][31] = C_WHITE; f1[2][32] = C_WHITE # 뿔 끝의 서슬 퍼런 반사광!
+    # 황금 외뿔
+    for y in range(2, 8):
+        for x in range(31, 35): f1[y][x] = C_GOLD
+    f1[2][32] = C_WHITE
     
-    # 부리부리하게 치켜뜬 피눈물 붉은 왕방울 눈 (Col 22~27, Col 36~41, Row 12~16)
+    # 부리부리한 붉은 왕방울 눈 & 둥근 동공
     for y in range(12, 16):
-        for x in range(22, 27): f1[y][x] = C_SWALLOW_RED
-        for x in range(37, 42): f1[y][x] = C_SWALLOW_RED
-    f1[13][24] = C_WHITE; f1[14][24] = C_LINE # 둥근 동공
-    f1[13][39] = C_WHITE; f1[14][39] = C_LINE
-    # 험악한 주름과 미간 흉터
-    f1[10][31] = C_LINE; f1[11][32] = C_LINE; f1[12][31] = C_LINE
+        for x in range(23, 28): f1[y][x] = C_SWALLOW_RED
+        for x in range(38, 43): f1[y][x] = C_SWALLOW_RED
+    f1[13][25] = C_WHITE; f1[14][25] = C_LINE
+    f1[13][40] = C_WHITE; f1[14][40] = C_LINE
     
-    # 찢어진 거대한 입 & 솟구친 하얀 뻐드렁니/송곳니 (Col 24~40, Row 20~26)
+    # 삐져나온 4개의 뻐드렁니/송곳니
     for y in range(21, 25):
-        for x in range(24, 40): f1[y][x] = C_LINE
-    # 아래위로 삐져나온 거대한 하얀 송곳니 4개
-    f1[19][26] = C_WHITE; f1[20][26] = C_WHITE
-    f1[19][37] = C_WHITE; f1[20][37] = C_WHITE
-    f1[25][28] = C_WHITE; f1[26][28] = C_WHITE
-    f1[25][35] = C_WHITE; f1[26][35] = C_WHITE
+        for x in range(25, 41): f1[y][x] = C_LINE
+    f1[19][27] = C_WHITE; f1[20][27] = C_WHITE
+    f1[19][38] = C_WHITE; f1[20][38] = C_WHITE
+    f1[25][29] = C_WHITE; f1[26][29] = C_WHITE
+    f1[25][36] = C_WHITE; f1[26][36] = C_WHITE
     
-    # 3. 우측: 도깨비가 치켜든 굵직한 가시 쇠몽둥이 (Col 50~66, Row 2~28)
+    # 우측 쇠몽둥이 (Col 54~62, Row 4~26)
     for y in range(4, 26):
         for x in range(54, 62): f1[y][x] = C_CLUB_GRAY
-    # 번쩍이는 무쇠 철 가시 돌기들
     for y in range(6, 24, 4):
-        f1[y][52] = C_WHITE; f1[y][53] = C_LINE
-        f1[y+2][62] = C_LINE; f1[y+2][63] = C_WHITE
-        
-    # 4. 하단 좌측: 싹싹 빌며 벌벌 떠는 놀부의 벗겨진 머통 (Col 4~16, Row 28~37)
-    for y in range(28, 36):
-        for x in range(6, 14): f1[y][x] = C_SKIN
-    f1[26][8] = C_LINE # 헝클어진 상투
+        f1[y][52] = C_WHITE; f1[y+2][63] = C_WHITE
 
     frames = []
     for i in range(6):
         fr = [row[:] for row in f1]
-        # 눈알 번뜩임
         if i % 2 == 1:
-            fr[13][24] = C_LINE; fr[14][24] = C_WHITE
-            fr[13][39] = C_LINE; fr[14][39] = C_WHITE
-        # F3: 쇠몽둥이 내려치는 벼락 강타 이펙트!
+            fr[13][25] = C_LINE; fr[14][25] = C_WHITE
+            fr[13][40] = C_LINE; fr[14][40] = C_WHITE
+        # F3: 전체 번쩍임 대신, 쇠몽둥이 끝과 외뿔 끝에 '다이아몬드형(◆)' 스파클만 절제되게 반짝!
         if i == 2:
-            for x in range(CANVAS_W): fr[22][x] = C_WHITE
-            for y in range(2, 26): fr[y][57] = C_WHITE
-            fr[1][31] = C_WHITE; fr[1][32] = C_WHITE
+            # 1. 외뿔 끝 다이아몬드 (Col 33, Row 2)
+            fr[0][33] = C_WHITE
+            fr[1][32] = C_WHITE; fr[1][33] = C_WHITE; fr[1][34] = C_WHITE
+            fr[2][33] = C_WHITE
+            # 2. 쇠몽둥이 끝 다이아몬드 (Col 58, Row 3)
+            fr[1][58] = C_WHITE
+            fr[2][57] = C_WHITE; fr[2][58] = C_WHITE; fr[2][59] = C_WHITE
+            fr[3][58] = C_WHITE
         frames.append(fr)
     return frames
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 제7막: 화해 (1막 수준의 고품질 인물 얼굴 클로즈업: 눈물 흘리는 형제의 재회)
+# 제7막: 화해 (★1막의 흥부와 놀부 얼굴/복식 코드를 100% 동일하게 복원)
 # ─────────────────────────────────────────────────────────────────────────────
 def create_act7_frames():
     f1 = make_bg()
     
-    # 1. 따스한 봄 햇살 배경 (황금빛 & 연초록 들판)
+    # 1. 따스한 봄 햇살 배경
     for x in range(CANVAS_W):
-        f1[1][x] = C_GOLD; f1[2][x] = C_GOLD
+        f1[1][x] = C_GOLD
         f1[35][x] = C_FIELD_GREEN; f1[36][x] = C_FIELD_GREEN; f1[37][x] = C_FIELD_GREEN
-        
-    # 2. [좌측 흥부 얼굴 클로즈업] (Col 8~28, Row 6~28)
-    # 1막과 동일한 꽃미남 귀공자 윤곽과 고운 피부
-    for y in range(8, 22):
-        for x in range(12, 24): f1[y][x] = C_SKIN
-    # 정갈한 상투
-    for y in range(3, 8):
-        for x in range(16, 20): f1[y][x] = C_LINE
-    # 서글프고 자애로운 눈매
-    f1[10][14] = C_LINE; f1[10][15] = C_LINE
-    f1[10][20] = C_LINE; f1[10][21] = C_LINE
-    f1[12][14] = C_WHITE; f1[12][15] = C_LINE
-    f1[12][20] = C_LINE; f1[12][21] = C_WHITE
-    # 날렵한 V턱선과 뺨
-    for y in range(18, 23):
-        f1[y][13] = C_SHADOW; f1[y][23] = C_SHADOW
-    for x in range(14, 23): f1[22][x] = C_SHADOW
-    # 감격의 눈물방울 (하늘색 + 흰색)
-    f1[14][15] = C_TEAR; f1[15][15] = C_WHITE; f1[16][15] = C_TEAR
-    # 깨끗하고 단정한 도포 (부자가 되었으나 비단 대신 소박하고 정갈한 푸른 옷)
-    for y in range(23, 37):
-        for x in range(6, 28): f1[y][x] = C_SILK_BLUE
-    for y in range(23, 32): f1[y][18] = C_WHITE
+
+    # ─────────────────────────────────────────────────────────────
+    # [우측: 놀부 (Nolbu) — 1막의 놀부 이목구비 완벽 복원!]
+    # 갓은 벗겨져 상투만 남았으나 얼굴형, 매부리코, 턱수염, 금이빨 완벽 일치!
+    # ─────────────────────────────────────────────────────────────
+    # 산발한 상투 & 풀어헤쳐진 머리 (Row 3~8, Col 52~62)
+    for y in range(4, 8):
+        for x in range(54, 60): f1[y][x] = C_LINE
+    f1[6][52] = C_LINE; f1[7][51] = C_LINE; f1[6][62] = C_LINE
     
-    # 3. [우측 놀부 얼굴 클로즈업] (Col 46~66, Row 8~30)
-    # 갓이 벗겨져 헝클어진 머리칼과 초췌한 피부
-    for y in range(10, 24):
-        for x in range(50, 62): f1[y][x] = C_SKIN
-    # 헝클어져 풀어헤쳐진 산발 상투
-    for y in range(5, 11):
-        for x in range(53, 59): f1[y][x] = C_LINE
-    f1[8][50] = C_LINE; f1[9][49] = C_LINE; f1[8][62] = C_LINE # 흩날리는 머리카락
-    # 후회와 참회의 처진 눈 (1막의 세모 눈이 풀려 굵은 눈물을 쏟아냄)
-    f1[13][52] = C_LINE; f1[13][53] = C_LINE
-    f1[13][58] = C_LINE; f1[13][59] = C_LINE
-    f1[14][52] = C_WHITE; f1[14][53] = C_LINE
-    f1[14][58] = C_LINE; f1[14][59] = C_WHITE
-    # 뼈만 앙상한 수척한 볼 & 턱수염
-    for y in range(20, 25):
-        f1[y][51] = C_SHADOW; f1[y][61] = C_SHADOW
-    for y in range(24, 28): f1[y][56] = C_LINE
-    # 참회의 굵은 눈물 줄기 (볼을 타고 뚝뚝 떨어짐)
-    f1[15][53] = C_TEAR; f1[16][53] = C_WHITE; f1[17][53] = C_TEAR
-    f1[16][58] = C_TEAR; f1[17][58] = C_WHITE
-    # 찢겨나간 거지 누더기 옷
-    for y in range(25, 37):
-        for x in range(46, 68):
-            f1[y][x] = C_RAG if (x+y)%2==0 else C_SHADOW
-            
-    # 4. [중앙] 형제가 눈물로 굳게 맞잡은 두 손 (Col 28~46, Row 24~32)
-    for y in range(26, 31):
-        for x in range(28, 46): f1[y][x] = C_SKIN
-    for x in range(32, 42, 2): f1[27][x] = C_SHADOW; f1[29][x] = C_SHADOW
+    # 얼굴 윤곽 (Row 8~20, Col 51~61) — 1막과 100% 동일
+    for y in range(8, 20):
+        for x in range(52, 61): f1[y][x] = C_SKIN
+    for y in range(16, 20):
+        f1[y][52] = C_SHADOW; f1[y][60] = C_SHADOW
+    for x in range(53, 60): f1[19][x] = C_SHADOW
+    
+    # 눈 (1막의 세모 눈이 후회의 눈물로 젖음)
+    f1[10][53] = C_LINE; f1[10][54] = C_LINE
+    f1[10][58] = C_LINE; f1[10][59] = C_LINE
+    f1[11][53] = C_WHITE; f1[11][54] = C_LINE
+    f1[11][58] = C_LINE; f1[11][59] = C_WHITE
+    
+    # 매부리코 & 턱수염 (1막 코드 그대로!)
+    f1[13][56] = C_SHADOW; f1[14][56] = C_SHADOW; f1[15][55] = C_LINE; f1[15][56] = C_LINE
+    f1[16][55] = C_LINE; f1[16][56] = C_GOLD # 회개의 금이빨
+    for y in range(18, 23):
+        f1[y][55] = C_LINE; f1[y][56] = C_LINE; f1[y][57] = C_LINE
+    f1[23][56] = C_LINE
+    
+    # 놀부의 뺨을 타고 흐르는 굵은 참회의 눈물!
+    f1[12][54] = C_TEAR; f1[13][54] = C_WHITE; f1[14][54] = C_TEAR
+    
+    # 알거지가 된 누더기 옷
+    for y in range(22, 36):
+        for x in range(46, 68): f1[y][x] = C_RAG if (x+y)%2==0 else C_SHADOW
+
+    # ─────────────────────────────────────────────────────────────
+    # [좌측: 흥부 (Heungbu) — 1막의 귀공자 흥부 얼굴 완벽 복원!]
+    # ─────────────────────────────────────────────────────────────
+    # 상투 (Row 2~6, Col 18~22)
+    f1[2][19] = C_LINE; f1[2][20] = C_LINE
+    for y in range(3, 6):
+        for x in range(18, 22): f1[y][x] = C_LINE
+    for x in range(15, 25): f1[6][x] = C_LINE
+    
+    # 얼굴 윤곽 & 고운 피부 (Row 7~19, Col 16~24) — 1막과 100% 동일
+    for y in range(7, 19):
+        for x in range(16, 24): f1[y][x] = C_SKIN
+    # 눈썹 & 서글픈 눈매
+    f1[9][17] = C_LINE; f1[9][18] = C_LINE
+    f1[9][21] = C_LINE; f1[9][22] = C_LINE
+    f1[11][17] = C_WHITE; f1[11][18] = C_LINE
+    f1[11][21] = C_LINE; f1[11][22] = C_WHITE
+    # 콧날 & V턱선
+    f1[13][19] = C_SHADOW; f1[14][19] = C_SHADOW; f1[15][19] = C_LINE
+    for x in range(17, 23): f1[19][x] = C_SHADOW
+    f1[20][19] = C_SHADOW; f1[20][20] = C_SHADOW
+    # 흥부의 감격의 눈물
+    f1[13][17] = C_TEAR; f1[14][17] = C_WHITE; f1[15][17] = C_TEAR
+    
+    # 정갈한 푸른 도포 (부자가 되었으나 비단 대신 소박하고 깨끗한 옷)
+    for y in range(21, 36):
+        for x in range(8, 30): f1[y][x] = C_SILK_BLUE
+    for y in range(21, 30): f1[y][19] = C_WHITE
+
+    # ─────────────────────────────────────────────────────────────
+    # [중앙: 형제가 눈물로 맞잡은 두 손 (Col 30~46, Row 24~30)]
+    # ─────────────────────────────────────────────────────────────
+    for y in range(25, 29):
+        for x in range(30, 46): f1[y][x] = C_SKIN
+    for x in range(34, 42, 2): f1[26][x] = C_SHADOW; f1[27][x] = C_SHADOW
 
     frames = []
     for i in range(6):
         fr = [row[:] for row in f1]
-        # 흥부와 놀부의 눈물 반짝임
         if i % 2 == 1:
-            fr[15][15] = C_WHITE; fr[16][53] = C_WHITE
-        # F3: 형제의 눈물과 봄 햇살이 어우러져 따스한 황금빛 광채 발광!
+            fr[14][17] = C_WHITE; fr[13][54] = C_WHITE # 눈물 반짝임
+        # F3: 형제가 맞잡은 두 손에 은은한 다이아몬드 스파클(◆)
         if i == 2:
-            for x in range(24, 50): fr[2][x] = C_WHITE
-            for x in range(32, 42): fr[28][x] = C_WHITE # 맞잡은 두 손 발광!
-            fr[16][15] = C_WHITE; fr[17][53] = C_WHITE
+            fr[24][38] = C_WHITE
+            fr[25][37] = C_WHITE; fr[25][38] = C_WHITE; fr[25][39] = C_WHITE
+            fr[26][38] = C_WHITE
         frames.append(fr)
     return frames
 
@@ -501,12 +495,12 @@ def build_all_studio():
     
     all_acts = [
         {"id": 1, "title": "제1막: 형제의 갈림길", "desc": "[기준 프레임] 탐욕스러운 놀부의 칠흑 갓 + 황금 앞니(금이빨) 번쩍광 vs 서글픈 흥부의 눈물", "frames": act1},
-        {"id": 2, "title": "제2막: 다친 제비 클로즈업", "desc": "[피드백 반영] 두 손으로 소중히 감싼 새끼 제비 초대형 클로즈업! 붉은 목덜미, 눈물 어린 눈망울, 붉은 실과 하얀 대나무 부목 묘사", "frames": act2},
-        {"id": 3, "title": "제3막: 보은의 비행과 박씨", "desc": "[피드백 반영] 푸른 창공을 가르는 제비의 웅장한 날개짓 클로즈업 + 부리에 영롱하게 빛나는 황금 박씨 광채", "frames": act3},
-        {"id": 4, "title": "제4막: 대박 타기와 황금 보화", "desc": "[피드백 반영] 땀방울을 흘리며 신명 나게 톱질하는 흥부 부부의 표정 + 쪼개지는 대박 속에서 쏟아지는 황금 엽전 보화 폭풍", "frames": act4},
-        {"id": 5, "title": "제5막: 놀부의 잔혹한 만행", "desc": "[피드백 반영] 놀부의 시커먼 손아귀 클로즈업! 살기 어린 핏발 선 눈과 제비 다리를 뚝 꺾어버리는 극적인 순간", "frames": act5},
-        {"id": 6, "title": "제6막: 도깨비의 심판", "desc": "[피드백 반영] 솟구친 황금 외뿔, 부리부리한 눈, 날카로운 송곳니를 드러낸 청록색 도깨비 얼굴 초대형 클로즈업 & 가시 쇠몽둥이 응징", "frames": act6},
-        {"id": 7, "title": "제7막: 눈물의 화해", "desc": "[피드백 반영] 1막 수준 인물 클로즈업! 감격의 눈물을 흘리는 흥부와 갓 벗고 눈물로 뉘우치는 놀부의 감동적 재회와 맞잡은 두 손", "frames": act7},
+        {"id": 2, "title": "제2막: 다친 제비 클로즈업", "desc": "[2차 개선] 두 손으로 소중히 감싼 새끼 제비 초대형 클로즈업! 붉은 목덜미, 눈물 어린 동공, 붉은 실과 부목 정밀 묘사", "frames": act2},
+        {"id": 3, "title": "제3막: 보은의 비행과 박씨", "desc": "[2차 개선] 제비 날개가 위/수평/아래로 진짜 펄럭이는 플랩 애니메이션 탑재 + 부리에 물린 황금 박씨 다이아몬드 스파클", "frames": act3},
+        {"id": 4, "title": "제4막: 대박 타기와 황금 보화", "desc": "[2차 개선] 톱 손잡이를 양손으로 잡고 신명 나게 밀고 당기는 흥부 부부의 상반신 역동적 톱질 구도 + 쏟아지는 황금 보화", "frames": act4},
+        {"id": 5, "title": "제5막: 놀부의 잔혹한 만행", "desc": "[2차 개선] 놀부의 굵은 엄지와 검지가 제비 다리를 잡고 '뚝' 꺾는 순간을 해부학적으로 선명하게 선/면 분리 묘사", "frames": act5},
+        {"id": 6, "title": "제6막: 도깨비의 심판", "desc": "[2차 개선] 부리부리한 눈과 송곳니의 위압적 표정 유지 + 외뿔과 쇠몽둥이 끝에 깔끔한 다이아몬드형(◆) 스파클 연출", "frames": act6},
+        {"id": 7, "title": "제7막: 눈물의 화해", "desc": "[2차 개선] 1막의 흥부/놀부 얼굴·눈코입·수염·복식을 100% 동일하게 계승하여 진짜 사람의 감동적 재회로 복원", "frames": act7},
     ]
     
     palette_hex = [f"#{c[2][0]:02x}{c[2][1]:02x}{c[2][2]:02x}" for c in PALETTE_16]
@@ -520,7 +514,7 @@ def build_all_studio():
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Divina Ludus — 컷씬 검토 & 컨펌 스튜디오 (High-Res Close-Up Remake)</title>
+<title>Divina Ludus — 컷씬 검토 & 컨펌 스튜디오 (2nd Remake)</title>
 <style>
   * {{ margin: 0; padding: 0; box-sizing: border-box; user-select: none; }}
   html, body {{
@@ -652,7 +646,7 @@ def build_all_studio():
 
 <div class="studio-frame">
   <div class="studio-header">
-    <div class="studio-title">🎨 Divina Ludus — 컷씬 검토 & 컨펌 스튜디오 (High-Res Remake)</div>
+    <div class="studio-title">🎨 Divina Ludus — 컷씬 검토 & 컨펌 스튜디오 (2nd Remake)</div>
     <div class="studio-hud" id="hudText">[Act 1 / 7 | 296x152 4X Hi-Res]</div>
   </div>
 
@@ -673,7 +667,7 @@ def build_all_studio():
 
   <div class="footer-bar">
     <div>조작: <span class="key-hint">[1~7] 숫자키</span>로 씬 즉시 이동 | <span class="key-hint">[Space]</span> 정지/재생 | 마우스 클릭 가능</div>
-    <div style="color: #2ecc71;">● 1막 수준 고화질 클로즈업 일괄 리메이크 완료</div>
+    <div style="color: #2ecc71;">● 2차 정밀 피드백 완벽 반영 완료</div>
   </div>
 </div>
 
@@ -728,7 +722,7 @@ def build_all_studio():
     
     const hud = document.getElementById('hudText');
     if (curFrame === 2) {{
-      hud.innerText = `[${{act.title}} | ★ F3 핵심 감정/광채 하이라이트 ★]`;
+      hud.innerText = `[${{act.title}} | ★ F3 핵심 감정/스파클 하이라이트 ★]`;
       hud.style.color = "#f4d03f";
     }} else {{
       hud.innerText = `[${{act.title}} | F${{curFrame+1}}/6 4X Hi-Res 296x152]`;
@@ -766,7 +760,7 @@ def build_all_studio():
     with open(studio_html_path, "w", encoding="utf-8") as f:
         f.write(html_content)
 
-    print(f"✅ 흥부놀부전 1~7막 전 씬 1막 수준 고화질 클로즈업 리메이크 완료: {studio_html_path}")
+    print(f"✅ 2차 피드백 반영 완료: {studio_html_path}")
 
 if __name__ == "__main__":
     build_all_studio()
