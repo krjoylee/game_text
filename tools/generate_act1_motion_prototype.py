@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """
 tools/generate_act1_motion_prototype.py
-놀부 '금이빨(12번 황금)' + 흥부 '꽃미남 빈티(오뚝한 코, 날렵한 턱선, 패랭이, 눈물)'
-주변 픽셀 1~2개 On/Off 미세 원근 모션(F1~F6) 프로토타입 생성기
+개선 사항:
+1. 재생 속도 완화 (0.35초 ➔ 0.75초로 차분하고 명확하게 관찰 가능)
+2. 터미널 폰트 비율(세로:가로 ≈ 2:1) 보정: 상하 높이를 1/2로 압축하여 말처럼 길어 보이지 않고 황금비율 유지
+3. 흥부 외형 수정: 패랭이 대신 '터진 갓에 상투만 남은 형태(망건 + 삐져나온 상투머리)'로 빈티와 처절함 극대화
+4. 놀부 '금이빨 번쩍' & 흥부 '꽃미남 눈물 낙하' 미세 모션 유지
 """
 
 import os
@@ -17,10 +20,10 @@ HEIGHT = 23
 
 # 팔레트 인덱스 상수
 C_BG = 0          # 배경
-C_INK = 1         # 갓, 먹선, 동공
+C_INK = 1         # 갓, 먹선, 동공, 상투
 C_SKIN = 2        # 밝은 피부
 C_SHADOW = 3      # 피부 음영, 턱선, 다크서클
-C_HAT = 4         # 흥부 패랭이 누런색
+C_HAT = 4         # 누런 짚/삼베
 C_RAG = 5         # 누더기 갈색
 C_SILK_RED = 6    # 놀부 비단 깃
 C_SILK_BLUE = 7   # 놀부 비단 도포
@@ -29,180 +32,158 @@ C_WHITE = 9       # 순백색 (치아, 반사광)
 C_GOLD = 12       # ★ 놀부 금이빨 황금빛!
 
 def create_base_frame():
-    """기준 프레임 (F1) 그리드 생성 (color_idx, char)"""
+    """기준 프레임 (F1) — 상하 길이를 절반으로 압축하여 폰트 왜곡 방지"""
     grid = [[(C_BG, ' ') for _ in range(WIDTH)] for _ in range(HEIGHT)]
     
     # ─────────────────────────────────────────────────────────────
-    # [좌측: 놀부 (Nolbu) — 갓, 세모 눈, 심술보, 턱수염, ★금이빨]
-    # 중심 좌표: x: 10~32, y: 2~20
+    # [좌측: 놀부 (Nolbu) — 납작하고 넓은 갓, 세모눈, 금이빨, 턱수염]
+    # 중심: x: 8~32, y: 5~18 (상하 13줄로 컴팩트화)
     # ─────────────────────────────────────────────────────────────
     
-    # 1. 넓은 양반 갓 (Row 2~6, Col 8~34)
-    for x in range(14, 28): # 갓 모자
-        grid[2][x] = (C_INK, '█')
-        grid[3][x] = (C_INK, '█')
-        grid[4][x] = (C_INK, '█')
-    for x in range(8, 34):  # 날카로운 갓 챙
-        grid[5][x] = (C_INK, '━')
+    # 1. 넓은 양반 갓 (Row 5~7)
+    for x in range(15, 27): # 갓 모자
+        grid[5][x] = (C_INK, '█')
+    for x in range(8, 34):  # 가로로 쫙 뻗은 날카로운 갓 챙
+        grid[6][x] = (C_INK, '━')
     # 갓끈
-    grid[6][14] = (C_INK, '│'); grid[7][15] = (C_INK, '│')
-    grid[6][27] = (C_INK, '│'); grid[7][26] = (C_INK, '│')
+    grid[7][15] = (C_INK, '│'); grid[7][26] = (C_INK, '│')
     
-    # 2. 얼굴 윤곽 & 피부 (Row 6~14, Col 15~26)
-    for y in range(6, 13):
+    # 2. 얼굴 윤곽 & 피부 (Row 7~11, 상하 5줄)
+    for y in range(7, 12):
         for x in range(16, 26):
             grid[y][x] = (C_SKIN, '█')
-    # 볼/턱 음영
-    for x in range(16, 26):
-        grid[12][x] = (C_SHADOW, '▓')
+    # 턱선 음영
+    for x in range(17, 25):
+        grid[11][x] = (C_SHADOW, '▓')
         
-    # 3. 치켜뜬 세모 눈 (Row 7~8)
-    grid[7][18] = (C_INK, '▲'); grid[7][19] = (C_WHITE, '░') # 왼쪽 눈
-    grid[7][22] = (C_WHITE, '░'); grid[7][23] = (C_INK, '▲') # 오른쪽 눈
-    grid[6][18] = (C_INK, '╱'); grid[6][23] = (C_INK, '╲')   # 치켜뜬 눈썹
+    # 3. 치켜뜬 세모 눈 (Row 8)
+    grid[8][18] = (C_INK, '▲'); grid[8][19] = (C_WHITE, '░') # 왼쪽 눈
+    grid[8][22] = (C_WHITE, '░'); grid[8][23] = (C_INK, '▲') # 오른쪽 눈
+    grid[7][18] = (C_INK, '╱'); grid[7][23] = (C_INK, '╲')   # 눈썹
     
-    # 4. 매부리코 & 사납게 꺾인 입 (Row 9~11)
+    # 4. 매부리코 & 사납게 비틀린 입 (Row 9~10)
     grid[9][20] = (C_SHADOW, '▌'); grid[9][21] = (C_INK, '◄') # 코
     
     # 기본 입 (다문 상태)
     grid[10][19] = (C_INK, '─')
     grid[10][20] = (C_INK, '━')
-    grid[10][21] = (C_GOLD, '■') # ★ 번쩍이는 금이빨 기본 자리!
+    grid[10][21] = (C_GOLD, '■') # ★ 번쩍이는 황금 앞니(금이빨)!
     grid[10][22] = (C_INK, '─')
     
-    # 5. 빳빳하고 뾰족한 검은 턱수염 (Row 13~16)
-    grid[13][19] = (C_INK, '█'); grid[13][20] = (C_INK, '█'); grid[13][21] = (C_INK, '█'); grid[13][22] = (C_INK, '█')
-    grid[14][20] = (C_INK, '█'); grid[14][21] = (C_INK, '█')
-    grid[15][20] = (C_INK, '▼'); grid[15][21] = (C_INK, '▼')
+    # 5. 뾰족한 턱수염 (Row 12~13)
+    grid[12][19] = (C_INK, '█'); grid[12][20] = (C_INK, '█'); grid[12][21] = (C_INK, '█'); grid[12][22] = (C_INK, '█')
+    grid[13][20] = (C_INK, '▼'); grid[13][21] = (C_INK, '▼')
     
-    # 6. 비단 도포 & 붉은 깃 (Row 16~21)
-    for y in range(16, 22):
+    # 6. 비단 도포 & 붉은 깃 (Row 14~18)
+    for y in range(14, 19):
         for x in range(11, 31):
             grid[y][x] = (C_SILK_BLUE, '█')
-    # 붉은 깃 (가슴)
-    grid[16][20] = (C_SILK_RED, '█'); grid[16][21] = (C_SILK_RED, '█')
-    grid[17][20] = (C_SILK_RED, '█'); grid[17][21] = (C_SILK_RED, '█')
-    grid[18][20] = (C_SILK_RED, '█'); grid[18][21] = (C_SILK_RED, '█')
+    # 붉은 깃
+    grid[14][20] = (C_SILK_RED, '█'); grid[14][21] = (C_SILK_RED, '█')
+    grid[15][20] = (C_SILK_RED, '█'); grid[15][21] = (C_SILK_RED, '█')
 
     # ─────────────────────────────────────────────────────────────
-    # [우측: 흥부 (Heungbu) — 꽃미남 빈티: 짙은 눈썹, 오뚝한 코, 날렵한 V턱선, 패랭이, 눈물]
-    # 중심 좌표: x: 45~65, y: 3~20
+    # [우측: 흥부 (Heungbu) — 터진 갓에 상투만 남은 꽃미남 빈티]
+    # 중심: x: 45~67, y: 4~18 (상하 14줄로 컴팩트화)
     # ─────────────────────────────────────────────────────────────
     
-    # 1. 찢어진 패랭이 모자 (Row 3~6, Col 46~66)
-    for x in range(50, 62): # 모자 위
-        grid[3][x] = (C_HAT, '░')
-        grid[4][x] = (C_HAT, '▓')
-    for x in range(46, 66): # 찢어진 챙
-        grid[5][x] = (C_HAT, '━')
-    grid[5][52] = (C_HAT, ' ') # 찢어진 틈새
-    grid[5][60] = (C_HAT, ' ')
+    # 1. 터져서 날아간 갓 & 삐져나온 상투 (Row 4~6)
+    # 솟아오른 상투 (Row 4~5)
+    grid[4][55] = (C_INK, '▄'); grid[4][56] = (C_INK, '▄') # 상투 꼭지
+    grid[5][54] = (C_INK, '█'); grid[5][55] = (C_INK, '█'); grid[5][56] = (C_INK, '█'); grid[5][57] = (C_INK, '█') # 상투 뭉치
     
-    # 2. 꽃미남 얼굴 윤곽 & 흩날리는 머리칼 (Row 6~14, Col 49~62)
-    # 패랭이 틈새 머리칼
-    grid[6][50] = (C_INK, '╱'); grid[6][61] = (C_INK, '╲')
+    # 이마의 망건 & 부서진 갓 테두리 파편 (Row 6)
+    grid[6][50] = (C_HAT, '░') # 부서져 덜렁거리는 갓 조각
+    for x in range(52, 60):
+        grid[6][x] = (C_INK, '▒') # 이마를 졸라맨 검은 망건
+    grid[6][61] = (C_HAT, '░')
+    # 흩날리는 귀밑머리/잔머리
+    grid[6][49] = (C_INK, '╱'); grid[6][62] = (C_INK, '╲')
     
-    # 고운 피부 (V라인 턱선)
-    for y in range(6, 12):
+    # 2. 꽃미남 얼굴 윤곽 (Row 7~11)
+    for y in range(7, 11):
         for x in range(51, 61):
             grid[y][x] = (C_SKIN, '█')
             
-    # 3. 짙고 단정한 눈썹 & 오뚝한 콧날 (귀공자상)
+    # 3. 짙고 단정한 귀공자 눈썹 & 처진 눈매 (Row 7~8)
     grid[7][52] = (C_INK, '━'); grid[7][53] = (C_INK, '━') # 왼쪽 눈썹
     grid[7][58] = (C_INK, '━'); grid[7][59] = (C_INK, '━') # 오른쪽 눈썹
     
-    # 서글픈 처진 눈매 & 다크서클
-    grid[8][52] = (C_SHADOW, '░'); grid[8][53] = (C_INK, '▼') # 처진 눈
+    # 처진 눈매 & 다크서클
+    grid[8][52] = (C_SHADOW, '░'); grid[8][53] = (C_INK, '▼')
     grid[8][58] = (C_INK, '▼'); grid[8][59] = (C_SHADOW, '░')
     
-    # 오뚝하고 날렵한 콧날 (Row 9~10)
-    grid[9][55] = (C_SHADOW, '│'); grid[9][56] = (C_SKIN, '▌')
-    grid[10][55] = (C_INK, '▲'); grid[10][56] = (C_SHADOW, '▌')
+    # 4. 오뚝한 콧날 & 날렵한 V라인 턱선 (Row 9~11)
+    grid[9][55] = (C_SHADOW, '│'); grid[9][56] = (C_SKIN, '▌') # 오뚝한 코
+    # 베일 듯한 V라인 턱끝
+    grid[10][54] = (C_SHADOW, '╲'); grid[10][55] = (C_INK, '─'); grid[10][56] = (C_INK, '─'); grid[10][57] = (C_SHADOW, '╱')
+    grid[11][55] = (C_SHADOW, '╲'); grid[11][56] = (C_SHADOW, '╱')
     
-    # 4. 베일 듯 날렵한 V라인 턱선 & 다문 입술
-    grid[11][54] = (C_SHADOW, '╲'); grid[11][55] = (C_INK, '─'); grid[11][56] = (C_INK, '─'); grid[11][57] = (C_SHADOW, '╱')
-    grid[12][55] = (C_SHADOW, '╲'); grid[12][56] = (C_SHADOW, '╱') # 뾰족한 턱끝
-    
-    # 5. 뺨을 타고 흐르는 굵은 눈물 (Row 9~11, Col 53, 58)
+    # 5. 뺨을 타고 흐르는 굵은 눈물 (Row 9~10)
     grid[9][53] = (C_TEAR, '💧')
-    grid[10][53] = (C_TEAR, '│')
-    grid[11][53] = (C_WHITE, '·')
+    grid[10][53] = (C_WHITE, '·')
     
-    # 6. 쇄골이 드러난 누더기 삼베옷 (Row 13~21)
-    for y in range(13, 22):
-        for x in range(45, 67):
+    # 6. 목선과 쇄골이 드러난 누더기 삼베옷 (Row 12~18)
+    # 드러난 쇄골/목선
+    grid[12][54] = (C_SKIN, '░'); grid[12][55] = (C_SKIN, '░'); grid[12][56] = (C_SKIN, '░'); grid[12][57] = (C_SKIN, '░')
+    grid[13][55] = (C_SHADOW, '▼'); grid[13][56] = (C_SHADOW, '▼')
+    # 누더기 옷몸통
+    for y in range(13, 19):
+        for x in range(46, 66):
+            if y == 13 and (x < 50 or x > 61): continue
             grid[y][x] = (C_HAT, '▒')
-    # 기운 자국 (갈색 헝겊)
+    # 기운 자국
     grid[15][48] = (C_RAG, '█'); grid[15][49] = (C_RAG, '█')
-    grid[17][58] = (C_RAG, '█'); grid[17][59] = (C_RAG, '█')
-    # 드러난 쇄골/목선 (음영)
-    grid[13][54] = (C_SKIN, '░'); grid[13][55] = (C_SKIN, '░'); grid[13][56] = (C_SKIN, '░'); grid[13][57] = (C_SKIN, '░')
-    grid[14][55] = (C_SHADOW, '▼'); grid[14][56] = (C_SHADOW, '▼')
+    grid[16][59] = (C_RAG, '█'); grid[16][60] = (C_RAG, '█')
     
     return grid
 
 
 def generate_6_motion_frames():
-    """
-    주변 픽셀 1~2개 On/Off를 통한 6프레임 미세 원근/호흡 모션 생성
-    F1: 기준
-    F2: 들숨 (놀부 어깨 확장 +1px, 흥부 머리칼 1px 들림)
-    F3: 번쩍/눈물 (★놀부 금이빨 반사광 On! + 흥부 눈물 1px 낙하)
-    F4: 날숨/수축 (놀부 가슴 -1px, 수염 떨림 + 흥부 어깨 처짐)
-    F5: 잔상 (금이빨 Off, 턱끝 눈물 맺힘)
-    F6: 복귀
-    """
     frames = []
     
     # F1: 기본 프레임
     f1 = create_base_frame()
     frames.append(f1)
     
-    # F2: 들숨 (팽창 & 미남 머리칼 흩날림)
+    # F2: 들숨 (놀부 어깨 확장 +1px, 흥부 상투 머리칼 1px 들림)
     f2 = [row[:] for row in f1]
-    # 놀부 어깨 외곽 +1px 확장
-    for y in range(16, 21):
+    for y in range(14, 18):
         f2[y][10] = (C_SILK_BLUE, '▌')
         f2[y][31] = (C_SILK_BLUE, '▐')
-    # 흥부 패랭이 틈새 머리칼 1px 위로 들림
-    f2[5][50] = (C_INK, '╱')
-    f2[5][61] = (C_INK, '╲')
+    # 흥부 상투 털끝 1px 들림
+    f2[3][55] = (C_INK, '·'); f2[3][56] = (C_INK, '·')
     frames.append(f2)
     
     # F3: ★ 핵심 감정선 (놀부 금이빨 번쩍! On + 흥부 눈물 낙하)
     f3 = [row[:] for row in f1]
-    # 놀부 입 크게 벌어지며 금이빨 광채 폭발 (황금 픽셀 + 백색 반사광)
+    # 놀부 입 벌어지며 황금빛 반사광 폭발
     f3[10][20] = (C_GOLD, '█')
     f3[10][21] = (C_GOLD, '█')
     f3[10][22] = (C_WHITE, '★') # 번쩍광!
-    # 놀부 수염 부르르 좌우 1px 떨림
-    f3[15][19] = (C_INK, '▼'); f3[15][22] = (C_INK, '▼')
-    # 흥부 눈물 방울 1px 아래로 똑 떨어짐
-    f3[9][53] = (C_SKIN, '█')   # 위쪽 지나간 자리는 피부 복귀
+    # 놀부 수염 부르르 좌우 1px 진동
+    f3[13][19] = (C_INK, '▼'); f3[13][22] = (C_INK, '▼')
+    # 흥부 눈물 1px 아래로 똑 떨어짐
+    f3[9][53] = (C_SKIN, '█')   # 지나간 자리는 피부
     f3[10][53] = (C_TEAR, '💧') # 눈물방울 낙하
-    f3[11][53] = (C_TEAR, '│')
-    f3[12][53] = (C_WHITE, '·')
+    f3[11][53] = (C_WHITE, '·')
     frames.append(f3)
     
-    # F4: 날숨 (수축 & 가슴 내림)
+    # F4: 날숨 (놀부 가슴 -1px 수축, 흥부 어깨 처짐)
     f4 = [row[:] for row in f1]
-    # 놀부 가슴 수축 (-1px)
-    for y in range(17, 21):
+    for y in range(15, 19):
         f4[y][11] = (C_BG, ' ')
         f4[y][30] = (C_BG, ' ')
-    # 흥부 어깨 처짐
-    f4[13][45] = (C_BG, ' '); f4[13][66] = (C_BG, ' ')
+    f4[13][50] = (C_BG, ' '); f4[13][61] = (C_BG, ' ')
     frames.append(f4)
     
-    # F5: 잔상 (금이빨 빛 감쇄 & 눈물방울 턱끝 맺힘)
+    # F5: 잔상 (금이빨 빛 감쇄, 흥부 턱끝 눈물 맺힘)
     f5 = [row[:] for row in f1]
-    # 놀부 금이빨 다시 은은한 황금으로
     f5[10][21] = (C_GOLD, '■')
-    # 흥부 눈물 턱끝 맺힘
-    f5[12][54] = (C_TEAR, '💧')
+    f5[11][54] = (C_TEAR, '💧')
     frames.append(f5)
     
-    # F6: 복귀 (기준점으로 부드럽게)
+    # F6: 복귀
     f6 = [row[:] for row in f1]
     frames.append(f6)
     
@@ -210,15 +191,15 @@ def generate_6_motion_frames():
 
 if __name__ == "__main__":
     frames = generate_6_motion_frames()
-    print("🎬 [흥부놀부전 1막] 놀부 금이빨 & 흥부 꽃미남 빈티 6프레임 미세 원근 모션 재생 중...")
-    print("   (Ctrl+C를 누르면 멈춥니다)\n")
+    print("🎬 [개선 프로토타입] 놀부 금이빨 & 흥부 상투 꽃미남 (상하 1/2 압축 보정)")
+    print("   속도: 0.75초 (차분한 프레임 전환 / Ctrl+C로 종료)\n")
     
     # 2회 루프 시연
     for loop in range(2):
         for idx, fr in enumerate(frames, 1):
             sys.stdout.write("\x1b[H") # 커서 원점 이동
             print(f"╔{'═' * 74}╗")
-            print(f"║  흥부놀부전 · 제1막 모션 시연 [프레임 {idx}/6]                           ║")
+            print(f"║  흥부놀부전 · 1막 [프레임 {idx}/6] (상하 압축 & 상투 빈티)                ║")
             print(f"╠{'═' * 74}╣")
             for row in fr:
                 line_str = []
@@ -232,7 +213,7 @@ if __name__ == "__main__":
                 print(f"║{''.join(line_str)}║")
             print(f"╚{'═' * 74}╝")
             if idx == 3:
-                print("  ★ F3: 놀부의 [금이빨 번쩍광★] 호통 & 흥부의 [눈물방울 낙하💧] 순간!")
+                print("  ★ F3: 놀부의 [금이빨 번쩍광★] 호통 & 흥부의 [눈물방울 낙하💧]!")
             else:
-                print("  주변 픽셀 1~2개 On/Off를 통한 숨 쉬는 입체 원근감 형성 중...")
-            time.sleep(0.35)
+                print("  0.75초 차분한 호흡 모션으로 픽셀 원근감 관찰 중...")
+            time.sleep(0.75) # 기존 0.35초에서 0.75초로 2배 이상 늦춤!
