@@ -1,64 +1,65 @@
 #!/usr/bin/env python3
 """
 tools/palette_engine.py
-Phase 2 고전 16색 인덱스 팔레트 및 ANSI 256/16색 터미널 렌더러
+Phase 2 고전 16색 인덱스 팔레트 및 ANSI 256/16색 전경색/배경색 풀 블록 렌더러
+문자 형태('▲', '─', '░')로 인한 흰색 빈틈/글꼴 이질감을 완전히 제거하고,
+순수 고전 픽셀(100% 솔리드 꽉 찬 블록 '█' + 전경색/배경색 조합)로만 렌더링!
 """
 
 # 고전 16색 팔레트 정의 (인덱스: 0~15)
-# (이름, ANSI 컬러 코드, RGB 튜플)
+# (이름, ANSI 256 코드, RGB 튜플)
 PALETTE_16 = [
-    ("투명/배경", 0, (0, 0, 0)),         # 0
-    ("먹선/갓", 232, (26, 26, 26)),      # 1
-    ("피부살구", 223, (255, 204, 153)),   # 2
-    ("피부황토", 179, (212, 155, 106)),   # 3
-    ("패랭이누런", 186, (194, 178, 128)), # 4
-    ("누더기갈색", 94, (139, 90, 43)),    # 5
-    ("비단주홍", 160, (192, 57, 43)),     # 6 (놀부 깃)
-    ("비단군청", 25, (36, 113, 163)),     # 7 (놀부 도포)
-    ("눈물하늘", 75, (93, 173, 226)),     # 8 (흥부 눈물)
-    ("순백색", 231, (255, 255, 255)),     # 9 (흰자위, 반사광)
-    ("제비흑청", 236, (28, 40, 51)),      # 10
-    ("제비붉은", 196, (231, 76, 60)),     # 11
-    ("황금빛", 220, (244, 208, 63)),      # 12 (놀부 금이빨!)
-    ("도깨비녹", 36, (22, 160, 133)),     # 13
-    ("쇠몽둥이회", 242, (86, 101, 115)),  # 14
-    ("잔디녹색", 35, (39, 174, 96)),      # 15
+    ("배경흑색", 232, (15, 15, 15)),       # 0 (투명/어두운 배경)
+    ("갓먹선", 16, (0, 0, 0)),             # 1 (칠흑 같은 검은선, 동공, 갓)
+    ("피부살구", 223, (255, 204, 153)),    # 2 (인물 밝은 피부)
+    ("피부황토", 179, (212, 155, 106)),    # 3 (피부 음영, 턱선)
+    ("누런삼베", 186, (194, 178, 128)),    # 4 (흥부 터진 갓, 삼베옷)
+    ("기운갈색", 94, (139, 90, 43)),       # 5 (흥부 기운 자국)
+    ("비단주홍", 160, (192, 57, 43)),      # 6 (놀부 비단 깃)
+    ("비단군청", 25, (36, 113, 163)),      # 7 (놀부 비단 겉옷)
+    ("눈물하늘", 75, (93, 173, 226)),      # 8 (흥부 눈물 픽셀)
+    ("순백색", 231, (255, 255, 255)),      # 9 (흰자위, 반사광)
+    ("제비흑청", 236, (28, 40, 51)),       # 10
+    ("제비붉은", 196, (231, 76, 60)),      # 11
+    ("황금빛", 220, (244, 208, 63)),       # 12 (★ 놀부 금이빨 황금 픽셀!)
+    ("도깨비녹", 36, (22, 160, 133)),      # 13
+    ("쇠몽둥이회", 242, (86, 101, 115)),   # 14
+    ("잔디녹색", 35, (39, 174, 96)),       # 15
 ]
 
-def ansi_fg(color_idx):
-    """팔레트 인덱스로 전경색 ANSI 코드 생성"""
+def ansi_bg(color_idx):
+    """배경색 ANSI 이스케이프 코드"""
     if color_idx == 0:
-        return "\x1b[30m"
-    ansi_code = PALETTE_16[color_idx][1]
-    return f"\x1b[38;5;{ansi_code}m"
+        return "\x1b[48;5;232m"
+    return f"\x1b[48;5;{PALETTE_16[color_idx][1]}m"
+
+def ansi_fg(color_idx):
+    """전경색 ANSI 이스케이프 코드"""
+    if color_idx == 0:
+        return "\x1b[38;5;232m"
+    return f"\x1b[38;5;{PALETTE_16[color_idx][1]}m"
 
 def ansi_reset():
     return "\x1b[0m"
 
-def render_color_grid(grid, char_map=None):
+def render_solid_pixel_row(color_indices):
     """
-    grid: 2D array of (color_idx, char) or color_idx
+    흰색 폰트 빈틈이 전혀 없는 고전 게임 100% 솔리드 픽셀 행 렌더링
+    문자 공백이나 기호 대신 꽉 찬 2글자 픽셀(두 칸 '  ' 배경색 또는 '██')을 사용하여
+    도스/패미컴 시절의 매끄러운 CRT 픽셀 블록 표현
     """
-    output = []
-    for row in grid:
-        line_str = []
-        cur_color = -1
-        for cell in row:
-            if isinstance(cell, tuple):
-                c_idx, ch = cell
-            else:
-                c_idx = cell
-                ch = char_map.get(c_idx, "█") if char_map else "█"
-                
-            if c_idx != cur_color:
-                line_str.append(ansi_fg(c_idx))
-                cur_color = c_idx
-            line_str.append(ch)
-        line_str.append(ansi_reset())
-        output.append("".join(line_str))
-    return output
+    line_parts = []
+    cur_bg = -1
+    for c in color_indices:
+        if c != cur_bg:
+            line_parts.append(ansi_bg(c))
+            cur_bg = c
+        # 1픽셀을 2칸 공백으로 배경색 채움 (터미널 1문자가 세로로 기니까 2칸으로 가로세로 1:1 정사각형 픽셀 완성!)
+        line_parts.append("  ")
+    line_parts.append(ansi_reset())
+    return "".join(line_parts)
 
 if __name__ == "__main__":
-    print("🎨 16색 인덱스 팔레트 프리뷰:")
+    print("🎨 고전 16색 솔리드 픽셀 팔레트 테스트 (빈틈 없는 꽉 찬 도트):")
     for idx, (name, ansi_code, rgb) in enumerate(PALETTE_16):
-        print(f" {ansi_fg(idx)}██ {name:<10} (Index: {idx:2d}, ANSI: {ansi_code:3d}){ansi_reset()}")
+        print(f" {ansi_bg(idx)}    {ansi_reset()} {name} (Index: {idx})")
