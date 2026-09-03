@@ -9,10 +9,10 @@ tools/make_expanded_data.py
 import sys
 sys.path.append("/home/krjoylee/code/game/tools")
 from generate_all_packs_studio import compress_frame_rle
-from make_expanded_cutscenes import (
-    gen_charlie_act_scene, gen_matilda_act_scene, gen_animal_farm_act_scene,
-    gen_1984_act_scene, gen_under_wheel_act_scene, gen_dante_comedy_act_scene,
-    gen_zarathustra_act_scene
+from make_masterpiece_cutscenes import (
+    gen_charlie_act, gen_matilda_act, gen_animal_farm_act,
+    gen_1984_act, gen_under_wheel_act, gen_dante_comedy_act,
+    gen_zarathustra_act
 )
 
 def build_charlie_pack():
@@ -31,7 +31,7 @@ def build_charlie_pack():
     ]
     scenes = []
     for idx, title, spk, txt, hint, ch in acts_meta:
-        rle = [compress_frame_rle(f) for f in gen_charlie_act_scene(idx)]
+        rle = [compress_frame_rle(f) for f in gen_charlie_act(idx)]
         sc = {
             "act": idx, "title": title, "speaker": spk, "text": txt, "hint": hint, "rle": rle
         }
@@ -71,7 +71,7 @@ def build_matilda_pack():
     ]
     scenes = []
     for idx, title, spk, txt, hint, ch in acts_meta:
-        rle = [compress_frame_rle(f) for f in gen_matilda_act_scene(idx)]
+        rle = [compress_frame_rle(f) for f in gen_matilda_act(idx)]
         sc = {
             "act": idx, "title": title, "speaker": spk, "text": txt, "hint": hint, "rle": rle
         }
@@ -120,7 +120,7 @@ def build_animal_farm_pack():
     ]
     scenes = []
     for idx, title, spk, txt, hint, ch in acts_meta:
-        rle = [compress_frame_rle(f) for f in gen_animal_farm_act_scene(idx)]
+        rle = [compress_frame_rle(f) for f in gen_animal_farm_act(idx)]
         sc = {
             "act": idx, "title": title, "speaker": spk, "text": txt, "hint": hint, "rle": rle
         }
@@ -138,8 +138,8 @@ def build_animal_farm_pack():
         "tag": "Medium · 조지 오웰 불멸의 고전", "metric_name": "비판적 양심", "metric_icon": "🚩",
         "scenes": scenes,
         "endings": [
-            {"min": 10, "title": "깨어있는 역사의 감시자", "desc": "어떤 권력의 거짓 선동과 공포 앞에서도 비판적 이성과 양심을 지켜내어 역사의 진실을 증언했습니다."},
-            {"min": 6, "title": "고뇌하는 농장의 관찰자", "desc": "권력의 타락을 목격하며 이상과 현실 사이에서 깊은 슬픔과 회한을 삼켰습니다."},
+            {"min": 16, "title": "깨어있는 역사의 감시자", "desc": "어떤 권력의 거짓 선동과 공포 앞에서도 비판적 이성과 양심을 지켜내어 역사의 진실을 증언했습니다."},
+            {"min": 10, "title": "고뇌하는 농장의 관찰자", "desc": "권력의 타락을 목격하며 이상과 현실 사이에서 깊은 슬픔과 회한을 삼켰습니다."},
             {"min": -99, "title": "침묵에 순응한 자", "desc": "독재의 채찍과 거짓말 앞에 스스로 생각하기를 멈추고 멍에를 멨습니다."}
         ]
     }
@@ -167,7 +167,7 @@ def build_1984_pack():
     ]
     scenes = []
     for idx, title, spk, txt, hint, ch in acts_meta:
-        rle = [compress_frame_rle(f) for f in gen_1984_act_scene(idx)]
+        rle = [compress_frame_rle(f) for f in gen_1984_act(idx)]
         sc = {
             "act": idx, "title": title, "speaker": spk, "text": txt, "hint": hint, "rle": rle
         }
@@ -185,8 +185,8 @@ def build_1984_pack():
         "tag": "Medium · 조지 오웰 디스토피아", "metric_name": "인간성의 존엄", "metric_icon": "👁️",
         "scenes": scenes,
         "endings": [
-            {"min": 10, "title": "불멸하는 정신의 수호자", "desc": "가혹한 고문과 세뇌 속에서도 2+2=4의 진실과 인간적 존엄의 불씨를 지켜낸 비극의 영웅입니다."},
-            {"min": 6, "title": "고뇌하는 저항자", "desc": "빅브라더의 거대한 폭력 앞에 육신은 꺾였으나, 마지막 순간까지 자유를 향한 눈물을 흘렸습니다."},
+            {"min": 16, "title": "불멸하는 정신의 수호자", "desc": "가혹한 고문과 세뇌 속에서도 2+2=4의 진실과 인간적 존엄의 불씨를 지켜낸 비극의 영웅입니다."},
+            {"min": 10, "title": "고뇌하는 저항자", "desc": "빅브라더의 거대한 폭력 앞에 육신은 꺾였으나, 마지막 순간까지 자유를 향한 눈물을 흘렸습니다."},
             {"min": -99, "title": "순응한 빅브라더의 신민", "desc": "공포에 굴복하여 사랑하던 이를 배신하고, 마침내 감시자의 품에 안겨 자신을 잃어버렸습니다."}
         ]
     }
@@ -214,7 +214,7 @@ def build_under_wheel_pack():
     ]
     scenes = []
     for idx, title, spk, txt, hint, ch in acts_meta:
-        rle = [compress_frame_rle(f) for f in gen_under_wheel_act_scene(idx)]
+        rle = [compress_frame_rle(f) for f in gen_under_wheel_act(idx)]
         sc = {
             "act": idx, "title": title, "speaker": spk, "text": txt, "hint": hint, "rle": rle
         }
@@ -232,8 +232,8 @@ def build_under_wheel_pack():
         "tag": "Medium · 헤르만 헤세 자전소설", "metric_name": "영혼의 순수성", "metric_icon": "🌿",
         "scenes": scenes,
         "endings": [
-            {"min": 10, "title": "수레바퀴를 벗어난 자유로운 영혼", "desc": "세속의 무거운 바퀴에 영혼을 짓밟히지 않고, 자연과 참된 우정의 가치를 끝내 기억한 순례자입니다."},
-            {"min": 6, "title": "상처 입은 시인", "desc": "가혹한 경쟁 사회 속에서 깊은 상처를 입었으나, 네카어 강의 평온 속에서 영원한 안식을 얻었습니다."},
+            {"min": 16, "title": "수레바퀴를 벗어난 자유로운 영혼", "desc": "세속의 무거운 바퀴에 영혼을 짓밟히지 않고, 자연과 참된 우정의 가치를 끝내 기억한 순례자입니다."},
+            {"min": 10, "title": "상처 입은 시인", "desc": "가혹한 경쟁 사회 속에서 깊은 상처를 입었으나, 네카어 강의 평온 속에서 영원한 안식을 얻었습니다."},
             {"min": -99, "title": "짓밟힌 어린 영혼", "desc": "어른들의 출세욕과 삭막한 규율의 수레바퀴에 갈려 피어보지도 못하고 스러졌습니다."}
         ]
     }
@@ -273,7 +273,7 @@ def build_dante_comedy_pack():
     ]
     scenes = []
     for idx, title, spk, txt, hint, ch in acts_meta:
-        rle = [compress_frame_rle(f) for f in gen_dante_comedy_act_scene(idx)]
+        rle = [compress_frame_rle(f) for f in gen_dante_comedy_act(idx)]
         sc = {
             "act": idx, "title": title, "speaker": spk, "text": txt, "hint": hint, "rle": rle
         }
@@ -291,8 +291,8 @@ def build_dante_comedy_pack():
         "tag": "Hard · 인류 역사상 가장 위대한 대서사시", "metric_name": "신성한 은총의 빛", "metric_icon": "☀️",
         "scenes": scenes,
         "endings": [
-            {"min": 14, "title": "천상의 빛과 합일한 성스러운 대시인", "desc": "지옥의 형벌, 연옥의 정화, 천국의 삼위일체 신비를 모두 관통하여 우주를 움직이는 영원한 사랑과 하나가 되었습니다."},
-            {"min": 8, "title": "연옥을 넘어선 순례자", "desc": "죄악의 무거운 짐을 벗어던지고 베아트리체의 인도를 받아 천상의 문턱에 도달했습니다."},
+            {"min": 22, "title": "천상의 빛과 합일한 성스러운 대시인", "desc": "지옥의 형벌, 연옥의 정화, 천국의 삼위일체 신비를 모두 관통하여 우주를 움직이는 영원한 사랑과 하나가 되었습니다."},
+            {"min": 14, "title": "연옥을 넘어선 순례자", "desc": "죄악의 무거운 짐을 벗어던지고 베아트리체의 인도를 받아 천상의 문턱에 도달했습니다."},
             {"min": -99, "title": "지옥을 목격한 방랑자", "desc": "인간 영혼의 깊은 죄악과 고통을 뼈에 새기며 지상에서의 새로운 참회를 다짐했습니다."}
         ]
     }
@@ -325,7 +325,7 @@ def build_zarathustra_pack():
     ]
     scenes = []
     for idx, title, spk, txt, hint, ch in acts_meta:
-        rle = [compress_frame_rle(f) for f in gen_zarathustra_act_scene(idx)]
+        rle = [compress_frame_rle(f) for f in gen_zarathustra_act(idx)]
         sc = {
             "act": idx, "title": title, "speaker": spk, "text": txt, "hint": hint, "rle": rle
         }
@@ -343,8 +343,8 @@ def build_zarathustra_pack():
         "tag": "Hard · 니체 철학의 정점이자 불멸의 고전", "metric_name": "위버멘쉬의 불꽃", "metric_icon": "🦅",
         "scenes": scenes,
         "endings": [
-            {"min": 14, "title": "영원을 긍정하는 위버멘쉬 (초인)", "desc": "모든 고통과 영원회귀의 심연을 뛰어넘어, 대지를 사랑하고 스스로 굴러가는 바퀴인 어린아이의 신성한 긍정에 도달했습니다."},
-            {"min": 8, "title": "포효하는 자유의 사자", "desc": "낡은 도덕의 용을 쓰러뜨리고 '나는 원한다'를 쟁취한 불굴의 정신적 전사가 되었습니다."},
+            {"min": 22, "title": "영원을 긍정하는 위버멘쉬 (초인)", "desc": "모든 고통과 영원회귀의 심연을 뛰어넘어, 대지를 사랑하고 스스로 굴러가는 바퀴인 어린아이의 신성한 긍정에 도달했습니다."},
+            {"min": 14, "title": "포효하는 자유의 사자", "desc": "낡은 도덕의 용을 쓰러뜨리고 '나는 원한다'를 쟁취한 불굴의 정신적 전사가 되었습니다."},
             {"min": -99, "title": "사막을 건너는 낙타", "desc": "무거운 의무의 짐을 지고 사막을 묵묵히 걸었으나 아직 사자의 자유와 아이의 창조에 닿지 못했습니다."}
         ]
     }
