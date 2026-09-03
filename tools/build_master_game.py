@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 tools/build_master_game.py
-Divina Ludus — 4대 명작 마스터 게임 엔진 통합 빌더 (UI/UX 대개편 & 스펙 완벽 동기화)
-- 상하 잘림 완전 해결: 캔버스 및 레이아웃 최적화 (740px 안정 프레임)
-- 가독성 대폭 향상: 폰트 크기 15~16px 상향, 줄간격, 고대비 색상
-- 1~5번 엄격한 페이지네이션: 어떤 목록도 5번(다음 페이지)을 넘지 않음
-- 4대 명작 28개 씬 296x152 고화질 컷씬 완벽 스펙 반영
-- Gzip 45KB 초압축으로 1MB 단일 divina.exe 컴파일 지원
+Divina Ludus — 4대 명작 마스터 게임 엔진 (서사·대화 완벽 복원 & 힌트 시스템 & 울트라 픽셀 컷씬)
+- 단독 대사 탈피: 싱클레어와 크로머, 데미안, 피스토리우스, 에바 부인의 생생한 티키타카 문답 대화 복원
+- 조작계 개편:
+  * [*] 키 (또는 Q/ESC): 서재/메인 메뉴로 나가기 (0번에서 분리)
+  * [0] 키: 현 상황의 문맥과 원작 철학을 짚어주는 [지혜의 힌트 / 사색 노트] 시스템 신설!
+  * [1~5] 키: 선택지 및 다음 페이지 전용
+- 울트라 픽셀 아트: 1막 놀부/흥부 수준으로 배경 디더링과 두 인물의 맞대면 구도 완벽 렌더링
 """
 
 import os
@@ -20,12 +21,20 @@ from generate_hires_studio import (
     gen_hires_act5, gen_hires_act6, gen_hires_act7
 )
 from make_epic_master_builder import (
-    get_epic_peach_acts, get_epic_dante_acts, get_epic_demian_acts,
+    get_epic_peach_acts, get_epic_dante_acts,
     PALETTE_16, compress_frame_rle
+)
+from make_ultra_demian_cutscenes import (
+    gen_demian_act1_ultra, gen_demian_act2_ultra, gen_demian_act3_ultra,
+    gen_demian_act4_ultra, gen_demian_act5_ultra, gen_demian_act6_ultra,
+    gen_demian_act7_ultra
+)
+from make_ultra_james_dante_cutscenes import (
+    gen_peach_act2_ultra, gen_dante_act3_ultra
 )
 
 def build_master_system():
-    print("🎨 4대 명작 28개 씬 296x152 완벽 스펙 컷씬 렌더링 및 RLE 압축 중...")
+    print("🎨 4대 명작 28개 씬 울트라 픽셀 컷씬 렌더링 및 RLE 압축 중...")
     
     # 1. 흥부놀부전
     heungbu_acts = [
@@ -36,14 +45,20 @@ def build_master_system():
 
     # 2. 제임스와 슈퍼 복숭아
     peach_acts = get_epic_peach_acts()
+    peach_acts[1] = gen_peach_act2_ultra() # 2막 울트라 교체
     act_rle_peach = [[compress_frame_rle(f) for f in a] for a in peach_acts]
 
     # 3. 단테의 신곡: 지옥편
     dante_acts = get_epic_dante_acts()
+    dante_acts[2] = gen_dante_act3_ultra() # 3막 울트라 교체
     act_rle_dante = [[compress_frame_rle(f) for f in a] for a in dante_acts]
 
-    # 4. 데미안
-    demian_acts = get_epic_demian_acts()
+    # 4. 데미안 (전 1~7막 울트라 픽셀 교체)
+    demian_acts = [
+        gen_demian_act1_ultra(), gen_demian_act2_ultra(), gen_demian_act3_ultra(),
+        gen_demian_act4_ultra(), gen_demian_act5_ultra(), gen_demian_act6_ultra(),
+        gen_demian_act7_ultra()
+    ]
     act_rle_demian = [[compress_frame_rle(f) for f in a] for a in demian_acts]
 
     packs_data = [
@@ -55,54 +70,61 @@ def build_master_system():
             "metric_icon": "♧",
             "scenes": [
                 {
-                    "act": 1, "title": "형제의 갈림길", "speaker": "놀부",
-                    "text": "네 이놈 흥부야! 내 집에 더는 쌀 한 톨 축낼 생각 마라! 처자식 데리고 썩 꺼지지 못할까!",
+                    "act": 1, "title": "형제의 갈림길", "speaker": "놀부와 흥부",
+                    "text": "놀부: '네 이놈 흥부야! 내 집에 더는 쌀 한 톨 축낼 생각 마라! 처자식 데리고 썩 꺼지지 못할까!'\n흥부: '형님... 눈밭에 어린것들을 데리고 어디로 가란 말씀입니까... 제발 자비를 베풀어 주십시오...'",
+                    "hint": "부모의 유훈과 혈육의 도리를 생각할 것인가, 부당한 핍박에 즉각 분노를 터뜨릴 것인가? 당장의 설움보다 더 큰 덕을 바라보십시오.",
                     "rle": act_rle_heungbu[0], "is_transition": False,
                     "choices": [
-                        {"text": "부모님 말씀을 떠올리며 조용히 돌아선다", "delta": 1, "feedback": "흥부는 눈물을 삼키며 빈손으로 형의 집을 나섰습니다."},
-                        {"text": "억울함에 형에게 맞서 따져본다", "delta": -1, "feedback": "놀부가 몽둥이를 치켜들며 호통쳤습니다! '이놈이 감히 눈을 부라려?!'"}
+                        {"text": "부모님 말씀을 떠올리며 눈물을 삼키고 조용히 돌아선다", "delta": 1, "feedback": "흥부는 눈물을 삼키며 빈손으로 형의 집을 나섰습니다. 가슴은 미어졌으나 형을 원망하지 않았습니다."},
+                        {"text": "억울함에 복받쳐 형에게 소리치며 맞서본다", "delta": -1, "feedback": "놀부가 몽둥이를 치켜들며 호통쳤습니다! '이놈이 어디서 감히 눈을 부라려?!'"}
                     ]
                 },
                 {
-                    "act": 2, "title": "다친 제비", "speaker": "흥부 아내",
-                    "text": "여보! 저 처마 밑 제비 좀 보세요! 구렁이에 놀라 떨어져 다리가 부러졌어요! 짹짹 울며 피를 흘려요!",
+                    "act": 2, "title": "다친 제비", "speaker": "아내와 흥부",
+                    "text": "아내: '여보! 저 처마 밑 제비 좀 보세요! 구렁이에 놀라 떨어져 다리가 부러졌어요! 피를 흘리며 가련하게 짹짹 울어요!'\n흥부: '쯧쯧, 미물이라도 어찌 목숨이 귀하지 않겠소. 당장 명주실과 부목을 가져오시오!'",
+                    "hint": "스스로 먹을 양식조차 없는 극한의 가난 속에서도, 나보다 약한 작은 생명을 향해 손을 내미는 것이 진정한 자비입니다.",
                     "rle": act_rle_heungbu[1], "is_transition": False,
                     "choices": [
-                        {"text": "정성껏 하얀 부목을 대고 붉은 실로 감아준다", "delta": 2, "feedback": "흥부는 떨리는 손으로 새끼 제비 다리에 부목을 대고 붉은 실로 감아주었습니다."},
-                        {"text": "우리 먹을 것도 없는데... 모른 척 돌아선다", "delta": -2, "feedback": "흥부는 한숨을 쉬며 발길을 돌렸습니다. 처마 밑엔 슬픈 울음소리만 남았습니다."}
+                        {"text": "하얀 부목을 대고 붉은 명주실로 정성껏 묶어 치료한다", "delta": 2, "feedback": "흥부는 떨리는 손으로 새끼 제비 다리에 부목을 대고 붉은 실로 감아주었습니다. 치유의 온기가 감돌았습니다."},
+                        {"text": "우리 식구 먹을 것도 없는데... 못 본 척 돌아선다", "delta": -2, "feedback": "흥부는 한숨을 쉬며 발길을 돌렸습니다. 처마 밑엔 새끼 제비의 슬픈 울음소리만 흩어졌습니다."}
                     ]
                 },
                 {
-                    "act": 3, "title": "박씨를 물고 온 제비", "speaker": "해설",
-                    "text": "이듬해 봄, 은혜를 갚으러 돌아온 제비가 푸른 하늘을 가르며 날아왔습니다. 부리에는 눈부신 황금빛 박씨가 물려 있었습니다!",
+                    "act": 3, "title": "박씨를 물고 온 제비", "speaker": "제비와 흥부",
+                    "text": "제비: '(창공을 선회하며 흥부의 머리맡에 눈부신 황금 박씨를 툭 떨어뜨린다)'\n흥부: '아니! 작년에 다리를 고쳐 날아간 그 제비로구나! 입에 물고 온 이 씨앗은 무엇인고?'",
+                    "hint": "은혜를 잊지 않는 미물의 마음에 감사하며, 대지의 품에 씨앗을 맡기십시오.",
                     "rle": act_rle_heungbu[2], "is_transition": True, "button_text": "박씨를 마당 양지바른 곳에 정성껏 심는다"
                 },
                 {
-                    "act": 4, "title": "흥부의 대박 타기", "speaker": "흥부",
-                    "text": "여보! 지붕 위에 커다란 박이 열렸소! 톱을 가져와 함께 당깁시다! 슬근슬근 톱질하세, 엉차! 엉차!",
+                    "act": 4, "title": "흥부의 대박 타기", "speaker": "흥부 내외",
+                    "text": "흥부: '여보, 지붕 위 보름달만 한 대박을 탑시다! 슬근슬근 톱질하세!'\n아내: '엉차, 엉차! 박이 타지면 속이라도 끓여 굶주린 아이들 배를 채웁시다!'",
+                    "hint": "뜻밖의 거대한 행운과 재물이 쏟아질 때, 참된 군자는 독점하지 않고 궁핍한 이웃을 돌아봅니다.",
                     "rle": act_rle_heungbu[3], "is_transition": False,
                     "choices": [
-                        {"text": "쏟아지는 금은보화를 가난한 이웃들과 나눈다", "delta": 2, "feedback": "쩍 갈라진 박 속에서 번쩍이는 엽전과 쌀알이 폭포수처럼 쏟아졌습니다!"},
-                        {"text": "혹시 모르니 곳간 깊숙이 잘 숨겨둔다", "delta": 0, "feedback": "산더미 같은 재물을 얻었으나, 흥부는 신중하게 문을 걸어 잠갔습니다."}
+                        {"text": "쏟아지는 금은보화와 쌀을 가난한 이웃들에게 고루 나눈다", "delta": 2, "feedback": "박이 쩍 갈라지며 번쩍이는 엽전과 쌀이 폭포수처럼 쏟아졌습니다! 흥부는 온 마을에 양식을 베풀었습니다."},
+                        {"text": "다시 가난해질까 두려워 곳간 깊숙이 금괴를 숨겨둔다", "delta": 0, "feedback": "산더미 같은 재물을 얻었으나, 흥부는 문을 걸어 잠그고 가슴을 졸였습니다."}
                     ]
                 },
                 {
-                    "act": 5, "title": "놀부의 탐욕", "speaker": "놀부",
-                    "text": "뭐라?! 그 알거지 놈이 박을 타서 벼락부자가 되었다고?! 멀쩡한 제비 놈을 잡아다가 다리를 뚝 분질러서 나도 대박을 타야겠다!",
+                    "act": 5, "title": "놀부의 탐욕", "speaker": "놀부와 제비",
+                    "text": "놀부: '멀쩡한 제비 다리를 뚝 분질러서 나도 벼락부자가 될 테다!'\n제비: '(처절하게 비명을 지르며 공포에 질려 퍼덕인다)'",
+                    "hint": "남의 복을 시기하여 억지로 흉내 내는 악행은 스스로를 파멸의 구렁텅이로 몰아넣습니다.",
                     "rle": act_rle_heungbu[4], "is_transition": True, "button_text": "인과응보의 시간이 다가옵니다"
                 },
                 {
-                    "act": 6, "title": "도깨비의 응징", "speaker": "도깨비",
-                    "text": "놀부 놀부 못된 놀부야! 죄 없는 미물을 해치고 탐욕을 부린 죗값을 받아라! 가시 쇠몽둥이 맛을 보아라, 철썩!!",
+                    "act": 6, "title": "도깨비의 응징", "speaker": "도깨비와 놀부",
+                    "text": "도깨비: '놀부야! 죄 없는 생명을 해치고 탐욕을 부린 죗값을 받아라! 쇠몽둥이 맛을 보아라!'\n놀부: '으악! 사람 살려! 내 돈, 내 패물 다 가져가고 제발 목숨만 살려주시오!'",
+                    "hint": "파멸을 겪고 알거지가 된 자에게 남은 유일한 길은 진실한 참회뿐입니다.",
                     "rle": act_rle_heungbu[5], "is_transition": True, "button_text": "알거지가 되어 길바닥에 쫓겨난 놀부"
                 },
                 {
-                    "act": 7, "title": "눈물의 화해", "speaker": "놀부",
-                    "text": "흥부야... 내가 천하의 몹쓸 놈이다... 네게 죄를 짓고 하늘의 벌을 받아 알거지가 되었구나... 날 용서하지 마라...",
+                    "act": 7, "title": "눈물의 화해", "speaker": "놀부와 흥부",
+                    "text": "놀부: '흥부야... 내가 천하의 몹쓸 놈이다... 네 복을 시기하다 패가망신했구나... 나를 패 죽여다오...'\n흥부: '형님! 어찌 그런 말씀을 하십니까! 우리는 한 부모의 피를 나눈 형제입니다. 제 집으로 가시지요!'",
+                    "hint": "진정한 용서는 원수를 굴복시키는 것이 아니라, 무조건적인 사랑으로 품어 상처를 치유하는 것입니다.",
                     "rle": act_rle_heungbu[6], "is_transition": False,
                     "choices": [
-                        {"text": "울며 형의 손을 굳게 잡고 품에 안아 용서한다", "delta": 3, "feedback": "흥부는 엎드린 형을 부둥켜안고 통곡했습니다. '형님, 우리는 한 피를 나눈 형제입니다!'"},
-                        {"text": "집과 양식은 내주되, 다시는 욕심부리지 말라 타이른다", "delta": 1, "feedback": "놀부는 고개를 숙이고 참회의 눈물을 흘리며 지난날의 악행을 뉘우쳤습니다."}
+                        {"text": "엎드린 형을 부둥켜안고 눈물을 흘리며 지난 원망을 씻어낸다", "delta": 3, "feedback": "흥부는 형을 품에 안고 통곡했습니다. 두 형제의 눈물이 얼어붙은 땅을 녹이고 봄풀을 틔웠습니다."},
+                        {"text": "거처와 양식은 내주되, 다시는 욕심부리지 말라 엄히 타이른다", "delta": 1, "feedback": "놀부는 고개를 숙이고 지난날의 악행을 뼈저리게 뉘우쳤습니다."}
                     ]
                 }
             ],
@@ -113,6 +135,78 @@ def build_master_system():
             ]
         },
         {
+            "id": "demian",
+            "title": "데미안",
+            "tag": "Hermann Hesse · 자아 실현",
+            "metric_name": "내면의 각성",
+            "metric_icon": "☥",
+            "scenes": [
+                {
+                    "act": 1, "title": "두 개의 세계와 크로머", "speaker": "크로머와 싱클레어",
+                    "text": "크로머: '사과를 훔쳤다고 으스대더니 겁쟁이 녀석! 내일까지 2마르크를 가져오지 않으면 네 아비와 경찰에 다 까발릴 테다, 알겠냐?'\n싱클레어: '프란츠, 제발... 우리 집엔 그런 큰돈이 없어... 한 번만 용서해 줘...'",
+                    "hint": "밝고 따스한 부모님의 세계 뒤편에 도사린 어둠의 세계. 거짓말로 시작된 굴레를 어떻게 끊어낼 것인가? 두려움에 굴복할수록 악마의 손아귀는 깊어집니다.",
+                    "rle": act_rle_demian[0], "is_transition": False,
+                    "choices": [
+                        {"text": "양심의 가책을 느끼며 더 이상 거짓과 협박에 휘둘리지 않기로 결심한다", "delta": 2, "feedback": "싱클레어는 떨리는 가슴을 쥐며 어둠의 굴레에서 벗어나려 몸부림쳤습니다. 영혼의 눈이 떠지기 시작했습니다."},
+                        {"text": "공포에 질려 부모님의 서랍에서 돈을 훔쳐 갖다주려 한다", "delta": -2, "feedback": "크로머의 잔인한 휘파람 소리가 귓가에 맴돌며, 싱클레어는 죄악의 심연으로 끌려 들어갔습니다."}
+                    ]
+                },
+                {
+                    "act": 2, "title": "막스 데미안과 카인의 표식", "speaker": "데미안과 싱클레어",
+                    "text": "데미안: '싱클레어, 카인은 비열한 살인자가 아니야. 그는 남들이 감히 갖지 못한 비범한 정신과 용기를 지녔기에 특별한 표식을 갖게 된 거란다.'\n싱클레어: '하지만 성경에는... 하나님이 그를 저주하셨다고 쓰여 있잖아?'\n데미안: '대부분의 사람들은 스스로 생각하기를 두려워하거든. 너는 어때?'",
+                    "hint": "남들이 정해준 맹목적인 도덕과 교리를 넘어서, 내면의 독립적인 이성으로 세상을 직시하는 자만이 '카인의 표식'을 지닙니다.",
+                    "rle": act_rle_demian[1], "is_transition": False,
+                    "choices": [
+                        {"text": "그의 대담하고 신비로운 통찰에 깊이 공명하며 귀를 기울인다", "delta": 2, "feedback": "데미안의 이마에서 은은한 황금빛 후광이 번지며, 싱클레어는 기존 세계의 껍질이 금 가는 것을 느꼈습니다."},
+                        {"text": "기존 교회의 가르침과 다르다며 두려워 귀를 닫으려 한다", "delta": -1, "feedback": "데미안은 서글프고도 그윽한 눈빛으로 싱클레어를 바라보며 조용히 침묵했습니다."}
+                    ]
+                },
+                {
+                    "act": 3, "title": "베아트리체 초상화", "speaker": "싱클레어의 독백",
+                    "text": "싱클레어: '이젤 앞에 홀린 듯 붓을 놀려 그린 이 얼굴... 거리에서 마주친 소녀 베아트리체인 줄 알았으나, 데미안의 얼굴이며, 동시에 내 영혼 깊은 곳의 참된 나 자신의 얼굴이로구나!'",
+                    "hint": "외부의 대상을 향한 동경은 결국 자기 내면의 신성을 발견하기 위한 거울에 불과합니다.",
+                    "rle": act_rle_demian[2], "is_transition": True, "button_text": "초상화에 불을 붙여 태우며 데미안에게 영혼의 전언을 띄운다"
+                },
+                {
+                    "act": 4, "title": "알을 깨는 매의 비상", "speaker": "아브락사스와 싱클레어",
+                    "text": "데미안의 편지: '새는 알에서 나오려고 투쟁한다. 알은 세계다. 태어나려는 자는 하나의 세계를 깨뜨려야 한다. 신의 이름은 아브락사스다.'\n싱클레어: '아브락사스... 신적이면서 동시에 악마적인, 빛과 어둠을 모두 품은 절대자여!'",
+                    "hint": "선(善)만을 강요하는 반쪽짜리 세계를 부수지 않고서는 온전한 인간으로 다시 태어날 수 없습니다.",
+                    "rle": act_rle_demian[3], "is_transition": False,
+                    "choices": [
+                        {"text": "기존의 세계를 과감히 부수고 참된 자아를 향해 날아오른다", "delta": 3, "feedback": "황금빛 매가 껍질을 박차고 솟구쳐 창공을 향해 포효했습니다! 영혼의 비상이 시작되었습니다."},
+                        {"text": "안온하고 익숙했던 유년의 보호막 속에 머물며 망설인다", "delta": -2, "feedback": "내면의 알껍데기가 삐걱거리며 성장통의 지독한 어둠이 엄습했습니다."}
+                    ]
+                },
+                {
+                    "act": 5, "title": "피스토리우스와 불꽃", "speaker": "피스토리우스와 싱클레어",
+                    "text": "피스토리우스: '(오르간 건반에서 손을 떼며) 싱클레어, 타오르는 불꽃 속을 응시하게. 그대가 꿈꾸는 모든 신비는 외부가 아닌 그대 가슴속에 이미 살아있네!'\n싱클레어: '선생님, 하지만 홀로 서는 것은 너무나 두렵고 고독합니다...'\n피스토리우스: '고독이야말로 자연이 인간을 성숙시키는 유일한 도가니라네.'",
+                    "hint": "스승의 가르침조차 딛고 넘어서야 비로소 온전한 홀로서기가 완성됩니다.",
+                    "rle": act_rle_demian[4], "is_transition": True, "button_text": "불꽃 속에서 내면의 불멸하는 소리에 귀를 기울인다"
+                },
+                {
+                    "act": 6, "title": "에바 부인의 품", "speaker": "에바 부인과 싱클레어",
+                    "text": "에바 부인: '싱클레어, 그대는 먼 길을 돌아 마침내 나를 찾아왔군요. 사랑은 애원하는 것이 아니라, 스스로의 내부에서 확신에 차오르는 것이랍니다.'\n싱클레어: '어머니... 당신은 제 모든 꿈의 종착역이자 운명입니다.'",
+                    "hint": "모성적인 대지이자 영혼의 고향. 참된 사랑은 구걸하는 것이 아니라 확신으로 이끄는 힘입니다.",
+                    "rle": act_rle_demian[5], "is_transition": True, "button_text": "대모신의 자애로운 손길을 느끼며 참 자아를 각성한다"
+                },
+                {
+                    "act": 7, "title": "마지막 키스와 거울 속 자아", "speaker": "데미안과 싱클레어",
+                    "text": "데미안: '(야전병원 침대에서 희미하게 미소 지으며) 어린 싱클레어... 이제 내가 없더라도 네 안의 소리에 귀를 기울여 봐. 언젠가 네가 나를 부를 때... 거울을 보면 내 모습이 바로 너 자신 안에 보일 거야.'\n싱클레어: '(데미안의 이마에 입맞춤을 받고 조용히 거울을 마주한다)'",
+                    "hint": "스승과 친구는 떠나갔으나, 그가 일깨운 빛은 영원히 내 영혼의 일부가 되었습니다.",
+                    "rle": act_rle_demian[6], "is_transition": False,
+                    "choices": [
+                        {"text": "거울 속에 비친 완전히 성숙해진 나 자신을 직시하며 미소 짓는다", "delta": 3, "feedback": "거울 속에 비친 싱클레어의 눈동자는 완전히 데미안과 하나가 되어 있었습니다. 순례는 완성되었습니다."},
+                        {"text": "떠나간 친구의 빈자리를 슬퍼하며 뜨거운 눈물로 작별을 고한다", "delta": 1, "feedback": "데미안의 키스는 지워지지 않는 영원한 표식이 되어 싱클레어의 가슴에 아로새겨졌습니다."}
+                    ]
+                }
+            ],
+            "endings": [
+                {"min": 8, "title": "아브락사스에 도달한 자", "desc": "빛과 어둠의 세계를 모두 통합하고, 알을 깨고 나와 온전한 참 자아를 실현했습니다."},
+                {"min": 5, "title": "표식을 지닌 자 (카인의 후예)", "desc": "세상의 규율에 굴복하지 않고 내면의 부름을 따르는 고결한 영혼의 소유자가 되었습니다."},
+                {"min": -99, "title": "알을 깨는 순례자", "desc": "수많은 방황과 고통 끝에 마침내 스스로의 삶을 대면할 용기를 얻었습니다."}
+            ]
+        },
+        {
             "id": "peach",
             "title": "제임스와 슈퍼 복숭아",
             "tag": "Roald Dahl · 환상 모험",
@@ -120,17 +214,19 @@ def build_master_system():
             "metric_icon": "✦",
             "scenes": [
                 {
-                    "act": 1, "title": "스폰지와 스파이커 이모", "speaker": "스파이커 이모",
-                    "text": "게으른 녀석! 장작을 더 패지 못해?! 지팡이로 뼈마디를 두들겨 맞아야 정신을 차릴 테냐!",
+                    "act": 1, "title": "스폰지와 스파이커 이모", "speaker": "이모들과 제임스",
+                    "text": "스파이커: '게으른 녀석! 장작을 더 패지 못해?! 지팡이로 뼈마디를 두들겨 맞아야 정신을 차릴 테냐!'\n스폰지: '오호호, 밥도 주지 마 얘! 굶겨 죽여야 고분고분해지지!'\n제임스: '이모, 하루 종일 물 한 모금 못 마셨어요...'",
+                    "hint": "가혹한 학대 속에서도 마음속의 순수함과 희망의 불씨를 꺼뜨리지 마십시오.",
                     "rle": act_rle_peach[0], "is_transition": False,
                     "choices": [
-                        {"text": "고분고분 장작을 패며 언젠가 올 자유를 꿈꾼다", "delta": 1, "feedback": "제임스는 입술을 깨물며 묵묵히 도끼를 쥐었습니다. 희망을 잃지 않았습니다."},
+                        {"text": "입술을 깨물며 묵묵히 희망의 날을 기다린다", "delta": 1, "feedback": "제임스는 눈물을 삼키며 묵묵히 도끼를 쥐었습니다. 언젠가 바다 건너 자유를 찾겠다는 꿈을 품었습니다."},
                         {"text": "억울함에 이모들에게 반항의 눈빛을 쏘아본다", "delta": -1, "feedback": "스파이커 이모가 앙상한 손으로 지팡이를 내리쳤습니다! '눈을 똑바로 뜨다니!'"}
                     ]
                 },
                 {
-                    "act": 2, "title": "마법의 초록 악어 혀", "speaker": "신비로운 노인",
-                    "text": "얘야, 이 봉투를 받거라. 이 안에는 수천 마리 악어의 혀로 빚어낸 거대한 마법이 꿈틀대고 있단다. 절대 흘리지 마라!",
+                    "act": 2, "title": "마법의 초록 악어 혀", "speaker": "노인과 제임스",
+                    "text": "노인: '얘야, 이 봉투를 받거라. 이 안에는 수천 마리 악어의 혀로 빚어낸 거대한 마법이 꿈틀대고 있단다. 절대 흘리지 마라!'\n제임스: '할아버지, 이게 대체 뭐예요? 온몸이 찌릿찌릿해요!'",
+                    "hint": "미지의 기적을 마주했을 때 두려움 대신 호기심과 용기로 품에 안으십시오.",
                     "rle": act_rle_peach[1], "is_transition": False,
                     "choices": [
                         {"text": "소중히 품에 안고 마른 복숭아나무 밑으로 달린다", "delta": 2, "feedback": "봉투 속 초록빛 발광체들이 나무뿌리로 스며들며 대지가 쿵쿵 진동했습니다!"},
@@ -138,13 +234,15 @@ def build_master_system():
                     ]
                 },
                 {
-                    "act": 3, "title": "거대 복숭아의 탄생", "speaker": "해설",
-                    "text": "복숭아나무 꼭대기에 맺힌 작은 복숭아가 심장처럼 쿵-쿵 박동하며 부풀어 오르더니, 마침내 집채만 한 거대 복숭아가 되었습니다!",
+                    "act": 3, "title": "거대 복숭아의 탄생", "speaker": "마을 사람들과 제임스",
+                    "text": "마을 사람들: '저게 뭐야?! 복숭아가 집채만 하게 부풀어 오르고 있어! 심장처럼 쿵-쿵 박동하잖아!'\n제임스: '달콤한 복숭아 향기가 언덕 가득 퍼져나가요!'",
+                    "hint": "경이로운 모험의 입구는 가장 낯선 곳에 열려 있습니다.",
                     "rle": act_rle_peach[2], "is_transition": True, "button_text": "박동하는 복숭아의 터널 속으로 기어 들어간다"
                 },
                 {
-                    "act": 4, "title": "거대 곤충 친구들", "speaker": "메뚜기 신사",
-                    "text": "어서 오십시오, 어린 신사여! 두려워 마세요. 우리는 당신을 기다려 온 복숭아의 친구들이랍니다!",
+                    "act": 4, "title": "거대 곤충 친구들", "speaker": "메뚜기와 제임스",
+                    "text": "메뚜기 신사: '어서 오십시오, 어린 신사여! 두려워 마세요. 우리는 당신을 기다려 온 복숭아의 친구들이랍니다!'\n무당벌레 숙녀: '아가, 흙먼지가 잔뜩 묻었구나. 이리 오렴!'\n제임스: '벌레들이 말을 하다니... 하지만 너무나 다정해요!'",
+                    "hint": "겉모습이 기괴할지라도 마음이 따스한 벗들과 연대하십시오.",
                     "rle": act_rle_peach[3], "is_transition": False,
                     "choices": [
                         {"text": "두려움을 떨치고 정중히 신사들에게 악수를 청한다", "delta": 2, "feedback": "무당벌레와 지네가 환호하며 제임스를 둘러싸고 따스하게 환영했습니다!"},
@@ -153,12 +251,14 @@ def build_master_system():
                 },
                 {
                     "act": 5, "title": "대서양으로의 출항", "speaker": "해설",
-                    "text": "꼭지를 끊은 슈퍼 복숭아가 언덕을 맹렬히 굴러 내려가 절벽을 넘어 드넓은 대서양 바다로 풍덩 빠졌습니다! 푸른 바다 위를 당당히 항해합니다!",
+                    "text": "꼭지를 끊은 슈퍼 복숭아가 언덕을 맹렬히 굴러 내려가 절벽을 넘어 드넓은 대서양 바다로 풍덩 빠졌습니다! 거대한 하얀 파도 포말을 가르며 푸른 바다 위를 당당히 항해합니다!",
+                    "hint": "과거의 학대받던 땅을 떠나 망망대해로 나아가는 용기.",
                     "rle": act_rle_peach[4], "is_transition": True, "button_text": "갈매기를 낚아챌 실크 거미줄을 준비한다"
                 },
                 {
-                    "act": 6, "title": "500마리 갈매기 비행", "speaker": "제임스",
-                    "text": "지네 아저씨, 거미 아가씨, 서두르세요! 갈매기 목에 실을 걸어 복숭아를 공중으로 띄웁시다! 날아오른다, 하늘로!!",
+                    "act": 6, "title": "500마리 갈매기 비행", "speaker": "제임스와 친구들",
+                    "text": "제임스: '지네 아저씨, 거미 아가씨, 서두르세요! 갈매기 목에 실을 걸어 복숭아를 공중으로 띄웁시다!'\n지네: '좋았어! 날아오른다, 구름 위 하늘로!!'",
+                    "hint": "지혜와 협동심이야말로 바다의 상어 떼를 이겨내는 가장 큰 날개입니다.",
                     "rle": act_rle_peach[5], "is_transition": False,
                     "choices": [
                         {"text": "지혜를 발휘해 갈매기 떼를 일사불란하게 지휘한다", "delta": 2, "feedback": "500마리의 흰 갈매기들이 날개를 퍼덕이며 복숭아를 구름 위로 들어 올렸습니다!"},
@@ -166,8 +266,9 @@ def build_master_system():
                     ]
                 },
                 {
-                    "act": 7, "title": "엠파이어 빌딩 착륙", "speaker": "해설",
-                    "text": "대서양을 건너 뉴욕 맨해튼 상공에 도달한 거대 복숭아가 엠파이어 스테이트 빌딩 첨탑에 사뿐히 꽂혔습니다! 온 도시가 환호의 꽃가루로 뒤덮입니다!",
+                    "act": 7, "title": "엠파이어 빌딩 착륙", "speaker": "뉴욕 시민들과 제임스",
+                    "text": "뉴욕 시민들: '하늘을 봐! 거대한 복숭아가 엠파이어 빌딩 첨탑에 사뿐히 내려앉았어! 만세!!'\n제임스: '우리가 해냈어요! 바다를 건너 자유의 땅에 도착했어요!'",
+                    "hint": "고난을 딛고 얻은 풍요를 세상의 가난한 이웃들과 나누는 기쁨.",
                     "rle": act_rle_peach[6], "is_transition": False,
                     "choices": [
                         {"text": "달콤한 복숭아 과육을 뉴욕의 가난한 아이들에게 선물한다", "delta": 3, "feedback": "수만 명의 아이들이 환호하며 달콤한 복숭아를 나누어 먹었습니다!"},
@@ -189,50 +290,57 @@ def build_master_system():
             "metric_icon": "☩",
             "scenes": [
                 {
-                    "act": 1, "title": "어두운 숲과 베르길리우스", "speaker": "베르길리우스",
-                    "text": "인생의 반환점에서 길을 잃은 시인이여, 두려워 마라. 내가 그대를 지옥과 연옥의 심연을 지나 천국으로 인도하리라.",
+                    "act": 1, "title": "어두운 숲과 베르길리우스", "speaker": "베르길리우스와 단테",
+                    "text": "단테: '길을 잃었습니다, 스승이여... 표범과 사자와 늑대가 길을 가로막고 으르렁거립니다...'\n베르길리우스: '방황하는 시인이여, 두려워 마라. 내가 그대를 지옥의 심연을 지나 천국으로 인도하리라.'",
+                    "hint": "삶의 반환점에서 길을 잃었을 때, 참된 이성과 지혜의 목소리에 영혼을 맡기십시오.",
                     "rle": act_rle_dante[0], "is_transition": False,
                     "choices": [
-                        {"text": "스승의 손을 잡고 지옥의 문으로 굳건히 발을 딛는다", "delta": 2, "feedback": "스승의 월계관이 어두운 숲속에서 성스러운 빛을 뿜어냈습니다."},
+                        {"text": "스승의 손을 잡고 지옥의 문으로 굳건히 발을 딛는다", "delta": 2, "feedback": "스승의 월계관이 어두운 숲속에서 성스러운 빛을 뿜어냈습니다. 단테의 발걸음에 힘이 실렸습니다."},
                         {"text": "세 마리 맹수의 포효에 뒷걸음질 치며 주저앉는다", "delta": -1, "feedback": "베르길리우스가 지팡이를 들어 맹수들을 쫓아내며 타이르고 이끌었습니다."}
                     ]
                 },
                 {
-                    "act": 2, "title": "지옥의 문과 뱃사공 카론", "speaker": "카론",
-                    "text": "이곳에 들어오는 자, 모든 희망을 버려라! 살아있는 자여, 썩 물러가라! 아케론 강 건너 영원한 암흑 속으로 떠날지니!",
+                    "act": 2, "title": "지옥의 문과 뱃사공 카론", "speaker": "카론과 베르길리우스",
+                    "text": "카론: '이곳에 들어오는 자, 모든 희망을 버려라! 살아있는 자여, 썩 물러가라! 아케론 강 건너 영원한 암흑 속으로 떠날지니!'\n베르길리우스: '카론이여, 분노를 거두라. 이것은 하늘에서 뜻하신 바니 더 이상 묻지 말라!'",
+                    "hint": "공포와 절망 앞에서도 하늘의 뜻과 이성의 인도하심을 믿으십시오.",
                     "rle": act_rle_dante[1], "is_transition": False,
                     "choices": [
-                        {"text": "스승의 가르침을 믿고 당당히 핏빛 나룻배에 오른다", "delta": 2, "feedback": "베르길리우스가 외쳤습니다. '카론이여, 이것은 하늘의 뜻이니 분노를 거두라!'"},
+                        {"text": "스승의 가르침을 믿고 당당히 핏빛 나룻배에 오른다", "delta": 2, "feedback": "거구의 카론도 위엄 있는 스승의 일갈에 뱃머리를 돌려 두 시인을 태웠습니다."},
                         {"text": "망령들의 비명 소리에 공포에 질려 기절하고 만다", "delta": -2, "feedback": "단테는 핏빛 강물 앞에서 전율하며 정신을 잃고 말았습니다."}
                     ]
                 },
                 {
-                    "act": 3, "title": "제2옥: 애욕의 암흑 폭풍", "speaker": "프란체스카",
-                    "text": "오 자비로운 시인이여, 책을 읽다 사랑에 빠져 비극을 맞이한 우리를 가엾게 여겨 주소서... 영원한 암흑 폭풍 속에서도 우리는 서로를 놓지 못합니다...",
+                    "act": 3, "title": "제2옥: 애욕의 암흑 폭풍", "speaker": "프란체스카와 단테",
+                    "text": "프란체스카: '오 자비로운 시인이여, 책을 읽다 사랑에 빠져 비극을 맞이한 우리를 가엾게 여겨 주소서... 영원한 암흑 폭풍 속에서도 우리는 서로를 놓지 못합니다...'\n단테: '오 프란체스카여, 그대의 고통에 가슴이 찢어지는 듯하오...'",
+                    "hint": "인간적인 연민과 신의 엄정한 정의 사이에서 영혼의 고뇌를 통찰하십시오.",
                     "rle": act_rle_dante[2], "is_transition": False,
                     "choices": [
-                        {"text": "두 연인의 애달픈 비극에 깊이 탄식하며 눈물을 흘린다", "delta": 2, "feedback": "단테는 지극한 연민과 슬픔으로 가슴이 찢어지며 바닥에 엎드렸습니다."},
+                        {"text": "두 연인의 애달픈 비극에 깊이 탄식하며 눈물을 흘린다", "delta": 2, "feedback": "단테는 지극한 연민과 슬픔으로 가슴이 찢어지며 바닥에 엎드렸습니다. 참된 자비가 싹텄습니다."},
                         {"text": "죄는 죗값일 뿐이라며 냉정하게 고개를 돌린다", "delta": -1, "feedback": "베르길리우스가 침묵 속에서 단테의 차가운 눈빛을 응시했습니다."}
                     ]
                 },
                 {
-                    "act": 4, "title": "제6옥: 불타는 석관의 파리나타", "speaker": "파리나타",
-                    "text": "그대 피렌체의 말을 쓰는 나그네여! 지옥의 화염이 내 몸을 태울지라도, 내 조국 피렌체의 운명은 어떻게 되었는가!",
+                    "act": 4, "title": "제6옥: 불타는 석관의 파리나타", "speaker": "파리나타와 단테",
+                    "text": "파리나타: '그대 피렌체의 말을 쓰는 나그네여! 지옥의 화염이 내 몸을 태울지라도, 내 조국 피렌체의 운명은 어떻게 되었는가!'\n단테: '조국을 향한 그대의 오만과 기개는 지옥불 속에서도 꺾이지 않는구려.'",
+                    "hint": "지옥의 형벌 속에서도 굴복하지 않는 인간 정신의 거대한 기개.",
                     "rle": act_rle_dante[3], "is_transition": True, "button_text": "오만한 귀족의 숭고한 기개에 경의를 표한다"
                 },
                 {
                     "act": 5, "title": "제7옥: 끓는 피의 강 플레게톤", "speaker": "해설",
                     "text": "이웃을 해친 폭군들이 펄펄 끓는 핏빛 강물 속에서 울부짖고, 강둑에서는 반인반마 켄타우로스들이 활시위를 팽팽히 당기고 있습니다!",
+                    "hint": "타인에게 가한 폭력은 반드시 피의 강물이 되어 돌아옵니다.",
                     "rle": act_rle_dante[4], "is_transition": True, "button_text": "침착하게 네소스의 등에 올라 피의 강을 건넌다"
                 },
                 {
                     "act": 6, "title": "제8옥: 말레볼제의 구덩이", "speaker": "해설",
                     "text": "거대한 지옥 뱀들이 도둑들의 몸을 칭칭 감고 물어뜯습니다. 물린 육신이 재로 타들어 갔다가 다시 인간으로 부활하는 지독한 고통이 끝없이 반복됩니다!",
+                    "hint": "죄악의 실체를 피하지 않고 직시하는 것만이 정화의 첫걸음입니다.",
                     "rle": act_rle_dante[5], "is_transition": True, "button_text": "죄악의 끔찍한 실체를 직시하며 심연으로 내려간다"
                 },
                 {
-                    "act": 7, "title": "얼음 지옥 탈출과 별들의 찬가", "speaker": "단테",
-                    "text": "스승이여! 거대한 얼음 호수 코키토스를 지나 마침내 지옥의 구멍을 빠져나왔습니다! 머리 위로 밤하늘의 찬란한 별들이 쏟아져 내립니다!!",
+                    "act": 7, "title": "얼음 지옥 탈출과 별들의 찬가", "speaker": "단테와 베르길리우스",
+                    "text": "단테: '스승이여! 거대한 얼음 호수 코키토스를 지나 마침내 지옥의 구멍을 빠져나왔습니다!'\n베르길리우스: '보라, 단테여. 머리 위로 밤하늘의 찬란한 별들이 쏟아져 내리는구나!'",
+                    "hint": "심연의 어둠을 통과한 자만이 밤하늘의 진정한 별빛을 우러러볼 수 있습니다.",
                     "rle": act_rle_dante[6], "is_transition": False,
                     "choices": [
                         {"text": "'그리고 우리는 밖으로 나와 다시 별들을 보았다' 구원의 찬가를 부른다", "delta": 3, "feedback": "칠흑 같은 어둠을 뚫고 나온 단테의 눈에 눈부신 은하수가 가득 차올랐습니다!"},
@@ -244,71 +352,6 @@ def build_master_system():
                 {"min": 8, "title": "신성한 구원의 대시인", "desc": "지옥의 모든 죄악과 고통을 이성과 연민으로 통찰하고, 별들이 빛나는 구원의 길로 나아갔습니다."},
                 {"min": 5, "title": "깨어난 순례자", "desc": "공포와 절망을 극복하고 스승의 인도를 따라 지옥의 심연을 무사히 통과했습니다."},
                 {"min": -99, "title": "심연을 목격한 자", "desc": "지옥의 끔찍한 형벌을 뼈에 새기며 지상에서의 새로운 삶을 성찰했습니다."}
-            ]
-        },
-        {
-            "id": "demian",
-            "title": "데미안",
-            "tag": "Hermann Hesse · 자아 실현",
-            "metric_name": "내면의 각성",
-            "metric_icon": "☥",
-            "scenes": [
-                {
-                    "act": 1, "title": "두 개의 세계와 크로머", "speaker": "프란츠 크로머",
-                    "text": "사과를 훔쳤다고 떠벌리더니 겁쟁이 녀석! 내일까지 2마르크를 가져오지 않으면 경찰에 네 죄를 다 불어버릴 테다, 알겠냐?",
-                    "rle": act_rle_demian[0], "is_transition": False,
-                    "choices": [
-                        {"text": "양심의 가책을 느끼며 더 이상 거짓에 휘둘리지 않기로 결심한다", "delta": 2, "feedback": "싱클레어는 떨리는 가슴을 쥐며 어둠의 굴레에서 벗어나려 몸부림쳤습니다."},
-                        {"text": "공포에 질려 부모님의 서랍에서 돈을 훔치려 한다", "delta": -2, "feedback": "크로머의 휘파람 소리가 귓가에 맴돌며 영혼이 타락해 갔습니다."}
-                    ]
-                },
-                {
-                    "act": 2, "title": "막스 데미안과 카인의 표식", "speaker": "데미안",
-                    "text": "싱클레어, 카인은 비열한 살인자가 아니야. 그는 남들이 감히 갖지 못한 고결한 힘과 용기를 지녔기에 '표식'을 지니게 된 거란다.",
-                    "rle": act_rle_demian[1], "is_transition": False,
-                    "choices": [
-                        {"text": "그의 대담하고 신비로운 해석에 전율하며 귀를 기울인다", "delta": 2, "feedback": "데미안의 이마에서 은은한 황금빛 후광이 비치며 싱클레어의 닫힌 눈이 뜨였습니다."},
-                        {"text": "기존 교회의 가르침과 다르다며 두려워 귀를 닫는다", "delta": -1, "feedback": "데미안은 그윽한 눈빛으로 싱클레어를 바라보며 조용히 미소 지었습니다."}
-                    ]
-                },
-                {
-                    "act": 3, "title": "베아트리체 초상화", "speaker": "싱클레어",
-                    "text": "이젤 앞에 서서 홀린 듯 그린 이 얼굴... 소녀인 줄 알았으나 데미안이며, 동시에 내 영혼 깊은 곳의 참된 자아의 얼굴이로구나!",
-                    "rle": act_rle_demian[2], "is_transition": True, "button_text": "초상화에 불을 붙여 태우며 영혼의 편지를 띄운다"
-                },
-                {
-                    "act": 4, "title": "알을 깨는 매의 비상", "speaker": "아브락사스",
-                    "text": "'새는 알에서 나오려고 투쟁한다. 알은 세계다. 태어나려는 자는 하나의 세계를 파괴해야 한다. 신의 이름은 아브락사스다.'",
-                    "rle": act_rle_demian[3], "is_transition": False,
-                    "choices": [
-                        {"text": "기존의 세계를 부수고 알을 깨며 푸른 하늘로 날아오른다", "delta": 3, "feedback": "황금빛 매가 껍질을 박차고 솟구쳐 창공을 향해 포효했습니다!"},
-                        {"text": "안온하고 익숙한 유년의 껍질 속에 머물고 싶어 망설인다", "delta": -2, "feedback": "내면의 알껍데기가 삐걱거리며 성장통의 괴로움이 엄습했습니다."}
-                    ]
-                },
-                {
-                    "act": 5, "title": "피스토리우스와 불꽃", "speaker": "피스토리우스",
-                    "text": "싱클레어, 타오르는 불꽃 속을 응시하게. 그대가 꿈꾸는 모든 신비는 이미 그대의 가슴속에 살아 숨 쉬고 있네!",
-                    "rle": act_rle_demian[4], "is_transition": True, "button_text": "파이프오르간의 장엄한 선율 속에서 자아를 응시한다"
-                },
-                {
-                    "act": 6, "title": "에바 부인의 품", "speaker": "에바 부인",
-                    "text": "싱클레어, 그대는 먼 길을 돌아 마침내 나를 찾아왔군요. 사랑은 애원하는 것이 아니라, 스스로의 내부에서 확신에 차오르는 것이랍니다.",
-                    "rle": act_rle_demian[5], "is_transition": True, "button_text": "대모신의 자애로운 손길을 느끼며 눈물 흘린다"
-                },
-                {
-                    "act": 7, "title": "마지막 키스와 거울 속 자아", "speaker": "데미안",
-                    "text": "싱클레어, 네 안의 소리에 귀를 기울여 봐. 언젠가 네가 나를 부를 때... 이제 거울을 보면 내 모습이 바로 너 자신 안에 보일 거야.",
-                    "rle": act_rle_demian[6], "is_transition": False,
-                    "choices": [
-                        {"text": "거울 속 완전히 성숙해진 나 자신을 직시하며 미소 짓는다", "delta": 3, "feedback": "거울 속에 비친 싱클레어의 눈동자는 완전히 데미안과 하나가 되어 있었습니다."},
-                        {"text": "떠나간 친구의 빈자리에 눈물을 흘리며 작별을 고한다", "delta": 1, "feedback": "데미안의 키스는 영원한 표식이 되어 싱클레어의 영혼에 아로새겨졌습니다."}
-                    ]
-                }
-            ],
-            "endings": [
-                {"min": 8, "title": "아브락사스에 도달한 자", "desc": "빛과 어둠의 세계를 모두 통합하고, 알을 깨고 나와 온전한 참 자아를 실현했습니다."},
-                {"min": 5, "title": "표식을 지닌 자 (카인의 후예)", "desc": "세상의 규율에 굴복하지 않고 내면의 부름을 따르는 고결한 영혼의 소유자가 되었습니다."},
-                {"min": -99, "title": "알을 깨는 순례자", "desc": "수많은 방황과 고통 끝에 마침내 스스로의 삶을 대면할 용기를 얻었습니다."}
             ]
         }
     ]
@@ -332,19 +375,18 @@ def build_master_system():
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #101010;
+    background-color: #0d0d0d;
     color: #e0e0e0;
     font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
   }}
-  /* 상하 잘림 완전 해결: 730px 안정적 프레임 높이로 화면에 쏙 들어가게 설계 */
   .console-frame {{
     width: 860px;
     height: 730px;
-    background: #1c1c1c;
-    border: 3px solid #3d3d3d;
+    background: #181818;
+    border: 3px solid #383838;
     border-radius: 8px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.95);
     display: flex;
@@ -352,47 +394,45 @@ def build_master_system():
     overflow: hidden;
   }}
   .console-header {{
-    background: #252525;
+    background: #222222;
     padding: 8px 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid #2e2e2e;
   }}
   .console-title {{ font-size: 15px; font-weight: bold; color: #ffcc99; }}
   .console-hud {{ font-size: 13px; color: #81d4fa; font-family: monospace; }}
   
-  /* 캔버스 영역: 296x152 도트를 640x328로 완벽 비율 렌더링 */
   .canvas-container {{
-    background: #050505;
+    background: #000000;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 6px;
-    border-bottom: 2px solid #2a2a2a;
+    border-bottom: 2px solid #282828;
   }}
   canvas {{
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     width: 640px;
     height: 328px;
-    background: #181818;
-    border: 2px solid #3a3a3a;
+    background: #151515;
+    border: 2px solid #333333;
     box-shadow: 0 4px 15px rgba(0,0,0,0.8);
   }}
   
-  /* 하단 패널: 대사 가독성 15px 및 시원한 줄간격 */
   .bottom-panel {{
     flex: 1;
     display: flex;
     padding: 10px 18px;
     gap: 14px;
-    background: #161616;
+    background: #141414;
   }}
   .dialogue-box {{
     flex: 65;
-    background: #202020;
-    border: 1px solid #383838;
+    background: #1e1e1e;
+    border: 1px solid #333333;
     border-radius: 6px;
     padding: 10px 14px;
     display: flex;
@@ -410,17 +450,18 @@ def build_master_system():
   }}
   .speaker::before {{ content: "◈"; color: #e74c3c; }}
   .dialogue-text {{
-    font-size: 14.5px;
+    font-size: 14px;
     line-height: 1.55;
     color: #ffffff;
     word-break: keep-all;
+    white-space: pre-line;
     min-height: 44px;
   }}
   
   .system-box {{
     flex: 35;
-    background: #202020;
-    border: 1px solid #383838;
+    background: #1e1e1e;
+    border: 1px solid #333333;
     border-radius: 6px;
     padding: 10px 14px;
     display: flex;
@@ -437,10 +478,10 @@ def build_master_system():
   }}
   .metric-track {{
     height: 10px;
-    background: #333;
+    background: #2c2c2c;
     border-radius: 5px;
     overflow: hidden;
-    border: 1px solid #444;
+    border: 1px solid #404040;
   }}
   .metric-fill {{
     height: 100%;
@@ -449,19 +490,18 @@ def build_master_system():
     transition: width 0.35s ease;
   }}
   
-  /* 선택지 버튼: 1~5번 엄격 고정 */
   .choice-container {{
-    padding: 0 18px 12px 18px;
+    padding: 0 18px 10px 18px;
     display: flex;
     flex-direction: column;
     gap: 6px;
-    background: #161616;
+    background: #141414;
   }}
   .choice-btn {{
-    background: #243342;
+    background: #22313f;
     color: #f0f3f4;
-    border: 1px solid #34495e;
-    padding: 9px 14px;
+    border: 1px solid #2c3e50;
+    padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
@@ -470,10 +510,23 @@ def build_master_system():
     transition: all 0.15s;
   }}
   .choice-btn:hover {{
-    background: #34495e;
+    background: #2c3e50;
     border-color: #f39c12;
     color: #f1c40f;
     transform: translateX(4px);
+  }}
+
+  /* 힌트 모달 / 박스 */
+  .hint-box {{
+    background: #2a2415;
+    border: 1px solid #d4ac0d;
+    color: #f9e79f;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12.5px;
+    line-height: 1.4;
+    margin-top: 6px;
+    display: none;
   }}
 </style>
 </head>
@@ -482,7 +535,7 @@ def build_master_system():
 <div class="console-frame">
   <div class="console-header">
     <div class="console-title" id="headerTitle">◆ Divina Ludus · 고전문학 서재 ◆</div>
-    <div class="console-hud" id="hudText">[Native 296x152 4X Engine]</div>
+    <div class="console-hud" id="hudText">[Ultra 296x152 Engine]</div>
   </div>
 
   <div class="canvas-container">
@@ -494,6 +547,7 @@ def build_master_system():
       <div>
         <div class="speaker" id="speakerName">사서</div>
         <div class="dialogue-text" id="dialogueText">환영합니다, 순례자여. 서재의 책을 펼쳐 여정을 시작하십시오.</div>
+        <div class="hint-box" id="hintBox"></div>
       </div>
       <div style="font-size: 12px; color: #888;" id="feedbackText">키보드 [1], [2] 키를 눌러 선택할 수 있습니다.</div>
     </div>
@@ -507,10 +561,10 @@ def build_master_system():
           <div class="metric-fill" id="metricBar" style="width: 30%;"></div>
         </div>
       </div>
-      <div style="font-size: 11.5px; color: #888; line-height: 1.4;" id="sysInfo">
-        ◈ [1] 기본 튜토리얼 (흥부놀부)<br>
-        ◈ [2] 정식 문학 서재 (3대 명작)<br>
-        ◈ 키보드: [1~5, Enter, ESC]
+      <div style="font-size: 11.5px; color: #888; line-height: 1.45;" id="sysInfo">
+        ◈ [1~5]: 선택 / 다음페이지<br>
+        ◈ [0]: 💡 지혜의 사색 힌트<br>
+        ◈ [* / Q / ESC]: 서재 나가기
       </div>
     </div>
   </div>
@@ -529,17 +583,19 @@ def build_master_system():
   let curSceneIdx = 0;
   let curFrame = 0;
   let metricValue = 3;
+  let hintVisible = false;
   
-  // 서재 페이지네이션 (1페이지당 최대 4작품, 5번은 다음 페이지 엄격 준수!)
+  // 서재 페이지네이션 (1페이지당 최대 3작품, 5번은 다음 페이지)
   let libraryPage = 0;
   const ITEMS_PER_PAGE = 3;
 
   function showTitleScreen() {{
     gameState = 'TITLE';
     curPack = null;
+    hideHint();
     document.getElementById('headerTitle').innerText = "◆ Divina Ludus · 고전문학 서재 ◆";
     document.getElementById('speakerName').innerText = "안내 사서";
-    document.getElementById('dialogueText').innerText = "환영합니다, 순례자여. [1]번을 눌러 조작법과 룰을 익히는 '기본 튜토리얼'을 시작하거나, [2]번을 눌러 '정식 문학 서재'로 입장하십시오.";
+    document.getElementById('dialogueText').innerText = "환영합니다, 순례자여.\\n[1]번을 눌러 조작법을 익히는 '기본 튜토리얼'을 시작하거나,\\n[2]번을 눌러 '정식 문학 서재'로 입장하십시오.";
     document.getElementById('feedbackText').innerText = "키보드 [1] 또는 [2] 키를 누르세요.";
     document.getElementById('metricName').innerText = "◈ 모드 안내";
     document.getElementById('metricVal').innerText = "준비 완료";
@@ -552,42 +608,39 @@ def build_master_system():
       <button class="choice-btn" onclick="showLibraryScreen(0)">[2] 정식 문학 서재 입장 (제임스 복숭아, 단테 지옥편, 데미안)</button>
     `;
     
-    // 타이틀 컷씬: 흥부놀부 1막 프레임 렌더링
     renderStaticFrame(masterData.packs[0].scenes[0].rle[0]);
   }}
 
-  // 1~5번 엄격 페이지네이션 서재 시스템! (5번 = [다음 페이지])
   function showLibraryScreen(page = 0) {{
     gameState = 'LIBRARY';
     libraryPage = page;
+    hideHint();
     
-    const literaturePacks = masterData.packs.slice(1); // 튜토리얼 제외한 정식 문학 작품들
+    const literaturePacks = masterData.packs.slice(1);
     const totalPages = Math.ceil(literaturePacks.length / ITEMS_PER_PAGE);
     const startIdx = libraryPage * ITEMS_PER_PAGE;
     const pageItems = literaturePacks.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
-    document.getElementById('headerTitle').innerText = `◆ 정식 문학 서재 (페이지 ${{libraryPage + 1}} / ${{totalPages}}) ◆`;
+    document.getElementById('headerTitle').innerText = `◆ 정식 문학 서재 (Page ${{libraryPage + 1}} / ${{totalPages}}) ◆`;
     document.getElementById('speakerName').innerText = "서재의 문지기";
-    document.getElementById('dialogueText').innerText = "어떤 영혼의 여정을 탐험하시겠습니까? 플레이하고자 하는 명작의 번호[1~3]를 선택하십시오. [0]번은 메인 타이틀입니다.";
-    document.getElementById('feedbackText').innerText = "키보드 숫자키 [1~4], [0/ESC] 뒤로가기를 누르세요.";
+    document.getElementById('dialogueText').innerText = "어떤 영혼의 여정을 탐험하시겠습니까?\\n플레이하고자 하는 명작의 번호[1~3]를 선택하십시오. [*] 키로 메인 타이틀로 돌아갑니다.";
+    document.getElementById('feedbackText').innerText = "키보드 숫자키 [1~3], [5] 다음페이지, [*] 타이틀";
 
     let buttonsHtml = '';
     pageItems.forEach((pack, i) => {{
       buttonsHtml += `<button class="choice-btn" onclick="loadPackById('${{pack.id}}')">[${{i + 1}}] ${{pack.title}} (${{pack.tag}} · ${{pack.metric_icon}} ${{pack.metric_name}})</button>`;
     }});
 
-    // 다음 페이지가 있을 경우 엄격하게 [5]번에 배치!
     if (totalPages > 1) {{
       const nextPage = (libraryPage + 1) % totalPages;
       buttonsHtml += `<button class="choice-btn" style="color:#f39c12;" onclick="showLibraryScreen(${{nextPage}})">[5] 다음 페이지 서재 목록 보기 (Page ${{nextPage + 1}}/${{totalPages}})</button>`;
     }}
 
-    buttonsHtml += `<button class="choice-btn" style="background:#333;" onclick="showTitleScreen()">[0] 메인 메뉴로 돌아가기 (ESC)</button>`;
+    buttonsHtml += `<button class="choice-btn" style="background:#282828;" onclick="showTitleScreen()">[*] 메인 메뉴로 돌아가기 (ESC / Q)</button>`;
     
     document.getElementById('choiceBox').innerHTML = buttonsHtml;
     
-    // 서재 대표 컷씬 (현재 페이지 첫 작품의 대표 씬)
-    renderStaticFrame(pageItems[0].scenes[2].rle[0]);
+    renderStaticFrame(pageItems[0].scenes[1].rle[0]);
   }}
 
   function startTutorial() {{
@@ -600,9 +653,10 @@ def build_master_system():
     curSceneIdx = 0;
     curFrame = 0;
     metricValue = 3;
+    hideHint();
     
     document.getElementById('metricName').innerText = `${{curPack.metric_icon}} ${{curPack.metric_name}}`;
-    document.getElementById('sysInfo').innerHTML = `◈ 작품: ${{curPack.title}}<br>◈ 갈래: ${{curPack.tag}}<br>◈ [0] 서재로 나가기`;
+    document.getElementById('sysInfo').innerHTML = `◈ 작품: ${{curPack.title}}<br>◈ [0] 💡 지혜의 사색 힌트<br>◈ [*] 서재로 나가기`;
     
     loadScene(0);
   }}
@@ -610,12 +664,13 @@ def build_master_system():
   function loadScene(idx) {{
     curSceneIdx = idx;
     curFrame = 0;
+    hideHint();
     const scene = curPack.scenes[curSceneIdx];
     
     document.getElementById('headerTitle').innerText = `◆ ${{curPack.title}} · 제${{scene.act}}막: ${{scene.title}} ◆`;
     document.getElementById('speakerName').innerText = scene.speaker;
     document.getElementById('dialogueText').innerText = scene.text;
-    document.getElementById('feedbackText').innerText = scene.is_transition ? "진행하려면 [Enter] 키 또는 아래 버튼을 누르세요." : "키보드 [1], [2] 키로 선택하세요.";
+    document.getElementById('feedbackText').innerText = scene.is_transition ? "진행: [Enter] / 사색 힌트: [0] / 서재 나가기: [*]" : "선택: [1], [2] / 사색 힌트: [0] / 서재 나가기: [*]";
     
     updateMetricUI();
     
@@ -640,6 +695,35 @@ def build_master_system():
         box.appendChild(btn);
       }});
     }}
+
+    // 하단 힌트 버튼 추가
+    const hintBtn = document.createElement('button');
+    hintBtn.className = 'choice-btn';
+    hintBtn.style.background = '#282315';
+    hintBtn.style.borderColor = '#7d6608';
+    hintBtn.style.color = '#f9e79f';
+    hintBtn.innerText = `[0] 💡 지혜의 사색 힌트 열기/닫기`;
+    hintBtn.onclick = toggleHint;
+    box.appendChild(hintBtn);
+  }}
+
+  function toggleHint() {{
+    if (gameState !== 'IN_GAME') return;
+    const scene = curPack.scenes[curSceneIdx];
+    const hb = document.getElementById('hintBox');
+    hintVisible = !hintVisible;
+    if (hintVisible && scene.hint) {{
+      hb.innerText = "💡 [원작 사색 노트] " + scene.hint;
+      hb.style.display = 'block';
+    }} else {{
+      hb.style.display = 'none';
+    }}
+  }}
+
+  function hideHint() {{
+    hintVisible = false;
+    const hb = document.getElementById('hintBox');
+    if (hb) hb.style.display = 'none';
   }}
 
   function advanceScene(delta) {{
@@ -660,6 +744,7 @@ def build_master_system():
 
   function showEnding() {{
     gameState = 'ENDING';
+    hideHint();
     let matched = curPack.endings[curPack.endings.length - 1];
     for (let end of curPack.endings) {{
       if (metricValue >= end.min) {{
@@ -711,7 +796,7 @@ def build_master_system():
       hud.innerText = `[제${{scene.act}}막 | ★ F3 핵심 감정/스파클 ★]`;
       hud.style.color = "#f4d03f";
     }} else {{
-      hud.innerText = `[제${{scene.act}}막 | F${{curFrame+1}}/6 Native 296x152]`;
+      hud.innerText = `[제${{scene.act}}막 | F${{curFrame+1}}/6 Ultra 296x152]`;
       hud.style.color = "#81d4fa";
     }}
   }}
@@ -724,7 +809,10 @@ def build_master_system():
     }}
   }}, 750);
 
-  // 키보드 조작계: 1~5 엄격 통제
+  // 키보드 조작계:
+  // [1~5]: 선택지 및 다음페이지
+  // [0]: 💡 힌트 토글
+  // [*, Q, ESC]: 서재 / 뒤로가기
   window.addEventListener('keydown', (e) => {{
     if (gameState === 'TITLE') {{
       if (e.key === '1') startTutorial();
@@ -741,11 +829,15 @@ def build_master_system():
         const totalPages = Math.ceil(literaturePacks.length / ITEMS_PER_PAGE);
         showLibraryScreen((libraryPage + 1) % totalPages);
       }}
-      else if (e.key === '0' || e.key === 'Escape') showTitleScreen();
+      else if (e.key === '*' || e.key === 'q' || e.key === 'Q' || e.key === 'Escape') showTitleScreen();
     }} else if (gameState === 'IN_GAME') {{
       const scene = curPack.scenes[curSceneIdx];
-      if (e.key === '0' || e.key === 'Escape') {{
+      if (e.key === '*' || e.key === 'q' || e.key === 'Q' || e.key === 'Escape') {{
         showLibraryScreen(0);
+        return;
+      }}
+      if (e.key === '0') {{
+        toggleHint();
         return;
       }}
       if (scene.is_transition) {{
