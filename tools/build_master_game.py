@@ -20,9 +20,16 @@ from generate_hires_studio import (
     gen_hires_act1, gen_hires_act2, gen_hires_act3, gen_hires_act4,
     gen_hires_act5, gen_hires_act6, gen_hires_act7
 )
-from make_epic_master_builder import (
-    get_epic_peach_acts, get_epic_dante_acts,
-    PALETTE_16, compress_frame_rle
+from generate_all_packs_studio import PALETTE_16, compress_frame_rle
+from make_ultra_peach_cutscenes import (
+    gen_peach_act1_ultra, gen_peach_act2_ultra, gen_peach_act3_ultra,
+    gen_peach_act4_ultra, gen_peach_act5_ultra, gen_peach_act6_ultra,
+    gen_peach_act7_ultra
+)
+from make_ultra_dante_cutscenes import (
+    gen_dante_act1_ultra, gen_dante_act2_ultra, gen_dante_act3_ultra,
+    gen_dante_act4_ultra, gen_dante_act5_ultra, gen_dante_act6_ultra,
+    gen_dante_act7_ultra
 )
 from make_ultra_demian_cutscenes import (
     gen_demian_act1_ultra, gen_demian_act2_ultra, gen_demian_act3_ultra,
@@ -43,14 +50,20 @@ def build_master_system():
     ]
     act_rle_heungbu = [[compress_frame_rle(f) for f in a] for a in heungbu_acts]
 
-    # 2. 제임스와 슈퍼 복숭아
-    peach_acts = get_epic_peach_acts()
-    peach_acts[1] = gen_peach_act2_ultra() # 2막 울트라 교체
+    # 2. 제임스와 슈퍼 복숭아 (전 7막 울트라 픽셀 컷씬)
+    peach_acts = [
+        gen_peach_act1_ultra(), gen_peach_act2_ultra(), gen_peach_act3_ultra(),
+        gen_peach_act4_ultra(), gen_peach_act5_ultra(), gen_peach_act6_ultra(),
+        gen_peach_act7_ultra()
+    ]
     act_rle_peach = [[compress_frame_rle(f) for f in a] for a in peach_acts]
 
-    # 3. 단테의 신곡: 지옥편
-    dante_acts = get_epic_dante_acts()
-    dante_acts[2] = gen_dante_act3_ultra() # 3막 울트라 교체
+    # 3. 단테의 신곡: 지옥편 (전 7막 울트라 픽셀 컷씬)
+    dante_acts = [
+        gen_dante_act1_ultra(), gen_dante_act2_ultra(), gen_dante_act3_ultra(),
+        gen_dante_act4_ultra(), gen_dante_act5_ultra(), gen_dante_act6_ultra(),
+        gen_dante_act7_ultra()
+    ]
     act_rle_dante = [[compress_frame_rle(f) for f in a] for a in dante_acts]
 
     # 4. 데미안 (전 1~7막 울트라 픽셀 교체)
@@ -215,64 +228,64 @@ def build_master_system():
             "scenes": [
                 {
                     "act": 1, "title": "스폰지와 스파이커 이모", "speaker": "이모들과 제임스",
-                    "text": "스파이커: '게으른 녀석! 장작을 더 패지 못해?! 지팡이로 뼈마디를 두들겨 맞아야 정신을 차릴 테냐!'\n스폰지: '오호호, 밥도 주지 마 얘! 굶겨 죽여야 고분고분해지지!'\n제임스: '이모, 하루 종일 물 한 모금 못 마셨어요...'",
-                    "hint": "가혹한 학대 속에서도 마음속의 순수함과 희망의 불씨를 꺼뜨리지 마십시오.",
+                    "text": "스파이커: '게으른 녀석! 장작을 더 패지 못해?! 지팡이로 뼈마디를 두들겨 맞아야 정신을 차릴 테냐!'\n스폰지: '오호호, 밥도 주지 마 얘! 굶겨 죽여야 고분고분해지지!'\n제임스: '이모, 하루 종일 물 한 모금 못 마셨어요... 숨이 턱턱 막혀요...'",
+                    "hint": "가혹한 학대와 억압 속에서도 영혼의 순수함과 자유를 향한 불씨를 결코 꺼뜨리지 마십시오.",
                     "rle": act_rle_peach[0], "is_transition": False,
                     "choices": [
-                        {"text": "입술을 깨물며 묵묵히 희망의 날을 기다린다", "delta": 1, "feedback": "제임스는 눈물을 삼키며 묵묵히 도끼를 쥐었습니다. 언젠가 바다 건너 자유를 찾겠다는 꿈을 품었습니다."},
-                        {"text": "억울함에 이모들에게 반항의 눈빛을 쏘아본다", "delta": -1, "feedback": "스파이커 이모가 앙상한 손으로 지팡이를 내리쳤습니다! '눈을 똑바로 뜨다니!'"}
+                        {"text": "입술을 깨물며 묵묵히 도끼를 쥐고 자유의 날을 기다린다", "delta": 1, "feedback": "제임스는 눈물을 삼키며 장작을 팼습니다. 언젠가 푸른 바다 너머로 탈출하겠다는 꿈을 품었습니다."},
+                        {"text": "억울함에 복받쳐 이모들에게 반항의 눈빛을 쏘아본다", "delta": -1, "feedback": "스파이커 이모가 앙상한 손으로 지팡이를 내리쳤습니다! '이놈이 어디서 눈을 똑바로 떠?!'"}
                     ]
                 },
                 {
-                    "act": 2, "title": "마법의 초록 악어 혀", "speaker": "노인과 제임스",
-                    "text": "노인: '얘야, 이 봉투를 받거라. 이 안에는 수천 마리 악어의 혀로 빚어낸 거대한 마법이 꿈틀대고 있단다. 절대 흘리지 마라!'\n제임스: '할아버지, 이게 대체 뭐예요? 온몸이 찌릿찌릿해요!'",
-                    "hint": "미지의 기적을 마주했을 때 두려움 대신 호기심과 용기로 품에 안으십시오.",
+                    "act": 2, "title": "마법의 초록 악어 혀", "speaker": "신비로운 노인과 제임스",
+                    "text": "노인: '얘야, 이 봉투를 받거라. 이 안에는 수천 마리 악어의 혀로 빚어낸 거대한 마법이 꿈틀대고 있단다. 절대 흘리지 마라!'\n제임스: '할아버지, 봉투 안에서 빛이 뿜어져 나와요! 손가락 끝이 찌릿찌릿해요!'\n노인: '이 씨앗이 닿는 곳마다 세상에서 가장 경이로운 일이 일어날 게다!'",
+                    "hint": "미지의 기적을 마주했을 때 의심과 두려움 대신, 순수한 호기심과 용기로 두 손을 내미십시오.",
                     "rle": act_rle_peach[1], "is_transition": False,
                     "choices": [
-                        {"text": "소중히 품에 안고 마른 복숭아나무 밑으로 달린다", "delta": 2, "feedback": "봉투 속 초록빛 발광체들이 나무뿌리로 스며들며 대지가 쿵쿵 진동했습니다!"},
+                        {"text": "소중히 품에 안고 마른 복숭아나무 뿌리를 향해 전력으로 달린다", "delta": 2, "feedback": "초록빛 발광체들이 나무뿌리로 스며들자, 말라죽었던 복숭아나무가 쿵쿵 심장처럼 고동치기 시작했습니다!"},
                         {"text": "의심하며 노인에게 무슨 속셈인지 캐묻는다", "delta": 0, "feedback": "노인은 기괴한 미소를 지으며 순식간에 안갯속으로 사라져 버렸습니다."}
                     ]
                 },
                 {
                     "act": 3, "title": "거대 복숭아의 탄생", "speaker": "마을 사람들과 제임스",
-                    "text": "마을 사람들: '저게 뭐야?! 복숭아가 집채만 하게 부풀어 오르고 있어! 심장처럼 쿵-쿵 박동하잖아!'\n제임스: '달콤한 복숭아 향기가 언덕 가득 퍼져나가요!'",
-                    "hint": "경이로운 모험의 입구는 가장 낯선 곳에 열려 있습니다.",
-                    "rle": act_rle_peach[2], "is_transition": True, "button_text": "박동하는 복숭아의 터널 속으로 기어 들어간다"
+                    "text": "마을 사람들: '저게 뭐야?! 복숭아가 집채만 하게 부풀어 오르고 있어! 심장처럼 쿵-쿵 박동하잖아!'\n스파이커 이모: '입장료를 받아야 해! 사람당 1실링씩 내고 구경해라!'\n제임스: '달콤한 복숭아 향기가 온 언덕을 뒤덮고 있어요... 복숭아 옆구리에 기어 들어갈 구멍이 보여요!'",
+                    "hint": "탐욕스러운 어른들의 소란을 피해, 미지의 세계로 통하는 비밀스러운 입구로 뛰어드십시오.",
+                    "rle": act_rle_peach[2], "is_transition": True, "button_text": "박동하는 복숭아의 달콤한 과육 터널 속으로 기어 들어간다"
                 },
                 {
-                    "act": 4, "title": "거대 곤충 친구들", "speaker": "메뚜기와 제임스",
-                    "text": "메뚜기 신사: '어서 오십시오, 어린 신사여! 두려워 마세요. 우리는 당신을 기다려 온 복숭아의 친구들이랍니다!'\n무당벌레 숙녀: '아가, 흙먼지가 잔뜩 묻었구나. 이리 오렴!'\n제임스: '벌레들이 말을 하다니... 하지만 너무나 다정해요!'",
-                    "hint": "겉모습이 기괴할지라도 마음이 따스한 벗들과 연대하십시오.",
+                    "act": 4, "title": "거대 곤충 친구들", "speaker": "메뚜기, 무당벌레, 제임스",
+                    "text": "메뚜기 신사: '어서 오십시오, 어린 신사여! 두려워 마세요. 우리는 당신을 기다려 온 복숭아의 친구들이랍니다!'\n지네: '어이 꼬마! 구두끈 묶는 것 좀 도와줘! 내 발이 마흔두 개나 되거든!'\n무당벌레 숙녀: '아가, 이모들에게 괴롭힘당하느라 뺨이 핼쑥하구나. 이리 오렴!'\n제임스: '거대 벌레들이 말을 하다니... 하지만 이모들보다 수천 배는 다정해요!'",
+                    "hint": "겉모습의 기괴함 너머에 있는 진실한 영혼을 꿰뚫어 보고, 따스한 벗들과 연대하십시오.",
                     "rle": act_rle_peach[3], "is_transition": False,
                     "choices": [
-                        {"text": "두려움을 떨치고 정중히 신사들에게 악수를 청한다", "delta": 2, "feedback": "무당벌레와 지네가 환호하며 제임스를 둘러싸고 따스하게 환영했습니다!"},
-                        {"text": "기괴한 크기의 벌레들에 비명을 지르며 벽으로 물러선다", "delta": -1, "feedback": "지네가 서운한 표정으로 수십 개의 다리를 긁적였습니다."}
+                        {"text": "두려움을 떨치고 정중히 메뚜기 신사와 친구들에게 악수를 청한다", "delta": 2, "feedback": "곤충 친구들이 환호하며 제임스를 둘러싸고 따스하게 반겨주었습니다. 제임스는 평생 처음으로 가족의 온기를 느꼈습니다."},
+                        {"text": "거대한 벌레들의 꿈틀거림에 비명을 지르며 벽으로 물러선다", "delta": -1, "feedback": "지네가 서운한 표정으로 수십 개의 다리를 긁적였습니다. '우릴 무서워하다니 섭섭한걸...?'"}
                     ]
                 },
                 {
-                    "act": 5, "title": "대서양으로의 출항", "speaker": "해설",
-                    "text": "꼭지를 끊은 슈퍼 복숭아가 언덕을 맹렬히 굴러 내려가 절벽을 넘어 드넓은 대서양 바다로 풍덩 빠졌습니다! 거대한 하얀 파도 포말을 가르며 푸른 바다 위를 당당히 항해합니다!",
-                    "hint": "과거의 학대받던 땅을 떠나 망망대해로 나아가는 용기.",
-                    "rle": act_rle_peach[4], "is_transition": True, "button_text": "갈매기를 낚아챌 실크 거미줄을 준비한다"
+                    "act": 5, "title": "대서양으로의 출항", "speaker": "지네와 제임스",
+                    "text": "지네: '꼭지를 끊었다! 굴러간다, 굴러가!! 언덕을 박차고 절벽을 넘는다!'\n제임스: '풍덩!! 바다다! 푸른 대서양 바다 위에 복숭아가 배처럼 둥실 떠올랐어요!'\n무당벌레 숙녀: '우리가 이모들의 학대에서 벗어나 마침내 자유의 바다로 나왔어!'",
+                    "hint": "익숙했던 학대의 땅을 떠나 거친 망망대해로 나아가는 것은 위대한 자유의 시작입니다.",
+                    "rle": act_rle_peach[4], "is_transition": True, "button_text": "상어 떼의 습격에 맞서 갈매기 낚아챌 실크 거미줄을 준비한다"
                 },
                 {
                     "act": 6, "title": "500마리 갈매기 비행", "speaker": "제임스와 친구들",
-                    "text": "제임스: '지네 아저씨, 거미 아가씨, 서두르세요! 갈매기 목에 실을 걸어 복숭아를 공중으로 띄웁시다!'\n지네: '좋았어! 날아오른다, 구름 위 하늘로!!'",
-                    "hint": "지혜와 협동심이야말로 바다의 상어 떼를 이겨내는 가장 큰 날개입니다.",
+                    "text": "제임스: '거미 누나, 누에 아저씨, 실을 더 빨리 뽑아주세요! 지네 아저씨, 갈매기 목에 올가미를 거세요!'\n지네: '잡았다! 갈매기들이 날개를 퍼덕인다! 복숭아가 뜬다, 하늘로!!'\n메뚜기 신사: '놀랍군요, 제임스! 상어들의 주둥이를 벗어나 구름 위를 날고 있어요!'",
+                    "hint": "지혜와 협동심이야말로 절체절명의 위기를 극복하고 창공으로 날아오르는 가장 강인한 날개입니다.",
                     "rle": act_rle_peach[5], "is_transition": False,
                     "choices": [
-                        {"text": "지혜를 발휘해 갈매기 떼를 일사불란하게 지휘한다", "delta": 2, "feedback": "500마리의 흰 갈매기들이 날개를 퍼덕이며 복숭아를 구름 위로 들어 올렸습니다!"},
-                        {"text": "상어 떼의 습격에 겁에 질려 눈을 감아버린다", "delta": -1, "feedback": "친구들의 격려 속에 제임스는 가까스로 중심을 잡았습니다."}
+                        {"text": "지혜를 발휘해 500마리 갈매기 편대를 일사불란하게 지휘한다", "delta": 2, "feedback": "흰 갈매기들이 거대한 날갯짓으로 복숭아를 성층권까지 들어 올렸습니다! 눈부신 태양광이 쏟아져 내렸습니다."},
+                        {"text": "상어 떼의 이빨과 거센 바람에 겁에 질려 눈을 감아버린다", "delta": -1, "feedback": "친구들의 격려 속에 제임스는 떨리는 손으로 가까스로 중심을 잡았습니다."}
                     ]
                 },
                 {
-                    "act": 7, "title": "엠파이어 빌딩 착륙", "speaker": "뉴욕 시민들과 제임스",
-                    "text": "뉴욕 시민들: '하늘을 봐! 거대한 복숭아가 엠파이어 빌딩 첨탑에 사뿐히 내려앉았어! 만세!!'\n제임스: '우리가 해냈어요! 바다를 건너 자유의 땅에 도착했어요!'",
-                    "hint": "고난을 딛고 얻은 풍요를 세상의 가난한 이웃들과 나누는 기쁨.",
+                    "act": 7, "title": "엠파이어 빌딩 착륙", "speaker": "뉴욕 시장과 제임스",
+                    "text": "뉴욕 시민들: '하늘을 봐! 거대한 복숭아가 엠파이어 스테이트 빌딩 첨탑에 사뿐히 내려앉았어! 만세!!'\n뉴욕 시장: '용감한 소년이여, 그대와 신비로운 벗들을 뉴욕에 환영하오!'\n제임스: '달콤한 복숭아 살을 온 도시의 배고픈 아이들에게 전부 나누어 줄게요!'",
+                    "hint": "고난 끝에 얻은 경이로운 풍요를 세상의 가난하고 소외된 이웃들과 나눌 때 삶은 완성됩니다.",
                     "rle": act_rle_peach[6], "is_transition": False,
                     "choices": [
-                        {"text": "달콤한 복숭아 과육을 뉴욕의 가난한 아이들에게 선물한다", "delta": 3, "feedback": "수만 명의 아이들이 환호하며 달콤한 복숭아를 나누어 먹었습니다!"},
-                        {"text": "복숭아 씨앗 속에 집을 짓고 영원한 자유를 누린다", "delta": 1, "feedback": "제임스는 평생 가장 진실한 친구들과 함께 자유롭고 행복하게 살았습니다."}
+                        {"text": "달콤한 슈퍼 복숭아를 뉴욕의 모든 가난한 아이들에게 선물한다", "delta": 3, "feedback": "수만 명의 아이들이 환호하며 달콤한 복숭아를 나누어 먹었습니다! 제임스는 센트럴파크 복숭아 씨앗 궁전에서 영원히 행복했습니다."},
+                        {"text": "복숭아를 영구 보존하며 박물관을 세우고 친구들과 안식처를 꾸린다", "delta": 1, "feedback": "제임스와 곤충 친구들은 평생 가장 진실한 우정을 나누며 평화롭게 살았습니다."}
                     ]
                 }
             ],
