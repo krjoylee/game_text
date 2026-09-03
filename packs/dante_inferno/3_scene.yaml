@@ -13,6 +13,11 @@ pack:
   description: "어두운 숲에서 길을 잃은 시인 단테가 스승 베르길리우스의 인도를 받아 지옥의 9개 동심원을 지나며 죄와 구원을 성찰하는 대서사시"
   language: "ko"
 
+  difficulty:
+    tier: "hard"
+    name: "어려움 (성인 문학 권장)"
+    description: "죄악의 심연과 중세 신학, 실존적 고뇌를 다룬 불멸의 대서사시"
+
   world:
     metric:
       name: "이성과 영혼의 빛"

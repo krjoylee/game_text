@@ -78,6 +78,9 @@ def build_master_system():
         {
             "id": "heungbu",
             "title": "흥부놀부전",
+            "tier": "tutorial",
+            "tier_name": "기본 튜토리얼",
+            "tier_desc": "게임 조작법과 선악 구조를 배우는 입문 설화",
             "tag": "Tutorial · 한국 고전",
             "metric_name": "선행의 씨앗",
             "metric_icon": "♧",
@@ -150,7 +153,10 @@ def build_master_system():
         {
             "id": "demian",
             "title": "데미안",
-            "tag": "Hermann Hesse · 자아 실현",
+            "tier": "medium",
+            "tier_name": "중간 (중고등 도서 권장)",
+            "tier_desc": "청소년기 정체성 혼란과 선악을 깨뜨리는 자아 실현 성장기",
+            "tag": "Medium · 중고등 권장 문학",
             "metric_name": "내면의 각성",
             "metric_icon": "☥",
             "scenes": [
@@ -222,7 +228,10 @@ def build_master_system():
         {
             "id": "peach",
             "title": "제임스와 슈퍼 복숭아",
-            "tag": "Roald Dahl · 환상 모험",
+            "tier": "easy",
+            "tier_name": "쉬움 (초등 도서 권장)",
+            "tier_desc": "동화적 상상력과 따스한 우정, 경이로운 모험 환상극",
+            "tag": "Easy · 초등 권장 모험극",
             "metric_name": "경이와 용기",
             "metric_icon": "✦",
             "scenes": [
@@ -298,7 +307,10 @@ def build_master_system():
         {
             "id": "dante",
             "title": "단테의 신곡: 지옥편",
-            "tag": "Dante · 대서사시",
+            "tier": "hard",
+            "tier_name": "어려움 (성인 문학 권장)",
+            "tier_desc": "죄악의 심연과 중세 신학, 실존적 고뇌를 다룬 불멸의 대서사시",
+            "tag": "Hard · 성인 권장 대서사시",
             "metric_name": "이성과 영혼의 빛",
             "metric_icon": "☩",
             "scenes": [
@@ -829,20 +841,24 @@ def build_master_system():
   window.addEventListener('keydown', (e) => {{
     if (gameState === 'TITLE') {{
       if (e.key === '1') startTutorial();
-      else if (e.key === '2') showLibraryScreen(0);
-    }} else if (gameState === 'LIBRARY') {{
-      const literaturePacks = masterData.packs.slice(1);
+      else if (e.key === '2') showDifficultySelect();
+    }} else if (gameState === 'DIFFICULTY_SELECT') {{
+      if (e.key === '1') openTierLibrary('easy');
+      else if (e.key === '2') openTierLibrary('medium');
+      else if (e.key === '3') openTierLibrary('hard');
+      else if (e.key === '*' || e.key === 'q' || e.key === 'Q' || e.key === 'Escape') showTitleScreen();
+    }} else if (gameState === 'LIBRARY_BY_TIER') {{
       const startIdx = libraryPage * ITEMS_PER_PAGE;
-      const pageItems = literaturePacks.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+      const pageItems = filteredPacks.slice(startIdx, startIdx + ITEMS_PER_PAGE);
       
       if (e.key === '1' && pageItems[0]) loadPackById(pageItems[0].id);
       else if (e.key === '2' && pageItems[1]) loadPackById(pageItems[1].id);
       else if (e.key === '3' && pageItems[2]) loadPackById(pageItems[2].id);
       else if (e.key === '5') {{
-        const totalPages = Math.ceil(literaturePacks.length / ITEMS_PER_PAGE);
+        const totalPages = Math.ceil(filteredPacks.length / ITEMS_PER_PAGE) || 1;
         showLibraryScreen((libraryPage + 1) % totalPages);
       }}
-      else if (e.key === '*' || e.key === 'q' || e.key === 'Q' || e.key === 'Escape') showTitleScreen();
+      else if (e.key === '*' || e.key === 'q' || e.key === 'Q' || e.key === 'Escape') showDifficultySelect();
     }} else if (gameState === 'IN_GAME') {{
       const scene = curPack.scenes[curSceneIdx];
       if (e.key === '*' || e.key === 'q' || e.key === 'Q' || e.key === 'Escape') {{

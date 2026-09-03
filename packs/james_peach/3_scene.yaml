@@ -13,6 +13,11 @@ pack:
   description: "학대받던 소년 제임스가 마법의 거대 복숭아를 타고 곤충 친구들과 함께 대서양을 건너는 환상 모험극"
   language: "ko"
 
+  difficulty:
+    tier: "easy"
+    name: "쉬움 (초등 도서 권장)"
+    description: "동화적 상상력과 따스한 우정, 경이로운 모험이 가득한 환상극"
+
   world:
     metric:
       name: "경이와 용기"

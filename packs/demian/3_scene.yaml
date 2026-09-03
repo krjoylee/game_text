@@ -13,6 +13,11 @@ pack:
   description: "밝은 빛의 세계와 어둠의 세계 사이에서 방황하던 싱클레어가 데미안을 만나 알을 깨고 참 자아를 찾아 비상하는 실존주의 성장 소설"
   language: "ko"
 
+  difficulty:
+    tier: "medium"
+    name: "중간 (중고등 도서 권장)"
+    description: "청소년기 정체성 혼란과 선악의 이분법을 깨뜨리는 자아 실현 성장기"
+
   world:
     metric:
       name: "내면의 각성"
