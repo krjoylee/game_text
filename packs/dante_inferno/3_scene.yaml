@@ -1,0 +1,206 @@
+# ============================================
+# 단테의 신곡: 지옥편 — 씬 데이터 및 메타 규격 (3단계 마스터 스펙)
+# ============================================
+# 원문/철학 참조: 1_story.md, 1-1_story_structure.md
+# 콘티/대화/힌트 참조: 2_conti.md
+# ============================================
+
+pack:
+  id: "dante_inferno"
+  title: "단테의 신곡: 지옥편"
+  title_en: "Dante's Inferno"
+  author: "단테 알리기에리 (Dante Alighieri)"
+  description: "어두운 숲에서 길을 잃은 시인 단테가 스승 베르길리우스의 인도를 받아 지옥의 9개 동심원을 지나며 죄와 구원을 성찰하는 대서사시"
+  language: "ko"
+
+  world:
+    metric:
+      name: "이성과 영혼의 빛"
+      name_en: "Reason & Grace"
+      icon: "☩"
+      max: 10
+      initial: 3
+      description: "맹목적 공포와 유혹을 이겨내고 스승의 인도를 따라 영혼의 정화로 나아가는 척도"
+
+    chapter_term: "막"
+    chapter_term_en: "Act"
+
+    failure:
+      speaker: "지혜의 사서"
+      message_key: "fail_message"
+      return_strategy: "scene_retry"
+
+    password:
+      enabled: true
+      description: "각 막 도달 시 고유 암호 부여"
+
+  structure:
+    type: "linear_pilgrimage"
+    chapters:
+      - id: "act_01"
+        name: "어두운 숲과 베르길리우스"
+        password: "숲길"
+        scenes: ["act01_scene_01"]
+      - id: "act_02"
+        name: "지옥의 문과 뱃사공 카론"
+        password: "아케론"
+        scenes: ["act02_scene_01"]
+      - id: "act_03"
+        name: "제2옥: 애욕의 암흑 폭풍"
+        password: "프란체스카"
+        scenes: ["act03_scene_01"]
+      - id: "act_04"
+        name: "제6옥: 불타는 석관의 파리나타"
+        password: "불석관"
+        scenes: ["act04_scene_01"]
+      - id: "act_05"
+        name: "제7옥: 끓는 피의 강 플레게톤"
+        password: "피의강"
+        scenes: ["act05_scene_01"]
+      - id: "act_06"
+        name: "제8옥: 말레볼제의 구덩이"
+        password: "지옥뱀"
+        scenes: ["act06_scene_01"]
+      - id: "act_07"
+        name: "얼음 지옥 탈출과 별들의 찬가"
+        password: "별빛"
+        scenes: ["act07_scene_01"]
+
+  characters:
+    protagonist:
+      id: "dante"
+      name: "단테"
+      icon: "☩"
+    mentor:
+      id: "virgil"
+      name: "베르길리우스"
+    notable_shades:
+      - id: "charon"
+        name: "카론"
+      - id: "francesca"
+        name: "프란체스카"
+      - id: "farinata"
+        name: "파리나타"
+      - id: "nessus"
+        name: "켄타우로스 네소스"
+
+  endings:
+    - id: "ending_a"
+      name: "신성한 구원의 대시인"
+      min_metric: 8
+      description: "지옥의 모든 죄악과 고통을 이성과 연민으로 통찰하고, 별들이 빛나는 구원의 길로 나아갔습니다."
+    - id: "ending_b"
+      name: "깨어난 순례자"
+      min_metric: 5
+      description: "공포와 절망을 극복하고 스승의 인도를 따라 지옥의 심연을 무사히 통과했습니다."
+    - id: "ending_c"
+      name: "심연을 목격한 자"
+      min_metric: 0
+      description: "지옥의 끔찍한 형벌을 뼈에 새기며 지상에서의 새로운 삶을 성찰했습니다."
+
+scenes:
+  - scene_id: "act01_scene_01"
+    act: 1
+    title: "어두운 숲과 베르길리우스"
+    speaker: "단테와 베르길리우스"
+    dialogue: "단테: '길을 잃었습니다, 스승이여... 가시덤불 숲속에서 표범과 사자와 늑대가 길을 가로막고 으르렁거립니다... 온몸이 떨려 뒷걸음질 칩니다...'\n베르길리우스: '방황하는 시인이여, 두려워 마라. 내가 그대를 지옥과 연옥의 심연을 지나 천국으로 인도하리라. 나를 따르라!'"
+    hint: "인생의 중반에서 길을 잃었을 때, 본능적인 공포에 굴복하지 말고 스승(이성과 지혜)의 목소리를 신뢰하십시오."
+    is_transition: false
+    choices:
+      - id: "a"
+        text: "스승의 손을 잡고 지옥의 문을 향해 굳건히 발을 딛는다"
+        delta: 2
+        feedback: "스승의 월계관이 어두운 숲속에서 성스러운 빛을 뿜어냈습니다. 단테의 심장에 용기가 솟구쳤습니다."
+        next_scene: "act02_scene_01"
+      - id: "b"
+        text: "세 마리 맹수의 포효에 뒷걸음질 치며 주저앉는다"
+        delta: -1
+        feedback: "베르길리우스가 지팡이를 들어 맹수들을 쫓아내며 타이르고 이끌었습니다."
+        next_scene: "act02_scene_01"
+
+  - scene_id: "act02_scene_01"
+    act: 2
+    title: "지옥의 문과 뱃사공 카론"
+    speaker: "카론과 베르길리우스"
+    dialogue: "카론: '이곳에 들어오는 자, 모든 희망을 버려라! 살아있는 자여, 썩 물러가라! 아케론 강 건너 영원한 암흑 속으로 떠날지니!'\n베르길리우스: '카론이여, 분노를 거두라. 이것은 뜻하신 바를 이룰 수 있는 저 높은 곳에서 명하신 바이니, 더 이상 묻지 말라!'\n단테: '핏빛 강물과 절규하는 망령들의 비명 소리에 눈앞이 캄캄합니다...'"
+    hint: "심연의 공포와 망령들의 절규 앞에서도, 하늘이 정한 순례의 길임을 믿고 당당히 배에 오르십시오."
+    is_transition: false
+    choices:
+      - id: "a"
+        text: "스승의 가르침을 믿고 당당히 핏빛 나룻배에 오른다"
+        delta: 2
+        feedback: "거구의 카론도 스승의 준엄한 일갈에 무쇠 노를 멈추고 두 시인을 피안으로 건네주었습니다."
+        next_scene: "act03_scene_01"
+      - id: "b"
+        text: "망령들의 비명 소리에 공포에 질려 기절하고 만다"
+        delta: -2
+        feedback: "단테는 핏빛 강물 앞에서 전율하며 정신을 잃고 쓰러졌습니다."
+        next_scene: "act03_scene_01"
+
+  - scene_id: "act03_scene_01"
+    act: 3
+    title: "제2옥: 애욕의 암흑 폭풍"
+    speaker: "프란체스카와 단테"
+    dialogue: "프란체스카: '오 자비로운 시인이여, 책을 읽다 사랑에 빠져 비극을 맞이한 우리를 가엾게 여겨 주소서... 영원한 암흑 폭풍 속에서도 파올로와 저는 서로를 놓지 못합니다...'\n단테: '오 프란체스카여, 그대의 고통에 가슴이 찢어지는 듯하오... 사랑의 달콤함 뒤에 어찌 이토록 참혹한 지옥이 기다리고 있었단 말이오...'"
+    hint: "인간적인 비극에 대한 깊은 연민과 신의 엄정한 정의 사이에서 영혼의 고뇌를 통찰하십시오."
+    is_transition: false
+    choices:
+      - id: "a"
+        text: "두 연인의 애달픈 비극에 깊이 탄식하며 뜨거운 눈물을 흘린다"
+        delta: 2
+        feedback: "단테는 지극한 연민과 슬픔으로 가슴이 미어져 바닥에 엎드렸습니다. 참된 자비의 눈물이 영혼을 씻어냈습니다."
+        next_scene: "act04_scene_01"
+      - id: "b"
+        text: "죄는 죗값일 뿐이라며 냉정하게 고개를 돌린다"
+        delta: -1
+        feedback: "베르길리우스가 침묵 속에서 단테의 차가운 눈빛을 그윽하게 응시했습니다."
+        next_scene: "act04_scene_01"
+
+  - scene_id: "act04_scene_01"
+    act: 4
+    title: "제6옥: 불타는 석관의 파리나타"
+    speaker: "파리나타와 단테"
+    dialogue: "파리나타: '그대 피렌체의 말을 쓰는 나그네여! 지옥의 화염이 내 몸을 태울지라도, 내 조국 피렌체의 운명은 어떻게 되었는가!'\n단테: '조국을 향한 그대의 오만과 기개는 지옥의 맹렬한 불꽃 속에서도 꺾이지 않는구려.'\n베르길리우스: '단테여, 고귀한 영혼의 기개를 존중하되 그의 죄과를 잊지 말라.'"
+    hint: "지옥의 끔찍한 형벌 속에서도 굴복하지 않는 인간 정신의 거대한 기개와 조국애."
+    is_transition: true
+    button_text: "오만한 귀족 장군의 숭고한 기개에 경의를 표하며 지나간다"
+    next_scene: "act05_scene_01"
+
+  - scene_id: "act05_scene_01"
+    act: 5
+    title: "제7옥: 끓는 피의 강 플레게톤"
+    speaker: "켄타우로스 네소스와 단테"
+    dialogue: "네소스: '이 펄펄 끓는 피의 강 플레게톤은 타인에게 폭력을 휘두른 자들의 영벌이다. 내 등 뒤에 타라, 시인이여!'\n단테: '강물 속에서 폭군들이 피눈물을 흘리며 울부짖는구나...'\n베르길리우스: '남을 피 흘리게 한 자는 피의 강에 잠기는 것이 영원한 법칙이니라.'"
+    hint: "폭력은 반드시 피의 업보가 되어 자신에게 돌아옵니다. 정의의 심판을 직시하십시오."
+    is_transition: true
+    button_text: "침착하게 네소스의 등에 올라 피의 강을 건넌다"
+    next_scene: "act06_scene_01"
+
+  - scene_id: "act06_scene_01"
+    act: 6
+    title: "제8옥: 말레볼제의 구덩이"
+    speaker: "해설과 베르길리우스"
+    dialogue: "해설: '거대한 청록색 지옥 뱀들이 도둑과 사기꾼들의 몸을 칭칭 감고 살점을 물어뜯습니다. 물린 자는 재가 되어 무너졌다가 다시 육신으로 부활하여 끝없는 고통을 받습니다!'\n베르길리우스: '인간의 고귀한 지성을 악용하여 이웃을 속인 자들의 종착역이다. 마음을 단단히 먹으라!'"
+    hint: "죄악의 가장 추악한 실체를 피하지 않고 직시하는 것만이 참된 정화로 가는 길입니다."
+    is_transition: true
+    button_text: "죄악의 끔찍한 실체를 직시하며 심연으로 내려간다"
+    next_scene: "act07_scene_01"
+
+  - scene_id: "act07_scene_01"
+    act: 7
+    title: "얼음 지옥 탈출과 별들의 찬가"
+    speaker: "단테와 베르길리우스"
+    dialogue: "단테: '스승이여! 거대한 얼음 호수 코키토스를 지나 마침내 루시퍼의 몸뚱이를 딛고 지옥의 구멍을 빠져나왔습니다!'\n베르길리우스: '보라, 단테여. 머리 위로 밤하늘의 찬란한 별들이 쏟아져 내리는구나!'\n단테: ''그리고 우리는 밖으로 나와 다시 별들을 보았다!''"
+    hint: "심연의 가장 어두운 지옥을 온전히 통과한 자만이 밤하늘의 영원한 별빛을 우러러볼 수 있습니다."
+    is_transition: false
+    choices:
+      - id: "a"
+        text: "무릎을 꿇고 구원의 은혜에 감격하며 밤하늘의 별빛을 우러러본다"
+        delta: 3
+        feedback: "칠흑 같은 어둠을 뚫고 나온 단테의 눈에 눈부신 은하수가 가득 차올랐습니다! 구원의 대서사시가 완성되었습니다."
+        next_scene: "ending"
+      - id: "b"
+        text: "지옥에서 목격한 죄악의 고통을 뼈에 새기며 지상에서의 성찰을 다짐한다"
+        delta: 1
+        feedback: "베르길리우스가 단테의 어깨를 짚으며 자애롭게 미소 지었습니다."
+        next_scene: "ending"
