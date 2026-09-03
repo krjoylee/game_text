@@ -1,233 +1,305 @@
 #!/usr/bin/env python3
 """
 tools/generate_act1_motion_prototype.py
-Phase 2 신기술: 3대 베이스 원색 ➔ 3x3 딕셔너리 룩업(9칸 매트릭스) 렌더러!
-- 기본 색상: 칠흑(K), 웜톤(W), 쿨톤(C), 백색(L)
-- 9칸 딕셔너리 하프톤으로 16색(피부, 갓, 비단, 삼베, 금이빨) 전색상을 즉시 광학 합성!
-- 저장 용량: 8비트(1바이트)당 2블록 팩킹 ➔ 전체 6프레임 컷씬 용량이 불과 1.4KB 수준으로 극한 압축!
+🏆 [최종 확정 하이브리드 표준]
+사용자가 가장 만족했던 "개선 전전 이미지(배경과 갓이 뚜렷이 분리되고 옷감 질감이 입체적인 상태)" 복원:
+1. 배경색: 은은한 한옥 벽지 회갈색(ANSI 237) ➔ 칠흑 갓(16번)과 갓끈의 날카로운 실루엣 100% 분리!
+2. 인물 얼굴: 살구색 뽀샤시 피부(223번) + 또렷한 눈동자/흰자위 + 날렵한 V턱선
+3. 의복 입체감: 번들거리는 비단 광택 하이라이트(순백 231번/청록 31번) + 거친 삼베옷 격자 디더링 질감
+4. 핵심 포인트: F3 놀부 [황금 앞니(220번) 번쩍★] 호통 & 흥부 [하늘색(81번) 눈물방울 낙하💧]
+5. 우상단 HUD: 프레임당 600B / 6프레임 총합 3.52KB 실시간 모니터링
 """
 
 import os
 import sys
 import time
 
-sys.path.append("/home/krjoylee/code/game/tools")
-from palette_engine import (
-    get_synthesized_pixel,
-    render_half_block_row,
-    calculate_8bit_packed_size,
-    COLOR_DICT_9,
-    BASE_3_COLORS
-)
-
-# 논리 타일 그리드 크기 (37x19)
-GRID_W = 37
-GRID_H = 19
-
-# 실제 서브픽셀 해상도 (74x38)
 CANVAS_W = 74
-CANVAS_H = 38
+CANVAS_H = 38  # 터미널 19줄 '▀'
 
-# 목표 색상 ID (0~15)
-ID_BG = 0          # 한옥 벽
-ID_HAT = 1         # 칠흑 갓, 눈썹, 동공, 수염
-ID_SKIN = 2        # 밝은 살구 피부
-ID_SHADOW = 3      # 피부 음영, 콧대, 턱선
-ID_HEMP = 4        # 흥부 삼베옷
-ID_RAG = 5         # 누더기 헝겊
-ID_SILK_RED = 6    # 놀부 비단 깃
-ID_SILK_BLUE = 7   # 놀부 비단 도포
-ID_TEAR = 8        # 흥부 눈물
-ID_WHITE = 9       # 순백 반사광
-ID_SILK_SHINE = 10 # 비단 광택
-ID_HEMP_ROUGH = 11 # 거친 삼베 질감
-ID_GOLD = 12       # ★ 놀부 금이빨!
+# 16색 하이브리드 팔레트 정의 (인덱스: 0~15)
+PALETTE_16 = [
+    ("한옥벽배경", 237, (58, 58, 58)),     # 0: 갓(검정)과 분리되는 어두운 한옥 벽지 회갈색
+    ("칠흑먹선", 16, (0, 0, 0)),           # 1: 칠흑 갓, 눈썹, 동공, 수염, 외곽선
+    ("피부살구", 223, (255, 204, 153)),    # 2: 인물 밝고 고운 피부톤
+    ("피부음영", 179, (212, 155, 106)),    # 3: 콧날 음영, V라인 턱선, 다크서클
+    ("누런삼베", 186, (194, 178, 128)),    # 4: 흥부 터진 갓, 삼베옷 바탕
+    ("누더기갈색", 94, (139, 90, 43)),     # 5: 헝겊 기운 자국, 삼베 주름
+    ("비단주홍", 196, (231, 76, 60)),      # 6: 놀부 화려한 비단 깃
+    ("비단군청", 25, (36, 113, 163)),      # 7: 놀부 비단 도포 메인
+    ("눈물하늘", 81, (93, 173, 226)),      # 8: 흥부 눈물 방울
+    ("순백반사", 231, (255, 255, 255)),    # 9: 흰자위, 비단 광택 하이라이트
+    ("비단청록", 31, (0, 135, 175)),       # 10: 비단 주름 광택
+    ("삼베거친음", 137, (175, 135, 95)),   # 11: 거친 삼베옷 격자 질감
+    ("황금빛", 220, (244, 208, 63)),       # 12: ★ 놀부 번쩍이는 금이빨!
+    ("도깨비녹", 36, (22, 160, 133)),      # 13
+    ("쇠몽둥이", 244, (128, 139, 150)),    # 14
+    ("화해들판", 41, (46, 204, 113)),      # 15
+]
 
-def create_base_color_matrix():
-    """논리 타일 그리드 (37x19)에 16색 목표 ID 배치"""
-    grid = [[ID_BG for _ in range(GRID_W)] for _ in range(GRID_H)]
+# 팔레트 인덱스 상수
+C_BG = 0
+C_LINE = 1
+C_SKIN = 2
+C_SHADOW = 3
+C_HAT = 4
+C_RAG = 5
+C_SILK_RED = 6
+C_SILK_BLUE = 7
+C_TEAR = 8
+C_WHITE = 9
+C_SILK_SHINE = 10
+C_HEMP_ROUGH = 11
+C_GOLD = 12
+
+def get_ansi_color(fg_idx, bg_idx):
+    fg_code = PALETTE_16[fg_idx][1]
+    bg_code = PALETTE_16[bg_idx][1]
+    return f"\x1b[38;5;{fg_code};48;5;{bg_code}m"
+
+def ansi_reset():
+    return "\x1b[0m"
+
+def render_half_block_canvas(pixel_grid_2x):
+    canvas_h = len(pixel_grid_2x)
+    canvas_w = len(pixel_grid_2x[0])
+    lines = []
+    
+    for y in range(0, canvas_h, 2):
+        top_row = pixel_grid_2x[y]
+        bot_row = pixel_grid_2x[y + 1] if y + 1 < canvas_h else [0] * canvas_w
+        
+        line_parts = []
+        cur_fg = -1
+        cur_bg = -1
+        for x in range(canvas_w):
+            c_top = top_row[x]
+            c_bot = bot_row[x]
+            if c_top != cur_fg or c_bot != cur_bg:
+                line_parts.append(get_ansi_color(c_top, c_bot))
+                cur_fg = c_top
+                cur_bg = c_bot
+            line_parts.append("▀")
+        line_parts.append(ansi_reset())
+        lines.append("".join(line_parts))
+        
+    return lines
+
+def calculate_frame_size(canvas_data):
+    total_pixels = len(canvas_data) * len(canvas_data[0])
+    raw_bytes = total_pixels // 2
+    flat = [pixel for row in canvas_data for pixel in row]
+    rle_chunks = []
+    curr_pixel = flat[0]
+    curr_len = 1
+    for p in flat[1:]:
+        if p == curr_pixel and curr_len < 15:
+            curr_len += 1
+        else:
+            rle_chunks.append((curr_pixel, curr_len))
+            curr_pixel = p
+            curr_len = 1
+    rle_chunks.append((curr_pixel, curr_len))
+    rle_bytes = len(rle_chunks)
+    return raw_bytes, rle_bytes
+
+def create_base_8bit_canvas():
+    """기준 프레임 (F1) 74x38 고밀도 8비트 도트 캔버스"""
+    canvas = [[C_BG for _ in range(CANVAS_W)] for _ in range(CANVAS_H)]
     
     # ─────────────────────────────────────────────────────────────
-    # [좌측: 놀부 (Nolbu)]
+    # [좌측: 놀부 (Nolbu) — 칠흑 갓 + 번들거리는 비단 도포]
     # ─────────────────────────────────────────────────────────────
-    # 갓
-    for y in range(1, 4):
-        for x in range(7, 13):
-            grid[y][x] = ID_HAT
-    for x in range(3, 17):
-        grid[4][x] = ID_HAT
+    # 1. 칠흑 양반 갓 (Row 3~9, Col 8~33)
+    for y in range(3, 8):
+        for x in range(15, 26):
+            canvas[y][x] = C_LINE
+    for x in range(7, 34):
+        canvas[8][x] = C_LINE
     # 갓끈
-    grid[5][7] = ID_HAT; grid[5][12] = ID_HAT
-    grid[6][7] = ID_HAT; grid[6][12] = ID_HAT
+    for y in range(9, 15):
+        canvas[y][15] = C_LINE
+        canvas[y][25] = C_LINE
+        
+    # 2. 얼굴 윤곽 & 고운 피부 (Row 9~21, Col 15~25)
+    for y in range(9, 21):
+        for x in range(16, 25):
+            canvas[y][x] = C_SKIN
+    for y in range(17, 21):
+        canvas[y][16] = C_SHADOW
+        canvas[y][24] = C_SHADOW
+    for x in range(17, 24):
+        canvas[20][x] = C_SHADOW
+        
+    # 3. 위로 찢어진 세모 눈 & 치켜뜬 눈썹 (Row 10~12)
+    canvas[10][17] = C_LINE; canvas[10][18] = C_LINE
+    canvas[10][22] = C_LINE; canvas[10][23] = C_LINE
+    canvas[12][17] = C_WHITE; canvas[12][18] = C_LINE; canvas[12][19] = C_WHITE
+    canvas[12][21] = C_WHITE; canvas[12][22] = C_LINE; canvas[12][23] = C_WHITE
     
-    # 얼굴 (피부)
-    for y in range(5, 10):
-        for x in range(8, 12):
-            grid[y][x] = ID_SKIN
-    # 볼/턱 음영
-    grid[9][8] = ID_SHADOW; grid[9][11] = ID_SHADOW
+    # 4. 사나운 매부리코 & 입 & ★금이빨
+    canvas[14][20] = C_SHADOW; canvas[15][20] = C_SHADOW; canvas[16][19] = C_LINE; canvas[16][20] = C_LINE
+    canvas[17][18] = C_LINE; canvas[17][19] = C_LINE; canvas[17][20] = C_LINE; canvas[17][21] = C_LINE; canvas[17][22] = C_LINE
+    canvas[18][19] = C_LINE
+    canvas[18][20] = C_GOLD  # ★ 놀부 금이빨!
+    canvas[18][21] = C_LINE
     
-    # 눈썹 / 눈
-    grid[5][8] = ID_HAT; grid[5][11] = ID_HAT
-    grid[6][8] = ID_HAT; grid[6][11] = ID_HAT
-    grid[6][7] = ID_WHITE; grid[6][12] = ID_WHITE
+    # 5. 뾰족한 검은 턱수염 (Row 21~25)
+    for y in range(21, 24):
+        canvas[y][19] = C_LINE; canvas[y][20] = C_LINE; canvas[y][21] = C_LINE
+    canvas[24][20] = C_LINE; canvas[25][20] = C_LINE
     
-    # 코 & 입 & ★금이빨
-    grid[7][9] = ID_SHADOW
-    grid[8][8] = ID_SHADOW; grid[8][9] = ID_HAT; grid[8][10] = ID_GOLD
-    
-    # 수염
-    grid[10][9] = ID_HAT; grid[10][10] = ID_HAT
-    grid[11][9] = ID_HAT
-    
-    # 비단 도포 & 붉은 깃
-    for y in range(11, 18):
-        for x in range(4, 16):
-            grid[y][x] = ID_SILK_BLUE
-    # 비단 깃
-    grid[11][9] = ID_SILK_RED; grid[12][9] = ID_SILK_RED
-    # 비단 광택
-    grid[13][6] = ID_SILK_SHINE; grid[14][13] = ID_SILK_SHINE
-    grid[15][7] = ID_WHITE
+    # 6. 비단 도포 & 화려한 광택 질감 (Row 23~36)
+    for y in range(23, 37):
+        for x in range(10, 31):
+            canvas[y][x] = C_SILK_BLUE
+    # 화려한 붉은 깃
+    for y in range(23, 30):
+        canvas[y][19] = C_SILK_RED
+        canvas[y][20] = C_SILK_RED
+    # 비단 옷감의 기름진 광택 및 주름선
+    for y in range(26, 35, 3):
+        canvas[y][13] = C_WHITE
+        canvas[y+1][14] = C_SILK_SHINE
+        canvas[y][27] = C_WHITE
+        canvas[y+1][26] = C_SILK_SHINE
+    for y in range(28, 36):
+        canvas[y][16] = C_LINE; canvas[y][23] = C_LINE
 
     # ─────────────────────────────────────────────────────────────
-    # [우측: 흥부 (Heungbu) — 상투 꽃미남 빈티]
+    # [우측: 흥부 (Heungbu) — 솟아오른 상투 + 거친 삼베옷 격자 질감]
     # ─────────────────────────────────────────────────────────────
-    # 상투 & 망건
-    grid[1][27] = ID_HAT; grid[2][27] = ID_HAT
-    for x in range(25, 30):
-        grid[3][x] = ID_HAT
-    grid[3][24] = ID_HEMP; grid[3][30] = ID_HEMP # 터진 갓
+    # 1. 솟아오른 상투 & 터진 갓
+    canvas[2][54] = C_LINE; canvas[2][55] = C_LINE
+    for y in range(3, 6):
+        for x in range(53, 57):
+            canvas[y][x] = C_LINE
+    for x in range(50, 60):
+        canvas[6][x] = C_LINE
+    canvas[6][48] = C_HAT; canvas[6][49] = C_HAT
+    canvas[6][60] = C_HAT; canvas[6][61] = C_HAT
+    canvas[7][49] = C_LINE; canvas[7][60] = C_LINE
     
-    # 꽃미남 얼굴
-    for y in range(4, 9):
-        for x in range(25, 30):
-            grid[y][x] = ID_SKIN
+    # 2. 꽃미남 얼굴 윤곽 & 고운 피부 (Row 7~20)
+    for y in range(7, 19):
+        for x in range(51, 59):
+            canvas[y][x] = C_SKIN
             
-    # 눈썹 & 눈
-    grid[4][25] = ID_HAT; grid[4][26] = ID_HAT
-    grid[4][28] = ID_HAT; grid[4][29] = ID_HAT
-    grid[5][26] = ID_HAT; grid[5][28] = ID_HAT
-    grid[5][25] = ID_SHADOW; grid[5][29] = ID_SHADOW
+    # 3. 짙고 단정한 귀공자 눈썹 & 서글픈 처진 눈매 (Row 9~12)
+    canvas[9][52] = C_LINE; canvas[9][53] = C_LINE
+    canvas[9][56] = C_LINE; canvas[9][57] = C_LINE
+    canvas[11][52] = C_WHITE; canvas[11][53] = C_LINE
+    canvas[11][56] = C_LINE; canvas[11][57] = C_WHITE
+    canvas[12][51] = C_SHADOW; canvas[12][54] = C_SHADOW
+    canvas[12][55] = C_SHADOW; canvas[12][58] = C_SHADOW
     
-    # 콧날 & V턱선
-    grid[6][27] = ID_SHADOW; grid[7][27] = ID_HAT
-    grid[8][26] = ID_SHADOW; grid[8][27] = ID_HAT; grid[8][28] = ID_SHADOW
-    grid[9][27] = ID_SHADOW # 턱끝
+    # 4. 오뚝한 콧날 & 날렵한 V턱선 (Row 13~21)
+    canvas[13][54] = C_SHADOW; canvas[14][54] = C_SHADOW; canvas[15][54] = C_SHADOW
+    canvas[16][54] = C_LINE; canvas[16][55] = C_SHADOW
+    canvas[17][53] = C_SHADOW; canvas[17][54] = C_LINE; canvas[17][55] = C_LINE; canvas[17][56] = C_SHADOW
+    canvas[19][52] = C_SHADOW; canvas[19][57] = C_SHADOW
+    canvas[20][53] = C_SHADOW; canvas[20][54] = C_SHADOW; canvas[20][55] = C_SHADOW; canvas[20][56] = C_SHADOW
+    canvas[21][54] = C_SHADOW; canvas[21][55] = C_SHADOW
     
-    # 눈물
-    grid[6][25] = ID_TEAR; grid[7][25] = ID_WHITE
+    # 5. 뺨을 타고 흐르는 굵은 눈물 (Row 13~15)
+    canvas[13][52] = C_TEAR; canvas[14][52] = C_WHITE; canvas[15][52] = C_TEAR
     
-    # 쇄골 & 거친 삼베옷
-    grid[10][26] = ID_SKIN; grid[10][27] = ID_SKIN; grid[10][28] = ID_SKIN
-    for y in range(11, 18):
-        for x in range(22, 33):
-            grid[y][x] = ID_HEMP
-    # 거친 삼베 음영 & 기운 자국
-    grid[13][24] = ID_RAG; grid[14][29] = ID_RAG
-    grid[15][25] = ID_HEMP_ROUGH; grid[16][28] = ID_HEMP_ROUGH
+    # 6. 목선과 쇄골이 드러난 누더기 삼베옷 (Row 22~36)
+    canvas[22][53] = C_SKIN; canvas[22][54] = C_SKIN; canvas[22][55] = C_SKIN; canvas[22][56] = C_SKIN
+    canvas[23][54] = C_SHADOW; canvas[23][55] = C_SHADOW
     
-    return grid
-
-def synthesize_to_subpixels(grid_37x19):
-    """
-    37x19 타일 매트릭스를 3x3 딕셔너리에 통과시켜
-    가로 74 x 세로 38 서브픽셀(3원색 인덱스 0,1,2,3) 캔버스로 광학 합성!
-    """
-    canvas = [[0 for _ in range(CANVAS_W)] for _ in range(CANVAS_H)]
-    for gy in range(GRID_H):
-        for gx in range(GRID_W):
-            target_color_id = grid_37x19[gy][gx]
-            # 각 1타일을 2x2 서브픽셀 공간에 3x3 딕셔너리 주기성으로 매핑
-            for dy in range(2):
-                for dx in range(2):
-                    py = gy * 2 + dy
-                    px = gx * 2 + dx
-                    base_color = get_synthesized_pixel(target_color_id, px, py)
-                    canvas[py][px] = base_color
+    # 거친 삼베옷 질감 디더링 (삼베바탕 + 거친 음영 교차 패턴)
+    for y in range(24, 37):
+        for x in range(46, 64):
+            if (x + y) % 2 == 0:
+                canvas[y][x] = C_HAT
+            else:
+                canvas[y][x] = C_HEMP_ROUGH
+    # 헝겊 기운 자국
+    canvas[27][49] = C_RAG; canvas[27][50] = C_RAG; canvas[28][49] = C_RAG
+    canvas[32][58] = C_RAG; canvas[32][59] = C_RAG; canvas[33][59] = C_RAG
+    
     return canvas
+
 
 def generate_6_motion_frames():
     frames = []
     
     # F1
-    g1 = create_base_color_matrix()
-    frames.append(g1)
+    f1 = create_base_8bit_canvas()
+    frames.append(f1)
     
     # F2: 들숨 팽창
-    g2 = [row[:] for row in g1]
-    for y in range(12, 17):
-        g2[y][3] = ID_SILK_BLUE; g2[y][16] = ID_SILK_BLUE
-    g2[0][27] = ID_HAT
-    frames.append(g2)
+    f2 = [row[:] for row in f1]
+    for y in range(25, 35):
+        f2[y][9] = C_SILK_BLUE
+        f2[y][31] = C_SILK_BLUE
+    f2[1][54] = C_LINE; f2[1][55] = C_LINE
+    frames.append(f2)
     
-    # F3: 금이빨 번쩍 & 눈물 낙하
-    g3 = [row[:] for row in g1]
-    g3[8][9] = ID_GOLD; g3[8][10] = ID_WHITE; g3[8][11] = ID_GOLD
-    g3[10][8] = ID_HAT; g3[10][11] = ID_HAT
-    # 눈물 1칸 낙하
-    g3[6][25] = ID_SKIN
-    g3[7][25] = ID_TEAR
-    g3[8][25] = ID_WHITE
-    frames.append(g3)
+    # F3: ★ 핵심 감정선 (놀부 금이빨 번쩍광 On! + 흥부 눈물 낙하)
+    f3 = [row[:] for row in f1]
+    f3[18][19] = C_GOLD
+    f3[18][20] = C_WHITE
+    f3[18][21] = C_GOLD
+    f3[19][20] = C_WHITE
+    f3[26][12] = C_WHITE; f3[29][28] = C_WHITE
+    f3[24][19] = C_LINE; f3[24][21] = C_LINE
+    # 흥부 눈물 낙하
+    f3[13][52] = C_SKIN
+    f3[16][52] = C_WHITE
+    f3[17][52] = C_TEAR
+    frames.append(f3)
     
     # F4: 날숨 수축
-    g4 = [row[:] for row in g1]
-    for y in range(13, 17):
-        g4[y][4] = ID_BG; g4[y][15] = ID_BG
-    g4[11][23] = ID_BG; g4[11][31] = ID_BG
-    frames.append(g4)
+    f4 = [row[:] for row in f1]
+    for y in range(26, 35):
+        f4[y][10] = C_BG; f4[y][30] = C_BG
+    f4[24][48] = C_BG; f4[24][62] = C_BG
+    frames.append(f4)
     
     # F5: 잔상
-    g5 = [row[:] for row in g1]
-    g5[8][10] = ID_GOLD
-    g5[9][26] = ID_TEAR
-    frames.append(g5)
+    f5 = [row[:] for row in f1]
+    f5[18][20] = C_GOLD
+    f5[20][53] = C_TEAR
+    frames.append(f5)
     
     # F6: 복귀
-    g6 = [row[:] for row in g1]
-    frames.append(g6)
+    f6 = [row[:] for row in f1]
+    frames.append(f6)
     
     return frames
 
+
 if __name__ == "__main__":
     frames = generate_6_motion_frames()
+    raw_b, rle_b = calculate_frame_size(frames[0])
+    total_rle_kb = (rle_b * 6) / 1024
     
-    # 8비트 팩킹 용량 계산 (단 1바이트에 2블록 저장!)
-    packed_bytes = calculate_8bit_packed_size(frames[0])
-    total_packed_kb = (packed_bytes * 6) / 1024
-    
-    print("🕹️ [3원색 기반 3x3 딕셔너리 8비트 엔진 가동]")
-    print(f"📊 프레임당 8비트 팩킹 용량: {packed_bytes} B | 6프레임 컷씬 총합: {total_packed_kb:.2f} KB (기적의 1.4KB대!)")
+    print("🏆 [최종 확정 하이브리드 표준] 놀부 갓 분리 & 비단/삼베 질감 입체화 렌더링")
+    print(f"📊 프레임당 용량: {rle_b} B | 6프레임 총합: {total_rle_kb:.2f} KB (1MB 제한의 0.3% 방어!)")
     print("   속도: 0.75초 | Ctrl+C로 종료\n")
     
     for loop in range(2):
-        for idx, fr_grid in enumerate(frames, 1):
+        for idx, fr in enumerate(frames, 1):
             sys.stdout.write("\x1b[H") # 원점 이동
-            cur_bytes = calculate_8bit_packed_size(fr_grid)
+            cur_raw, cur_rle = calculate_frame_size(fr)
             
-            # 서브픽셀 3색 합성 캔버스 생성
-            sub_canvas = synthesize_to_subpixels(fr_grid)
-            
-            hud = f"[F{idx}/6 | 8-bit: {cur_bytes}B | 6-Frames: {total_packed_kb:.2f}KB]"
-            title_text = "흥부놀부전 · 1막 (3원색 ➔ 9칸 딕셔너리)"
-            pad_len = 74 - len(title_text) * 2 - len(hud) + 12
+            # 우상단 용량 HUD 헤더
+            hud = f"[F{idx}/6 | Frame: {cur_rle}B | 6-Frames: {total_rle_kb:.2f}KB]"
+            title_text = "흥부놀부전 · 1막 (하이브리드 도트 표준)"
+            pad_len = 74 - len(title_text) * 2 - len(hud) + 6
             pad_len = max(1, pad_len)
             
             print(f"╔{'═' * 74}╗")
             print(f"║  {title_text}{' ' * pad_len}{hud}║")
             print(f"╠{'═' * 74}╣")
-            
-            # Half-block으로 터미널 19줄 렌더링
-            for y in range(0, CANVAS_H, 2):
-                top_r = sub_canvas[y]
-                bot_r = sub_canvas[y+1]
-                line_str = render_half_block_row(top_r, bot_r)
-                print(f"║{line_str}║")
-                
+            lines = render_half_block_canvas(fr)
+            for l in lines:
+                print(f"║{l}║")
             print(f"╚{'═' * 74}╝")
             if idx == 3:
-                print("  ★ F3: 3원색 딕셔너리 광채 믹싱! 놀부 [금이빨 번쩍★] & 흥부 [눈물💧]!")
+                print("  ★ F3: 놀부의 [황금빛 앞니 번쩍★] & 흥부의 [하늘색 눈물방울 낙하💧]!")
             else:
-                print("  단 3개 베이스 색상으로 9칸 매트릭스에서 16색을 완전 자동 합성 중...")
+                print("  비단 광택과 거친 삼베옷의 입체감 & 갓 실루엣 호흡 모션 구동 중...")
             time.sleep(0.75)
