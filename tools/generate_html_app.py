@@ -44,15 +44,16 @@ def build_standalone_app():
 <title>Divina Ludus — 흥부놀부전 (4X High-Res Retro Console)</title>
 <style>
   * {{ margin: 0; padding: 0; box-sizing: border-box; user-select: none; }}
-  body {{
+  html, body {{
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* 휠 스크롤 완전 락(Lock)! */
     background-color: #121212;
     color: #e0e0e0;
     font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 20px;
   }}
   .console-frame {{
     width: 840px;
@@ -306,6 +307,20 @@ def build_standalone_app():
       mVal.innerText = "2 / 10";
     }}
   }}
+
+  // ⌨️ 키보드 조작 기본 탑재 (숫자 1, 2, Enter, Space)
+  window.addEventListener('keydown', (e) => {{
+    if (e.key === '1') {{
+      selectChoice(1);
+    }} else if (e.key === '2') {{
+      selectChoice(2);
+    }}
+  }});
+
+  // 휠 스크롤 화면 흔들림 원천 방지
+  window.addEventListener('wheel', (e) => {{
+    e.preventDefault();
+  }}, {{ passive: false }});
 </script>
 
 </body>
