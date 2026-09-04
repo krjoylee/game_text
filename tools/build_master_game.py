@@ -436,20 +436,33 @@ def build_master_system():
     hideHint();
     document.getElementById('headerTitle').innerText = "◆ Divina Ludus · 고전문학 서재 ◆";
     document.getElementById('speakerName').innerText = "안내 사서";
-    document.getElementById('dialogueText').innerText = "환영합니다, 순례자여.\\n[1]번을 눌러 조작법을 익히는 '기본 튜토리얼'을 시작하거나,\\n[2]번을 눌러 난이도별 '정식 문학 서재'로 입장하십시오.";
-    document.getElementById('feedbackText').innerText = "키보드 [1] 튜토리얼, [2] 정식 게임";
+    document.getElementById('dialogueText').innerText = "환영합니다, 순례자여.\\n[1]번을 눌러 조작법을 익히는 '기본 튜토리얼'을 시작하거나,\\n[2]번을 눌러 난이도별 '정식 문학 서재'로 입장하십시오.\\n[0]번 또는 [Q]를 누르면 게임을 종료할 수 있습니다.";
+    document.getElementById('feedbackText').innerText = "키보드 [1] 튜토리얼, [2] 정식 게임, [0]/[Q] 게임 종료";
     document.getElementById('metricName').innerText = "◈ 메인 메뉴";
     document.getElementById('metricVal').innerText = "준비 완료";
     document.getElementById('metricBar').style.width = "100%";
-    document.getElementById('sysInfo').innerHTML = "◈ [1] 튜토리얼 (10막)<br>◈ [2] 정식 서재 (초/중/고급)<br>◈ 10대 명작 110개 씬 수록";
+    document.getElementById('sysInfo').innerHTML = "◈ [1] 튜토리얼 (10막)<br>◈ [2] 정식 서재 (초/중/고급)<br>◈ [0/Q] 게임 완전 종료";
 
     const box = document.getElementById('choiceBox');
     box.innerHTML = `
       <button class="choice-btn" onclick="startTutorial()">[1] 기본 튜토리얼: 《흥부놀부전》 10막 (초심자 추천)</button>
       <button class="choice-btn" onclick="showDifficultySelect()">[2] 정식 게임: 난이도별 서재 (초등·중고등·성인 문학)</button>
+      <button class="choice-btn" style="background:#281b1b; border-color:#843534; color:#f2dede;" onclick="exitGame()">[0] 🚪 게임 종료 및 창 닫기 (Q / ESC)</button>
     `;
     
     renderStaticFrame(masterData.packs[0].scenes[0].rle[0]);
+  }}
+
+  function exitGame() {{
+    document.getElementById('headerTitle').innerText = "◆ 게임이 종료되었습니다 ◆";
+    document.getElementById('speakerName').innerText = "안내 사서";
+    document.getElementById('dialogueText').innerText = "디비나 루두스를 이용해 주셔서 감사합니다. 안녕히 가십시오.\\n(창이 자동으로 닫히지 않을 경우 창을 닫아주세요.)";
+    document.getElementById('feedbackText').innerText = "게임 종료 완료. 편안한 시간 되십시오.";
+    document.getElementById('choiceBox').innerHTML = `
+      <button class="choice-btn" style="background:#281b1b; border-color:#843534; color:#f2dede;" onclick="window.close()">창 닫기 (Close Window)</button>
+      <button class="choice-btn" onclick="showTitleScreen()">[R] 메인 메뉴로 다시 돌아가기</button>
+    `;
+    window.close();
   }}
 
   function showDifficultySelect() {{
@@ -517,6 +530,13 @@ def build_master_system():
     if (pageItems.length > 0) {{
       renderStaticFrame(pageItems[0].scenes[0].rle[0]);
     }}
+  }}
+
+  function getMaxScoreForPack(pack) {{
+    if (!pack) return 10;
+    if (pack.scenes.length >= 20) return 25;
+    if (pack.scenes.length >= 15) return 18;
+    return 10;
   }}
 
   function startTutorial() {{
@@ -602,7 +622,8 @@ def build_master_system():
   }}
 
   function advanceScene(delta) {{
-    metricValue = Math.max(0, Math.min(10, metricValue + delta));
+    const maxScore = getMaxScoreForPack(curPack);
+    metricValue = Math.max(0, Math.min(maxScore, metricValue + delta));
     updateMetricUI();
     
     if (curSceneIdx + 1 >= curPack.scenes.length) {{
