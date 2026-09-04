@@ -456,13 +456,23 @@ def build_master_system():
   function exitGame() {{
     document.getElementById('headerTitle').innerText = "◆ 게임이 종료되었습니다 ◆";
     document.getElementById('speakerName').innerText = "안내 사서";
-    document.getElementById('dialogueText').innerText = "디비나 루두스를 이용해 주셔서 감사합니다. 안녕히 가십시오.\\n(창이 자동으로 닫히지 않을 경우 창을 닫아주세요.)";
-    document.getElementById('feedbackText').innerText = "게임 종료 완료. 편안한 시간 되십시오.";
+    document.getElementById('dialogueText').innerText = "디비나 루두스를 종료합니다. 창을 닫습니다.\\n(자동으로 닫히지 않으면 아래 [창 닫기] 버튼을 누르거나 창을 닫아주세요.)";
+    document.getElementById('feedbackText').innerText = "게임 종료. 안녕히 가십시오.";
     document.getElementById('choiceBox').innerHTML = `
-      <button class="choice-btn" style="background:#281b1b; border-color:#843534; color:#f2dede;" onclick="window.close()">창 닫기 (Close Window)</button>
-      <button class="choice-btn" onclick="showTitleScreen()">[R] 메인 메뉴로 다시 돌아가기</button>
+      <button class="choice-btn" style="background:#843534; border-color:#d9534f; color:#ffffff; font-weight:bold; font-size:14px;" onclick="forceCloseWindow()">[Enter / Q / ESC] 지금 즉시 창 닫기</button>
+      <button class="choice-btn" onclick="showTitleScreen()">[R] 취소하고 메인 메뉴로 돌아가기</button>
     `;
-    window.close();
+    forceCloseWindow();
+  }}
+
+  function forceCloseWindow() {{
+    try {{
+      window.open('', '_self', '');
+      window.close();
+    }} catch (e) {{}}
+    try {{
+      window.close();
+    }} catch (e) {{}}
   }}
 
   function showDifficultySelect() {{
@@ -706,14 +716,16 @@ def build_master_system():
   }}, 750);
 
   window.addEventListener('keydown', (e) => {{
+    const k = e.key.toLowerCase();
     if (gameState === 'TITLE') {{
-      if (e.key === '1') startTutorial();
-      else if (e.key === '2') showDifficultySelect();
+      if (k === '1') startTutorial();
+      else if (k === '2') showDifficultySelect();
+      else if (k === '0' || k === 'q' || k === 'escape') exitGame();
     }} else if (gameState === 'DIFFICULTY_SELECT') {{
       if (e.key === '1') openTierLibrary('easy');
       else if (e.key === '2') openTierLibrary('medium');
       else if (e.key === '3') openTierLibrary('hard');
-      else if (e.key === '*' || e.key === 'q' || e.key === 'Q' || e.key === 'Escape') showTitleScreen();
+      else if (k === '*' || k === 'q' || k === 'escape') showTitleScreen();
     }} else if (gameState === 'LIBRARY_BY_TIER') {{
       const startIdx = libraryPage * ITEMS_PER_PAGE;
       const pageItems = filteredPacks.slice(startIdx, startIdx + ITEMS_PER_PAGE);
@@ -725,10 +737,10 @@ def build_master_system():
         const totalPages = Math.ceil(filteredPacks.length / ITEMS_PER_PAGE) || 1;
         showLibraryScreen((libraryPage + 1) % totalPages);
       }}
-      else if (e.key === '*' || e.key === 'q' || e.key === 'Q' || e.key === 'Escape') showDifficultySelect();
+      else if (k === '*' || k === 'q' || k === 'escape') showDifficultySelect();
     }} else if (gameState === 'IN_GAME') {{
       const scene = curPack.scenes[curSceneIdx];
-      if (e.key === '*' || e.key === 'q' || e.key === 'Q' || e.key === 'Escape') {{
+      if (k === '*' || k === 'q' || k === 'escape') {{
         showDifficultySelect();
         return;
       }}
