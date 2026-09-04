@@ -46,7 +46,7 @@ def build_charlie_pack():
     return {
         "id": "charlie", "title": "찰리와 초콜릿 공장", "tier": "easy",
         "tier_name": "쉬움 (초등 도서 권장)", "tier_desc": "황금 티켓과 달콤한 교훈이 가득한 윌리 웡카의 공장 모험",
-        "tag": "Easy · 로알드 달 환상명작", "metric_name": "순수함의 황금", "metric_icon": "🍫",
+        "tag": "Easy · 로알드 달 환상명작", "metric_name": "순수함의 황금", "metric_icon": "🍫", "metric_max": 10, "metric_initial": 3,
         "scenes": scenes,
         "endings": [
             {"min": 8, "title": "초콜릿 제국의 위대한 후계자", "desc": "온갖 탐욕과 유혹을 순수한 양심으로 물리치고, 윌리 웡카의 모든 유산과 마법을 물려받아 세상에 행복을 선물했습니다."},
@@ -86,7 +86,7 @@ def build_matilda_pack():
     return {
         "id": "matilda", "title": "마틸다", "tier": "easy",
         "tier_name": "쉬움 (초등 도서 권장)", "tier_desc": "책을 사랑하는 천재 소녀 마틸다의 유쾌하고 통쾌한 정의 실현극",
-        "tag": "Easy · 로알드 달 통쾌명작", "metric_name": "지혜와 정의", "metric_icon": "📖",
+        "tag": "Easy · 로알드 달 통쾌명작", "metric_name": "지혜와 정의", "metric_icon": "📖", "metric_max": 10, "metric_initial": 3,
         "scenes": scenes,
         "endings": [
             {"min": 8, "title": "기적을 부르는 위대한 작은 거인", "desc": "폭력과 무지에 굴복하지 않고 뛰어난 지성과 용기로 불의를 몰아내어, 가장 따스한 가족의 품에서 행복을 찾았습니다."},
@@ -135,7 +135,7 @@ def build_animal_farm_pack():
     return {
         "id": "animal_farm", "title": "동물농장", "tier": "medium",
         "tier_name": "중간 (중고등 도서 권장)", "tier_desc": "이상적 혁명이 부패하여 독재로 변질되는 조지 오웰의 서늘한 정치 풍자극",
-        "tag": "Medium · 조지 오웰 불멸의 고전", "metric_name": "비판적 양심", "metric_icon": "🚩",
+        "tag": "Medium · 조지 오웰 불멸의 고전", "metric_name": "비판적 양심", "metric_icon": "🚩", "metric_max": 14, "metric_initial": 3,
         "scenes": scenes,
         "endings": [
             {"min": 11, "title": "깨어있는 역사의 감시자", "desc": "어떤 권력의 거짓 선동과 공포 앞에서도 비판적 이성과 양심을 지켜내어 역사의 진실을 증언했습니다."},
@@ -182,7 +182,7 @@ def build_1984_pack():
     return {
         "id": "1984", "title": "1984", "tier": "medium",
         "tier_name": "중간 (중고등 도서 권장)", "tier_desc": "빅브라더의 감시와 언어 통제, 인간 영혼의 파괴를 경고한 디스토피아 문학의 정점",
-        "tag": "Medium · 조지 오웰 디스토피아", "metric_name": "인간성의 존엄", "metric_icon": "👁️",
+        "tag": "Medium · 조지 오웰 디스토피아", "metric_name": "인간성의 존엄", "metric_icon": "👁️", "metric_max": 14, "metric_initial": 3,
         "scenes": scenes,
         "endings": [
             {"min": 11, "title": "불멸하는 정신의 수호자", "desc": "가혹한 고문과 세뇌 속에서도 2+2=4의 진실과 인간적 존엄의 불씨를 지켜낸 비극의 영웅입니다."},
@@ -229,7 +229,7 @@ def build_under_wheel_pack():
     return {
         "id": "under_wheel", "title": "수레바퀴 아래서", "tier": "medium",
         "tier_name": "중간 (중고등 도서 권장)", "tier_desc": "주입식 입시 교육과 어른들의 욕망에 희생된 섬세한 영혼의 비가",
-        "tag": "Medium · 헤르만 헤세 자전소설", "metric_name": "영혼의 순수성", "metric_icon": "🌿",
+        "tag": "Medium · 헤르만 헤세 자전소설", "metric_name": "영혼의 순수성", "metric_icon": "🌿", "metric_max": 14, "metric_initial": 3,
         "scenes": scenes,
         "endings": [
             {"min": 11, "title": "수레바퀴를 벗어난 자유로운 영혼", "desc": "세속의 무거운 바퀴에 영혼을 짓밟히지 않고, 자연과 참된 우정의 가치를 끝내 기억한 순례자입니다."},
@@ -288,7 +288,7 @@ def build_dante_comedy_pack():
     return {
         "id": "dante_comedy", "title": "단테의 신곡: 지옥·연옥·천국", "tier": "hard",
         "tier_name": "어려움 (성인 문학 권장)", "tier_desc": "지옥의 심연에서 연옥의 정화를 거쳐 천국의 삼위일체 사랑에 도달하는 20막 대서사시",
-        "tag": "Hard · 인류 역사상 가장 위대한 대서사시", "metric_name": "신성한 은총의 빛", "metric_icon": "☀️",
+        "tag": "Hard · 인류 역사상 가장 위대한 대서사시", "metric_name": "신성한 은총의 빛", "metric_icon": "☀️", "metric_max": 17, "metric_initial": 3,
         "scenes": scenes,
         "endings": [
             {"min": 13, "title": "천상의 빛과 합일한 성스러운 대시인", "desc": "지옥의 형벌, 연옥의 정화, 천국의 삼위일체 신비를 모두 관통하여 우주를 움직이는 영원한 사랑과 하나가 되었습니다."},
@@ -340,7 +340,7 @@ def build_zarathustra_pack():
     return {
         "id": "zarathustra", "title": "차라투스트라는 이렇게 말했다", "tier": "hard",
         "tier_name": "어려움 (성인 문학 권장)", "tier_desc": "신이 죽은 시대, 낙타·사자·아이의 3대 변화를 거쳐 영원회귀와 위버멘쉬를 선언하는 니체의 철학시",
-        "tag": "Hard · 니체 철학의 정점이자 불멸의 고전", "metric_name": "위버멘쉬의 불꽃", "metric_icon": "🦅",
+        "tag": "Hard · 니체 철학의 정점이자 불멸의 고전", "metric_name": "위버멘쉬의 불꽃", "metric_icon": "🦅", "metric_max": 17, "metric_initial": 3,
         "scenes": scenes,
         "endings": [
             {"min": 13, "title": "영원을 긍정하는 위버멘쉬 (초인)", "desc": "모든 고통과 영원회귀의 심연을 뛰어넘어, 대지를 사랑하고 스스로 굴러가는 바퀴인 어린아이의 신성한 긍정에 도달했습니다."},

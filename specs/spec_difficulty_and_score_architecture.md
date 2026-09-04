@@ -17,9 +17,14 @@
   3. 분기 이벤트의 델타가 `+2`, `+3`, `-2` 등 비표준으로 부여되어 점수 상승선이 제멋대로 날뛰는 기획적 불일치 발생.
 
 ### 1.2 가변 점수제(Dynamic Metric Architecture)의 핵심 원칙
+* **팩 주도 원칙 (Pack-Driven Metric & Ending)**: **엔진 런타임은 점수 상한(10점 등)이나 엔딩 컷오프를 강제/하드코딩하지 않는다.** 각 문학 팩의 `3_scene.yaml` 내 `world.metric(max, initial)` 및 `endings[].min`에 정의된 값을 엔진이 100% 추종하여 렌더링하고 판정한다.
 * **서사 길이(막 수)와 선택지 개수에 따라 맥스 점수(Max Score)가 유기적으로 연동**되어야 한다.
 * **선택지 델타는 `±1 룰`로 표준화**되어 점수의 예측 가능성과 점진적 긴장감을 보장한다.
-* **엔딩 판정 컷오프는 획득 가능한 이론상 최대 점수의 백분율**로 엄격하게 비례 산출한다.
+* **엔딩 판정 컷오프는 팩에서 설정된 기준값(`min`)에 따라 판정**하며, 이는 획득 가능한 이론상 최대 점수의 백분율을 기반으로 팩 작성자가 기획·설정한다.
+
+### 1.3 엔진-팩 책임 분리 (Separation of Concerns)
+* **엔진(Engine)**: 중립적 런타임 플레이어. 팩의 YAML을 로드하여 `pack.metric_max`, `pack.metric_initial`, `pack.endings`를 그대로 읽어 UI(`metricValue / metric_max`)와 엔딩 분기 조건(`metricValue >= ending.min`)을 수행할 뿐, 자체적인 점수 제약이나 상한을 두지 않는다.
+* **팩(Pack)**: 문학 작품의 서사 길이(10막/15막/20막), 질문 성격, 난이도에 맞추어 `metric_max`와 엔딩 분기 기준 점수를 완결성 있게 정의한다.
 
 ---
 
@@ -69,13 +74,33 @@ $$ \text{Min Score} = \max(0, \text{Initial Score (3)} - \text{Total Choice Scen
 
 ## 4. 엔진 런타임 구현 사양 (Engine Implementation)
 
-### 4.1 런타임 맥스 점수 판별 함수
+### 4.1 런타임 맥스 점수 판별 함수 (팩 우선 추종)
 ```javascript
-function getMaxScoreForPack(pack) {
+function getPackMaxMetric(pack) {
   if (!pack) return 10;
-  if (pack.scenes.length >= 20) return 17; // 고급: 20막
-  if (pack.scenes.length >= 15) return 14; // 중급: 15막
-  return 10;                               // 초급/튜토리얼: 10막
+  // 1순위: 팩(3_scene.yaml)에서 명시한 metric_max 읽기
+  if (pack.metric_max) return pack.metric_max;
+  // 2순위: 팩에 명시되지 않은 레거시의 경우 씬 길이에 따라 동적 판별
+  if (pack.scenes && pack.scenes.length >= 20) return 17; // 고급: 20막
+  if (pack.scenes && pack.scenes.length >= 15) return 14; // 중급: 15막
+  return 10;                                              // 초급/튜토리얼: 10막
+}
+```
+
+### 4.2 엔딩 판정 로직 (팩 엔딩 min 기준 순회)
+```javascript
+function showEnding() {
+  gameState = 'ENDING';
+  hideHint();
+  // 팩의 endings 배열에 정의된 min 기준 점수대로 동적 판정
+  let matched = curPack.endings[curPack.endings.length - 1];
+  for (let end of curPack.endings) {
+    if (metricValue >= end.min) {
+      matched = end;
+      break;
+    }
+  }
+  // ...
 }
 ```
 

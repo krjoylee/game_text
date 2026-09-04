@@ -10,7 +10,7 @@ pack:
       name: 인간성의 존엄
       icon: 👁️
       initial: 3
-      max: 10
+      max: 14
   endings:
   - min: 11
     title: 불멸하는 정신의 수호자

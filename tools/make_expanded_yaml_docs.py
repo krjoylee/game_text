@@ -134,8 +134,8 @@ for dirname, factory in packs_factories:
                 "metric": {
                     "name": pdata["metric_name"],
                     "icon": pdata["metric_icon"],
-                    "initial": 3,
-                    "max": 10
+                    "initial": pdata.get("metric_initial", 3),
+                    "max": pdata.get("metric_max", 10)
                 }
             },
             "endings": pdata["endings"]

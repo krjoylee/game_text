@@ -10,7 +10,7 @@ pack:
       name: 영혼의 순수성
       icon: 🌿
       initial: 3
-      max: 10
+      max: 14
   endings:
   - min: 11
     title: 수레바퀴를 벗어난 자유로운 영혼

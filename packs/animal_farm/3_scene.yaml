@@ -10,7 +10,7 @@ pack:
       name: 비판적 양심
       icon: 🚩
       initial: 3
-      max: 10
+      max: 14
   endings:
   - min: 11
     title: 깨어있는 역사의 감시자

@@ -542,10 +542,11 @@ def build_master_system():
     }}
   }}
 
-  function getMaxScoreForPack(pack) {{
+  function getPackMaxMetric(pack) {{
     if (!pack) return 10;
-    if (pack.scenes.length >= 20) return 17;
-    if (pack.scenes.length >= 15) return 14;
+    if (pack.metric_max) return pack.metric_max;
+    if (pack.scenes && pack.scenes.length >= 20) return 17;
+    if (pack.scenes && pack.scenes.length >= 15) return 14;
     return 10;
   }}
 
@@ -562,7 +563,9 @@ def build_master_system():
     hideHint();
     
     document.getElementById('metricName').innerText = `${{curPack.metric_icon}} ${{curPack.metric_name}}`;
-    document.getElementById('sysInfo').innerHTML = `◈ 작품: ${{curPack.title}}<br>◈ 총 ${{curPack.scenes.length}}막 대서사<br>◈ [0] 💡 지혜 힌트`;
+    const maxScore = getPackMaxMetric(curPack);
+    document.getElementById('metricName').innerText = `${{curPack.metric_icon}} ${{curPack.metric_name}}`;
+    document.getElementById('sysInfo').innerHTML = `◈ 작품: ${{curPack.title}}<br>◈ 총 ${{curPack.scenes.length}}막 (팩 설정 최대 ${{maxScore}}점)<br>◈ [0] 💡 사색 힌트`;
     
     loadScene(0);
   }}
@@ -632,7 +635,7 @@ def build_master_system():
   }}
 
   function advanceScene(delta) {{
-    const maxScore = getMaxScoreForPack(curPack);
+    const maxScore = getPackMaxMetric(curPack);
     metricValue = Math.max(0, Math.min(maxScore, metricValue + delta));
     updateMetricUI();
     
@@ -644,8 +647,10 @@ def build_master_system():
   }}
 
   function updateMetricUI() {{
-    document.getElementById('metricVal').innerText = `${{metricValue}} / 10`;
-    document.getElementById('metricBar').style.width = `${{metricValue * 10}}%`;
+    const maxScore = getPackMaxMetric(curPack);
+    document.getElementById('metricVal').innerText = `${{metricValue}} / ${{maxScore}}`;
+    const pct = Math.min(100, Math.round((metricValue / maxScore) * 100));
+    document.getElementById('metricBar').style.width = `${{pct}}%`;
   }}
 
   function showEnding() {{
@@ -662,7 +667,8 @@ def build_master_system():
     document.getElementById('headerTitle').innerText = `◆ ${{curPack.title}} (${{curPack.scenes.length}}막 대단원) · 여정의 끝 ◆`;
     document.getElementById('speakerName').innerText = "달성 칭호: " + matched.title;
     document.getElementById('dialogueText').innerText = matched.desc;
-    document.getElementById('feedbackText').innerText = `최종 ${{curPack.metric_name}}: ${{metricValue}}/10 — 플레이해주셔서 감사합니다!`;
+    const maxScore = getPackMaxMetric(curPack);
+    document.getElementById('feedbackText').innerText = `최종 ${{curPack.metric_name}}: ${{metricValue}} / ${{maxScore}} — 플레이해주셔서 감사합니다!`;
     
     const box = document.getElementById('choiceBox');
     box.innerHTML = `
