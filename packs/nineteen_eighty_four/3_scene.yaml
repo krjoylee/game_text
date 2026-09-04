@@ -12,10 +12,10 @@ pack:
       initial: 3
       max: 10
   endings:
-  - min: 16
+  - min: 11
     title: 불멸하는 정신의 수호자
     desc: 가혹한 고문과 세뇌 속에서도 2+2=4의 진실과 인간적 존엄의 불씨를 지켜낸 비극의 영웅입니다.
-  - min: 10
+  - min: 7
     title: 고뇌하는 저항자
     desc: 빅브라더의 거대한 폭력 앞에 육신은 꺾였으나, 마지막 순간까지 자유를 향한 눈물을 흘렸습니다.
   - min: -99
@@ -32,11 +32,11 @@ scenes:
   is_transition: false
   choices:
   - text: 목숨을 걸고 일기장에 진실을 기록한다
-    delta: 2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+2)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 공포에 질려 펜을 내려놓고 텔레스크린 앞에 선다
-    delta: -2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-2)
+    delta: -1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-1)
 - act: 2
   title: 2분 증오 시간
   speaker: 군중과 윈스턴
@@ -47,8 +47,8 @@ scenes:
   is_transition: false
   choices:
   - text: 광기의 함성 속에서도 냉철한 이성을 유지한다
-    delta: 2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+2)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 발각되지 않기 위해 함께 악을 쓰며 분노를 표출한다
     delta: 0
     feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+0)
@@ -69,8 +69,8 @@ scenes:
   is_transition: false
   choices:
   - text: 풍부한 구어와 시적 표현을 가슴속으로 되뇐다
-    delta: 2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+2)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 신어의 간편함에 무비판적으로 동조한다
     delta: -1
     feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-1)
@@ -84,8 +84,8 @@ scenes:
   is_transition: false
   choices:
   - text: 유리 문진을 소중히 품에 넣고 인간적 정취를 음미한다
-    delta: 2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+2)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 사치품이라며 발길을 돌린다
     delta: 0
     feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+0)
@@ -99,8 +99,8 @@ scenes:
   is_transition: false
   choices:
   - text: 심장이 터질 듯한 희망을 품고 약속 장소를 정한다
-    delta: 2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+2)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 사상경찰의 함정일까 두려워 쪽지를 불태운다
     delta: -1
     feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-1)
@@ -124,8 +124,8 @@ scenes:
   is_transition: false
   choices:
   - text: 줄리아를 껴안으며 남은 시간의 소중함을 나눈다
-    delta: 2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+2)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 쥐에 대한 공포로 패닉에 빠진다
     delta: -1
     feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-1)
@@ -139,8 +139,8 @@ scenes:
   is_transition: false
   choices:
   - text: 자유를 위해 헌신할 것을 맹세한다
-    delta: 2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+2)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 오브라이언의 눈빛에서 서늘한 의구심을 느낀다
     delta: 1
     feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
@@ -163,11 +163,11 @@ scenes:
   is_transition: false
   choices:
   - text: 육신의 고통 속에서도 인간의 존엄성을 붙들려 한다
-    delta: 2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+2)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 즉각 고통에 굴복하며 자백을 쏟아낸다
-    delta: -2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-2)
+    delta: -1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-1)
 - act: 12
   title: 2 + 2 = 5 의 고문
   speaker: 오브라이언과 윈스턴
@@ -180,11 +180,11 @@ scenes:
   is_transition: false
   choices:
   - text: 내면 깊은 곳에서 2+2=4의 진실을 결코 지우지 않는다
-    delta: 3
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+3)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 고통을 피하기 위해 5라고 거짓으로 외친다
-    delta: -2
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-2)
+    delta: -1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-1)
 - act: 13
   title: 101호실의 공포
   speaker: 오브라이언과 윈스턴
@@ -205,11 +205,11 @@ scenes:
   is_transition: false
   choices:
   - text: 차라리 자신이 물어뜯기겠다며 마지막 인성을 지킨다
-    delta: 3
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+3)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 공포에 질려 줄리아의 이름을 팔아넘긴다
-    delta: -3
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-3)
+    delta: -1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (-1)
 - act: 15
   title: 체스트넛 나무 카페의 눈물
   speaker: 윈스턴의 종말
@@ -219,8 +219,8 @@ scenes:
   is_transition: false
   choices:
   - text: 눈물 속에서도 지워지지 않은 영혼의 마지막 불씨를 기억한다
-    delta: 3
-    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+3)
+    delta: 1
+    feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+1)
   - text: 완전히 체념하고 빅브라더의 품에 안긴다
     delta: 0
     feedback: 감시 사회의 거대한 톱니바퀴 앞에서 선택을 내렸습니다. (+0)

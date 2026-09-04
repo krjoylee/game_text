@@ -12,10 +12,10 @@ pack:
       initial: 3
       max: 10
   endings:
-  - min: 22
+  - min: 13
     title: 천상의 빛과 합일한 성스러운 대시인
     desc: 지옥의 형벌, 연옥의 정화, 천국의 삼위일체 신비를 모두 관통하여 우주를 움직이는 영원한 사랑과 하나가 되었습니다.
-  - min: 14
+  - min: 8
     title: 연옥을 넘어선 순례자
     desc: 죄악의 무거운 짐을 벗어던지고 베아트리체의 인도를 받아 천상의 문턱에 도달했습니다.
   - min: -99
@@ -32,8 +32,8 @@ scenes:
   is_transition: false
   choices:
   - text: 스승의 손을 잡고 지옥의 문으로 굳건히 발을 딛는다
-    delta: 2
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 공포에 질려 뒷걸음질 친다
     delta: -1
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (-1)
@@ -56,8 +56,8 @@ scenes:
   is_transition: false
   choices:
   - text: 두 연인의 비극에 탄식하며 눈물을 흘린다
-    delta: 2
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 죄는 죗값이라며 냉정하게 고개를 돌린다
     delta: -1
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (-1)
@@ -94,8 +94,8 @@ scenes:
   is_transition: false
   choices:
   - text: 무릎을 꿇고 구원의 은혜에 감격하며 별을 우러러본다
-    delta: 2
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 지옥의 공포에 치를 떨며 주저앉는다
     delta: 0
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+0)
@@ -109,8 +109,8 @@ scenes:
   is_transition: false
   choices:
   - text: 이슬로 얼굴을 씻고 참회의 띠를 맨다
-    delta: 2
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 자신은 죄인이 아니라며 자만한다
     delta: -1
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (-1)
@@ -134,11 +134,11 @@ scenes:
   is_transition: false
   choices:
   - text: 이마의 상처를 겸허히 받아들이며 좁은 문으로 들어선다
-    delta: 2
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 고통스러운 상처에 불만을 터뜨린다
-    delta: -2
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (-2)
+    delta: -1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (-1)
 - act: 11
   title: '연옥편 4: 제1제단 거대한 바위를 진 교만'
   speaker: 단테와 오데리시
@@ -149,8 +149,8 @@ scenes:
   is_transition: false
   choices:
   - text: 허리를 깊이 숙이고 오데리시와 함께 걷는다
-    delta: 2
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 바위의 무게에 짓눌려 불평한다
     delta: -1
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (-1)
@@ -172,8 +172,8 @@ scenes:
   is_transition: false
   choices:
   - text: 스승을 믿고 거침없이 불꽃 벽 속으로 뛰어든다
-    delta: 3
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 불꽃의 뜨거움에 뒷걸음질 치며 주저한다
     delta: -1
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (-1)
@@ -187,8 +187,8 @@ scenes:
   is_transition: false
   choices:
   - text: 스승 베르길리우스께 눈물의 작별을 고하고 베아트리체 앞에 엎드린다
-    delta: 3
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 베아트리체의 준엄한 시선에 부끄러워 고개를 들지 못한다
     delta: 1
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
@@ -202,8 +202,8 @@ scenes:
   is_transition: false
   choices:
   - text: 신의 뜻에 온전히 순명하며 평화를 얻는다
-    delta: 2
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 더 높은 하늘로 올라가지 못함을 아쉬워한다
     delta: -1
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (-1)
@@ -225,8 +225,8 @@ scenes:
   is_transition: false
   choices:
   - text: 가혹한 유배의 운명을 당당히 받아들이고 시인의 사명을 맹세한다
-    delta: 3
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 유배의 슬픔에 가슴을 치며 비탄에 잠긴다
     delta: 0
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+0)
@@ -247,8 +247,8 @@ scenes:
   is_transition: false
   choices:
   - text: 성모 마리아와 성인들을 향해 두 손을 모으고 기도한다
-    delta: 3
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 너무나 눈부신 광채에 압도되어 눈을 감는다
     delta: 1
     feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
@@ -261,8 +261,8 @@ scenes:
   is_transition: false
   choices:
   - text: 우주를 움직이는 영원한 사랑의 빛 속으로 온전히 녹아든다
-    delta: 3
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)
   - text: 감격의 눈물을 흘리며 지상으로 돌아올 준비를 한다
-    delta: 2
-    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 영혼의 순례길에서 숭고한 결단을 내렸습니다. (+1)

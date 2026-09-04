@@ -12,10 +12,10 @@ pack:
       initial: 3
       max: 10
   endings:
-  - min: 16
+  - min: 11
     title: 깨어있는 역사의 감시자
     desc: 어떤 권력의 거짓 선동과 공포 앞에서도 비판적 이성과 양심을 지켜내어 역사의 진실을 증언했습니다.
-  - min: 10
+  - min: 7
     title: 고뇌하는 농장의 관찰자
     desc: 권력의 타락을 목격하며 이상과 현실 사이에서 깊은 슬픔과 회한을 삼켰습니다.
   - min: -99
@@ -33,8 +33,8 @@ scenes:
   is_transition: false
   choices:
   - text: 착취 없는 평등한 세상을 향해 혁명의 결의를 다진다
-    delta: 2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: 인간 주인의 채찍이 두려워 고개를 숙인다
     delta: -1
     feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-1)
@@ -54,8 +54,8 @@ scenes:
   is_transition: false
   choices:
   - text: 7계명을 가슴에 새기며 글자를 배우려 노력한다
-    delta: 2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: 글을 모른다며 멍하니 바라만 본다
     delta: 0
     feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+0)
@@ -68,8 +68,8 @@ scenes:
   is_transition: false
   choices:
   - text: 다친 동료들을 치료하며 1등 동물 훈장을 수여한다
-    delta: 2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: 전투의 피비린내에 공포를 느끼고 물러선다
     delta: -1
     feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-1)
@@ -83,11 +83,11 @@ scenes:
   is_transition: false
   choices:
   - text: 스노우볼의 억울한 추방에 항의하려 입을 연다
-    delta: 2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: 사나운 개들의 이빨에 짓눌려 침묵하고 만다
-    delta: -2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-2)
+    delta: -1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-1)
 - act: 6
   title: 일요일 토론 폐지
   speaker: 스퀼러와 복서
@@ -98,11 +98,11 @@ scenes:
   is_transition: false
   choices:
   - text: 스퀼러의 궤변에 의문을 품고 계명을 되짚어본다
-    delta: 2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: '''수령님은 언제나 옳다''며 무비판적으로 복종한다'
-    delta: -2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-2)
+    delta: -1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-1)
 - act: 7
   title: 사라진 사과와 우유
   speaker: 스퀼러와 동물들
@@ -125,8 +125,8 @@ scenes:
     delta: 1
     feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: 노동량을 늘려 채찍질을 가한다
-    delta: -2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-2)
+    delta: -1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-1)
 - act: 9
   title: 무너진 풍차와 마녀사냥
   speaker: 나폴레옹과 스퀼러
@@ -137,11 +137,11 @@ scenes:
   is_transition: false
   choices:
   - text: 거짓 선동임을 꿰뚫어보고 진실을 밝히려 한다
-    delta: 3
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: 공포에 질려 무고한 이웃을 밀고한다
-    delta: -3
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-3)
+    delta: -1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-1)
 - act: 10
   title: 피의 숙청과 자백
   speaker: 나폴레옹의 사형 집행
@@ -159,8 +159,8 @@ scenes:
   is_transition: false
   choices:
   - text: 왜곡된 글자들을 고발하며 항변한다
-    delta: 2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: 자신의 기억력을 탓하며 체념한다
     delta: -1
     feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-1)
@@ -182,11 +182,11 @@ scenes:
   is_transition: false
   choices:
   - text: 도살장 마차를 가로막고 복서를 구하려 몸부림친다
-    delta: 3
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: 스퀼러의 거짓 변명을 믿고 눈물을 삼킨다
-    delta: -2
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-2)
+    delta: -1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (-1)
 - act: 14
   title: 두 발로 걷는 돼지들
   speaker: 돼지들의 행진
@@ -205,8 +205,8 @@ scenes:
   is_transition: false
   choices:
   - text: 인간이 된 돼지들을 직시하며 새로운 각성의 씨앗을 품는다
-    delta: 3
-    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)
   - text: 절망 속에 고개를 떨구고 어둠 속으로 흩어진다
     delta: 1
     feedback: 역사의 수레바퀴 앞에서 양심의 결단을 내렸습니다. (+1)

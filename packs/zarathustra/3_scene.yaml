@@ -12,10 +12,10 @@ pack:
       initial: 3
       max: 10
   endings:
-  - min: 22
+  - min: 13
     title: 영원을 긍정하는 위버멘쉬 (초인)
     desc: 모든 고통과 영원회귀의 심연을 뛰어넘어, 대지를 사랑하고 스스로 굴러가는 바퀴인 어린아이의 신성한 긍정에 도달했습니다.
-  - min: 14
+  - min: 8
     title: 포효하는 자유의 사자
     desc: 낡은 도덕의 용을 쓰러뜨리고 '나는 원한다'를 쟁취한 불굴의 정신적 전사가 되었습니다.
   - min: -99
@@ -34,8 +34,8 @@ scenes:
   is_transition: false
   choices:
   - text: 대지를 사랑하며 인간들에게 나의 선물을 나누어주러 내려간다
-    delta: 2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+2)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 인간들의 어리석음이 두려워 다시 동굴로 돌아간다
     delta: -1
     feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
@@ -48,11 +48,11 @@ scenes:
   is_transition: false
   choices:
   - text: 스스로 굴러가는 바퀴, 신성한 긍정의 어린아이가 된다
-    delta: 3
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+3)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 의무의 짐을 진 낙타의 삶에 안주한다
-    delta: -2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-2)
+    delta: -1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
 - act: 3
   title: 줄타기 광대의 추락
   speaker: 차라투스트라와 광대
@@ -64,11 +64,11 @@ scenes:
   is_transition: false
   choices:
   - text: 추락한 자의 용기를 축복하며 시신을 짊어지고 걷는다
-    delta: 2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+2)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 광대의 어리석은 죽음을 비웃으며 지나친다
-    delta: -2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-2)
+    delta: -1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
 - act: 4
   title: 최후의 인간과 위버멘쉬
   speaker: 차라투스트라와 군중
@@ -80,8 +80,8 @@ scenes:
   is_transition: false
   choices:
   - text: 안락함을 경멸하고 고통을 통한 자기 극복을 택한다
-    delta: 3
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+3)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: '''최후의 인간''의 편안한 안주에 마음이 흔들린다'
     delta: -1
     feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
@@ -102,8 +102,8 @@ scenes:
   is_transition: false
   choices:
   - text: 인류의 위대한 극복을 향한 새로운 가치를 세운다
-    delta: 2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+2)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 민족주의적 도덕의 울타리에 갇힌다
     delta: -1
     feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
@@ -116,8 +116,8 @@ scenes:
   is_transition: false
   choices:
   - text: 친구에게 가혹할 정도로 높은 이상의 거울이 되어준다
-    delta: 2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+2)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 서로의 나약함을 감싸주며 나태함에 타협한다
     delta: -1
     feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
@@ -138,11 +138,11 @@ scenes:
   is_transition: false
   choices:
   - text: 영원회귀의 무거운 사유를 용기 있게 직시한다
-    delta: 3
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+3)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 모든 것이 허무하다며 난쟁이의 냉소에 굴복한다
-    delta: -2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-2)
+    delta: -1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
 - act: 10
   title: 목동과 검은 뱀
   speaker: 차라투스트라의 환영
@@ -152,11 +152,11 @@ scenes:
   is_transition: false
   choices:
   - text: 내면의 허무주의를 온 힘으로 물어뜯어 뱉어낸다
-    delta: 3
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+3)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 검은 뱀의 독기에 질식하여 비명을 지른다
-    delta: -2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-2)
+    delta: -1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
 - act: 11
   title: 안식일의 고요한 시간
   speaker: 내면의 목소리
@@ -174,11 +174,11 @@ scenes:
   is_transition: false
   choices:
   - text: 낡은 도덕의 서판을 과감히 깨부순다
-    delta: 3
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+3)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 조상들의 전통과 규율을 두려워하며 머뭇거린다
-    delta: -2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-2)
+    delta: -1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
 - act: 13
   title: 자발적인 거렁뱅이
   speaker: 차라투스트라와 부자
@@ -197,8 +197,8 @@ scenes:
   is_transition: false
   choices:
   - text: 그림자를 따스하게 품으며 새로운 목표를 가리킨다
-    delta: 2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+2)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 방황하는 그림자를 냉정하게 쫓아낸다
     delta: -1
     feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
@@ -221,8 +221,8 @@ scenes:
   is_transition: false
   choices:
   - text: 고뇌하는 영혼들에게 위버멘쉬의 빵과 포도주를 대접한다
-    delta: 3
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+3)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 실패자들의 나약한 한탄에 화를 낸다
     delta: -1
     feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
@@ -236,11 +236,11 @@ scenes:
   is_transition: false
   choices:
   - text: 함께 크게 웃으며 나귀의 축제에 동참한다
-    delta: 2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+2)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 신성모독이라며 엄숙한 표정을 짓는다
-    delta: -2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-2)
+    delta: -1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (-1)
 - act: 18
   title: 한밤중의 방랑자의 노래
   speaker: 차라투스트라의 영혼의 노래
@@ -250,8 +250,8 @@ scenes:
   is_transition: false
   choices:
   - text: 깊고 깊은 영원을 원하는 영혼의 찬가를 소리 높여 부른다
-    delta: 3
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+3)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 고통의 깊이에 압도되어 눈물을 흘린다
     delta: 0
     feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+0)
@@ -272,8 +272,8 @@ scenes:
   is_transition: false
   choices:
   - text: 타오르는 아침놀 속으로 당당히 발을 딛고 대지로 향한다
-    delta: 3
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+3)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)
   - text: 산 정상의 찬란한 태양을 우러러보며 두 팔을 벌린다
-    delta: 2
-    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+2)
+    delta: 1
+    feedback: 위버멘쉬를 향한 사자의 포효를 내질렀습니다. (+1)

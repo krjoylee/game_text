@@ -32,8 +32,8 @@ scenes:
   is_transition: false
   choices:
   - text: 도서관으로 달려가 책 속에서 위안과 진리를 찾는다
-    delta: 2
-    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+2)
+    delta: 1
+    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+1)
   - text: 아버지의 억지에 눈물 흘리며 주눅 든다
     delta: -1
     feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (-1)
@@ -57,8 +57,8 @@ scenes:
   is_transition: false
   choices:
   - text: 불의에 분노하며 친구들을 지킬 방법을 고민한다
-    delta: 2
-    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+2)
+    delta: 1
+    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+1)
   - text: 무시무시한 고함에 벌벌 떨며 고개를 숙인다
     delta: -1
     feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (-1)
@@ -72,8 +72,8 @@ scenes:
   is_transition: false
   choices:
   - text: 선생님께 마음을 열고 깊은 학문의 대화를 나눈다
-    delta: 2
-    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+2)
+    delta: 1
+    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+1)
   - text: 어른들에 대한 불신으로 마음의 문을 닫는다
     delta: -1
     feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (-1)
@@ -96,8 +96,8 @@ scenes:
   is_transition: false
   choices:
   - text: 선생님의 눈물을 닦아주며 정의를 실현할 결심을 굳힌다
-    delta: 2
-    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+2)
+    delta: 1
+    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+1)
   - text: 교장의 거대한 힘에 무력감을 느끼며 망설인다
     delta: 0
     feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+0)
@@ -110,8 +110,8 @@ scenes:
   is_transition: false
   choices:
   - text: 정신을 집중하여 염력의 힘을 훈련한다
-    delta: 2
-    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+2)
+    delta: 1
+    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+1)
   - text: 기이한 힘에 두려움을 느끼고 피하려 한다
     delta: -1
     feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (-1)
@@ -133,8 +133,8 @@ scenes:
   is_transition: false
   choices:
   - text: 친구들과 함께 자유의 기쁨을 만끽하며 환호한다
-    delta: 2
-    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+2)
+    delta: 1
+    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+1)
   - text: 승리의 도취에 교만해진다
     delta: -1
     feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (-1)
@@ -150,8 +150,8 @@ scenes:
   is_transition: false
   choices:
   - text: 허니 선생님의 품에 안겨 진정한 행복을 시작한다
-    delta: 3
-    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+3)
+    delta: 1
+    feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+1)
   - text: 부모를 따라가야 하나 잠시 고뇌한다
     delta: 1
     feedback: 마틸다는 용기 있는 지혜를 선택했습니다. (+1)

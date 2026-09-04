@@ -12,10 +12,10 @@ pack:
       initial: 3
       max: 10
   endings:
-  - min: 16
+  - min: 11
     title: 수레바퀴를 벗어난 자유로운 영혼
     desc: 세속의 무거운 바퀴에 영혼을 짓밟히지 않고, 자연과 참된 우정의 가치를 끝내 기억한 순례자입니다.
-  - min: 10
+  - min: 7
     title: 상처 입은 시인
     desc: 가혹한 경쟁 사회 속에서 깊은 상처를 입었으나, 네카어 강의 평온 속에서 영원한 안식을 얻었습니다.
   - min: -99
@@ -32,8 +32,8 @@ scenes:
   is_transition: false
   choices:
   - text: 학업의 압박 속에서도 낚시와 자연의 평화를 간직하려 한다
-    delta: 2
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)
   - text: 어른들의 기대에 부응하기 위해 쉬지 않고 책만 판다
     delta: -1
     feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (-1)
@@ -56,8 +56,8 @@ scenes:
   is_transition: false
   choices:
   - text: 경쟁의 삭막함 속에서 내면의 온기를 지키려 애쓴다
-    delta: 2
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)
   - text: 수레바퀴에 깔리지 않기 위해 동료들을 경쟁자로만 본다
     delta: -1
     feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (-1)
@@ -71,8 +71,8 @@ scenes:
   is_transition: false
   choices:
   - text: 하일러의 손을 잡고 시와 문학의 아름다움에 눈뜬다
-    delta: 2
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)
   - text: 선생님께 꾸중을 들을까 두려워 하일러를 멀리하려 한다
     delta: -1
     feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (-1)
@@ -95,11 +95,11 @@ scenes:
   is_transition: false
   choices:
   - text: 하일러와의 우정을 당당히 지켜낸다
-    delta: 2
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)
   - text: 장학금 박탈이 두려워 하일러를 피한다
-    delta: -2
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (-2)
+    delta: -1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (-1)
 - act: 7
   title: 하일러의 퇴학과 도주
   speaker: 하일러와 한스
@@ -119,8 +119,8 @@ scenes:
   is_transition: false
   choices:
   - text: 요양을 받아들이며 자연의 품에서 마음을 쉬게 한다
-    delta: 2
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)
   - text: 낙오자가 되었다는 자책감에 괴로워한다
     delta: -1
     feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (-1)
@@ -136,8 +136,8 @@ scenes:
   is_transition: false
   choices:
   - text: 세상의 비웃음을 뒤로하고 네카어 강 숲길을 걷는다
-    delta: 2
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)
   - text: 절망감에 사로잡혀 방 안에 틀어박힌다
     delta: -1
     feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (-1)
@@ -160,8 +160,8 @@ scenes:
   is_transition: false
   choices:
   - text: 거친 쇠를 깎으며 땀의 가치를 배운다
-    delta: 2
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+2)
+    delta: 1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)
   - text: 내가 라틴어를 배우던 신학생이었는데... 한탄한다
     delta: -1
     feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (-1)
@@ -183,8 +183,8 @@ scenes:
   is_transition: false
   choices:
   - text: 강물을 바라보며 다시 살아갈 희망의 끈을 붙잡는다
-    delta: 3
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)
   - text: 강물의 고요한 유혹에 홀려 발을 헛디딘다
     delta: 0
     feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+0)
@@ -207,8 +207,8 @@ scenes:
   is_transition: false
   choices:
   - text: 한스의 영혼을 추모하며 참된 인간 교육을 성찰한다
-    delta: 3
-    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+3)
+    delta: 1
+    feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)
   - text: 비통한 눈물로 소년의 영면을 기도한다
     delta: 1
     feedback: 수레바퀴의 무게 앞에서 영혼의 결단을 내렸습니다. (+1)

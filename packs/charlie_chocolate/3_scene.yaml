@@ -58,8 +58,8 @@ scenes:
   is_transition: false
   choices:
   - text: 경이로움에 눈을 반짝이며 정중히 웡카를 따른다
-    delta: 2
-    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+2)
+    delta: 1
+    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+1)
   - text: 식탐을 이기지 못하고 잔디를 마구 뜯어먹는다
     delta: -1
     feedback: 찰리는 바른 마음가짐을 선택했습니다. (-1)
@@ -106,11 +106,11 @@ scenes:
   is_transition: false
   choices:
   - text: 미디어의 중독에서 벗어나 현실의 온기를 붙든다
-    delta: 2
-    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+2)
+    delta: 1
+    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+1)
   - text: TV 화면 속 자극에 홀려 뛰어든다
-    delta: -2
-    feedback: 찰리는 바른 마음가짐을 선택했습니다. (-2)
+    delta: -1
+    feedback: 찰리는 바른 마음가짐을 선택했습니다. (-1)
 - act: 8
   title: 단 한 명의 아이
   speaker: 웡카와 찰리
@@ -121,8 +121,8 @@ scenes:
   is_transition: false
   choices:
   - text: 겸손하게 고개를 숙이며 웡카에게 감사한다
-    delta: 2
-    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+2)
+    delta: 1
+    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+1)
   - text: 남들의 불행을 보며 우쭐해한다
     delta: -1
     feedback: 찰리는 바른 마음가짐을 선택했습니다. (-1)
@@ -137,8 +137,8 @@ scenes:
   is_transition: false
   choices:
   - text: 한 치의 망설임 없이 사탕을 웡카의 책상에 내려놓는다
-    delta: 3
-    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+3)
+    delta: 1
+    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+1)
   - text: 가족의 굶주림을 생각하며 사탕을 만지작거린다
     delta: 0
     feedback: 찰리는 바른 마음가짐을 선택했습니다. (+0)
@@ -153,8 +153,8 @@ scenes:
   is_transition: false
   choices:
   - text: 가족을 품에 안고 세상 아이들에게 달콤한 꿈을 나눈다
-    delta: 3
-    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+3)
+    delta: 1
+    feedback: 찰리는 바른 마음가짐을 선택했습니다. (+1)
   - text: 부자가 된 기쁨에 홀로 환호한다
     delta: 1
     feedback: 찰리는 바른 마음가짐을 선택했습니다. (+1)
